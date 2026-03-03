@@ -6,16 +6,13 @@ Nesse contexto, surge a proposta desta aplicação: uma plataforma de monitorame
 
 
 ## Problema
-Nesse momento você deve apresentar o problema que a sua aplicação deve  resolver. No entanto, não é a hora de comentar sobre a aplicação.
+O cenário da causa animal nos centros urbanos enfrenta um desafio crítico: a fragmentação e a volatilidade das informações. Atualmente, a gestão do bem-estar de animais comunitários e a busca por animais domésticos perdidos dependem de métodos analógicos ou de redes sociais genéricas, o que gera lacunas graves de comunicação e eficiência.
 
-Descreva também o contexto em que essa aplicação será usada, se  houver: empresa, tecnologias, etc. Novamente, descreva apenas o que de  fato existir, pois ainda não é a hora de apresentar requisitos  detalhados ou projetos.
+No caso dos animais em situação de rua, o principal obstáculo é a falta de um histórico de assistência. Um animal pode ser avistado por dezenas de pessoas diariamente, mas, sem um registro centralizado, o auxílio torna-se aleatório. Alguns animais permanecem invisíveis e sem qualquer suporte básico em situações de ferimentos ou doenças. Essa "ajuda desorganizada" impede que protetores independentes e órgãos de zoonoses priorizem casos críticos, resultando em um desperdício de recursos e esforços.
 
-Nesse momento, o grupo pode optar por fazer uso  de ferramentas como Design Thinking, que permite um olhar de ponta a ponta para o problema.
+Para tutores de animais perdidos, o tempo é o maior inimigo. O modelo atual de divulgação baseia-se em cartazes físicos — vulneráveis ao clima e ao vandalismo — e postagens em redes sociais. Nestas últimas, o algoritmo rapidamente "enterra" os anúncios de desaparecimento sob novas publicações, tornando a informação obsoleta em poucas horas. Além disso, a descrição da localização costuma ser imprecisa ("visto perto da escola"), o que dificulta que um vizinho ou passante identifique o animal em tempo real e o contenha até a chegada do dono.
 
-> **Links Úteis**:
-> - [Objetivos, Problema de pesquisa e Justificativa](https://medium.com/@versioparole/objetivos-problema-de-pesquisa-e-justificativa-c98c8233b9c3)
-> - [Matriz Certezas, Suposições e Dúvidas](https://medium.com/educa%C3%A7%C3%A3o-fora-da-caixa/matriz-certezas-suposi%C3%A7%C3%B5es-e-d%C3%BAvidas-fa2263633655)
-> - [Brainstorming](https://www.euax.com.br/2018/09/brainstorming/)
+A ausência de uma ferramenta georreferenciada dedicada resulta em um fluxo de dados ruidosos. Em suma, o problema reside na falta de uma ponte tecnológica que conecte o avistamento geográfico à ação imediata, transformando a boa vontade da população em uma rede de proteção animal inteligente, precisa e funcional.
 
 ## Objetivos
 
