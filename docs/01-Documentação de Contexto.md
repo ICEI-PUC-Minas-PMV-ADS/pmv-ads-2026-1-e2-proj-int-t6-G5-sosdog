@@ -35,6 +35,9 @@ Desenvolver uma plataforma colaborativa de monitoramento georreferenciado que ce
 
 ## Justificativa
 A proposta de desenvolvimento desta plataforma fundamenta-se na necessidade crítica de organizar a rede de apoio à causa animal por meio da tecnologia. Atualmente, o manejo de animais em situação de rua e a busca por animais perdidos dependem de métodos fragmentados, como grupos em redes sociais e cartazes físicos. Embora bem-intencionadas, essas soluções sofrem com a volatilidade das informações e a falta de precisão geográfica, o que justifica a criação de uma ferramenta centralizada e georreferenciada que transforme o avistamento casual em um dado acionável e útil.
+Segundo RIBEIRO, Carolina Antunes “os cães domésticos (Canis lupus familiaris) estão presentes em todos os continentes, exceto na Antártida (Lima, 2020). Estima-se que em 2017, havia 1 bilhão em todo o mundo (ABINPET, 2019).”
+Pressupõe-se que no Brasil, os cães ocupam pelo menos 31 Parques Nacionais (Meneguelli, 2023). Em um estudo realizado no Sudeste do Brasil em uma região de fragmento urbano com 250 hectares de Floresta Atlântica por (Galetti & Sazima, 2006)
+
 
 A motivação para este projeto reside, primeiramente, no impacto direto na saúde pública e no bem-estar animal. Segundo dados da Organização Mundial da Saúde (OMS), o Brasil possui milhões de animais abandonados, um cenário que favorece a propagação de zoonoses e a ocorrência de acidentes urbanos. Ao permitir que a população mapeie animais feridos ou em situação de risco em tempo real, o sistema atua como um facilitador para o trabalho de ONGs e órgãos de controle de zoonoses, otimizando drasticamente o tempo de resposta em resgates críticos e intervenções de urgência.
 
