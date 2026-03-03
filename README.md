@@ -12,7 +12,7 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 
 * Vitor de barros rigueira fernandes
 * Thalys Ferreira Silva
-* Helena
+* Helena Bretas
 * Ozias de Souza
 * Andryw Pedro da Silva
 * Sérvulo Pereira de Oliveira
