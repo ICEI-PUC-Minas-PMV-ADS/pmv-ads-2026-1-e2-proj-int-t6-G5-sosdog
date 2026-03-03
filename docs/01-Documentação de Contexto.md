@@ -1,6 +1,6 @@
 # Introdução
 
-Texto descritivo com a visão geral do projeto abordado. Inclui o contexto, o problema, os objetivos, a justificativa e o público-alvo do projeto.
+Esta documentação descreve o desenvolvimento de uma plataforma web voltada ao auxílio e resgate de animais domésticos e de rua. O projeto integra geolocalização em tempo real e colaboração comunitária para criar uma rede de proteção animal digital, permitindo que usuários reportem perdas, avistamentos, para rastreamento e resgate de pets.
 
 ## Problema
 Nesse momento você deve apresentar o problema que a sua aplicação deve  resolver. No entanto, não é a hora de comentar sobre a aplicação.
