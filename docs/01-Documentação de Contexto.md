@@ -34,14 +34,13 @@ Desenvolver uma plataforma colaborativa de monitoramento georreferenciado que ce
 - Fomentar a educação e auxílio emergencial: Disponibilizar uma secção informativa com legislação vigente, contactos de emergência e guias de primeiros socorros para situações de urgência animal.
 
 ## Justificativa
+A proposta de desenvolvimento desta plataforma fundamenta-se na necessidade crítica de organizar a rede de apoio à causa animal por meio da tecnologia. Atualmente, o manejo de animais em situação de rua e a busca por animais perdidos dependem de métodos fragmentados, como grupos em redes sociais e cartazes físicos. Embora bem-intencionadas, essas soluções sofrem com a volatilidade das informações e a falta de precisão geográfica, o que justifica a criação de uma ferramenta centralizada e georreferenciada que transforme o avistamento casual em um dado acionável e útil.
 
-Explique de forma clara a relevância da aplicação escolhida, justificando os objetivos específicos e os aspectos do software que serão aprofundados, e quantifique o impacto do problema com dados concretos (números, percentuais, indicadores) obtidos por bases oficiais ou outras fontes confiáveis, sempre citadas no padrão ABNT (no formato [Numérico] ou (AUTOR, ANO)).
+A motivação para este projeto reside, primeiramente, no impacto direto na saúde pública e no bem-estar animal. Segundo dados da Organização Mundial da Saúde (OMS), o Brasil possui milhões de animais abandonados, um cenário que favorece a propagação de zoonoses e a ocorrência de acidentes urbanos. Ao permitir que a população mapeie animais feridos ou em situação de risco em tempo real, o sistema atua como um facilitador para o trabalho de ONGs e órgãos de controle de zoonoses, otimizando drasticamente o tempo de resposta em resgates críticos e intervenções de urgência.
 
-**Relacione o problema aos Objetivos de Desenvolvimento Sustentável (ODS), indicando quais ODS e subobjetivos são atendidos e descrevendo como o projeto contribui para cada um deles, garantindo coerência entre o impacto mensurado e as metas selecionadas.**
+Além disso, a ineficiência dos métodos convencionais de busca por animais domésticos é um fator determinante para este estudo. O uso de cartazes de papel e postagens em redes sociais genéricas apresenta um alcance limitado e uma "vida útil" curta, uma vez que o conteúdo é rapidamente enterrado por novos fluxos de informação, perdendo sua relevância no momento em que a precisão geográfica é mais necessária.
 
-> **Links Úteis**:
-> - [Como montar a justificativa](https://guiadamonografia.com.br/como-montar-justificativa-do-tcc/)
-
+Outro ponto relevante que motiva a equipe é a organização do cuidado comunitário. Frequentemente, a vontade de ajudar da população é desperdiçada por falta de coordenação e histórico de assistência. Assim, o projeto não apenas soluciona um problema logístico, mas promove uma cultura de cidadania e proteção animal mediada por uma arquitetura de software robusta, confiável e voltada para a eficiência social.
 ## Público-Alvo
 
 Descreva quem serão as pessoas que usarão a sua aplicação indicando os diferentes perfis. O objetivo aqui não é definir quem serão os clientes ou quais serão os papéis dos usuários na aplicação. A ideia é, dentro do possível, conhecer um pouco mais sobre o perfil dos usuários: conhecimentos prévios, relação com a tecnologia, relações hierárquicas, etc.
