@@ -24,7 +24,8 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 ## Instruções de Instalação, Execução e Acesso
 
 **Acesso rápido (produção)**
-KAMBAM: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
+
+* KAMBAM: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
 * URL da aplicação: https://seu-dominio.com/caminho
 * Status: online / instável / em manutenção (atualize conforme o caso)
 * Ambiente: produção / homologação
