@@ -33,8 +33,13 @@ Com base na análise das personas forma identificadas as seguintes histórias de
 
 |EU COMO... `PERSONA`| QUERO/PRECISO ... `FUNCIONALIDADE` |PARA ... `MOTIVO/VALOR`                 |
 |--------------------|------------------------------------|----------------------------------------|
-|Ana Clara  | Uma forma de identificar se uma agência é realmente confiável           | Me sentir mais segura ao contratar seus serviços               |
-|Ana Clara       | Ter um mecanismo eficiente e rápido de comunicação                 | Que eu possa sanar todas as minhas dúvidas rapidamente |
+|Usuário: Tutor ou Voluntário  | marcar a localização exata de um animal no mapa           | que outros usuários saibam onde encontrá-lo ou a região em que foi perdido.    |
+|Usuário       | alternar entre diferentes camadas de visualização Perdidos vs. Rua                 | focar apenas nos casos que desejo ajudar no momento |
+|Voluntário       | registrar que forneci água ou comida a um cão comunitário                 | evitar que outros usuários dupliquem o esforço ou que o animal fique desassistido |
+|Morador local       | confirmar se um animal ainda está no local indicado                 | manter o mapa atualizado e evitar informações falsas. |
+|Tutor de um pet perdido       | receber um alerta se alguém cadastrar um "Cão de Rua" próximo à minha localização             | que eu possa verificar se é o meu animal.  |
+|Tutor       | gerar um PDF automático do meu cão perdido                 | imprimir e colar no bairro e aumentar as chances de encontrar meu pet perdido. |
+|Usuário       | classificar o estado de saúde do animal                 | que casos críticos recebam atenção prioritária da comunidade e de ONGs. |
 
 Apresente aqui as histórias de usuário que são relevantes para o projeto de sua solução. As Histórias de Usuário consistem em uma ferramenta poderosa para a compreensão e elicitação dos requisitos funcionais e não funcionais da sua aplicação. Se possível, agrupe as histórias de usuário por contexto, para facilitar consultas recorrentes à essa parte do documento.
 
