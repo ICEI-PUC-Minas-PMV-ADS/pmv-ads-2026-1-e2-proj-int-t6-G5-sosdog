@@ -16,22 +16,22 @@ A ausência de uma ferramenta georreferenciada dedicada resulta em um fluxo de d
 
 ## Objetivos
 
-Objetivo Geral
+ **Objetivo Geral**
 
 Desenvolver uma plataforma colaborativa de monitoramento georreferenciado que centralize e organize informações sobre animais de rua e perdidos, utilizando a tecnologia móvel para agilizar resgates, facilitar o reencontro de animais com seus tutores e promover a assistência comunitária de forma estruturada.
 
-Objetivos Específicos
-Implementar um sistema de mapeamento dinâmico: Permitir a marcação precisa via GPS de animais avistados, utilizando uma distinção visual (pins coloridos) para diferenciar situações de abandono de casos de animais perdidos.
+ **Objetivos Específicos**
+- Implementar um sistema de mapeamento dinâmico: Permitir a marcação precisa via GPS de animais avistados, utilizando uma distinção visual (pins coloridos) para diferenciar situações de abandono de casos de animais perdidos.
 
-Otimizar a busca e filtragem de ocorrências: Oferecer ferramentas de busca personalizada por estado de saúde, porte e tempo de avistamento, além de delimitar alertas em um raio de 5 km da posição do utilizador.
+- Otimizar a busca e filtragem de ocorrências: Oferecer ferramentas de busca personalizada por estado de saúde, porte e tempo de avistamento, além de delimitar alertas em um raio de 5 km da posição do utilizador.
 
-Garantir a veracidade dos dados: Criar um mecanismo de validação social ("joinha") e uma regra de expiração temporal de 72 horas para assegurar que o mapa apresente apenas informações recentes e fidedignas, combatendo notícias falsas ou dados obsoletos.
+- Garantir a veracidade dos dados: Criar um mecanismo de validação social ("joinha") e uma regra de expiração temporal de 72 horas para assegurar que o mapa apresente apenas informações recentes e fidedignas, combatendo notícias falsas ou dados obsoletos.
 
-Facilitar a logística de busca por animais perdidos: Automatizar a criação de materiais de divulgação através de um gerador de cartazes digitais em PDF com QR Code integrado à localização do último avistamento.
+- Facilitar a logística de busca por animais perdidos: Automatizar a criação de materiais de divulgação através de um gerador de cartazes digitais em PDF com QR Code integrado à localização do último avistamento.
 
-Promover o histórico de cuidados comunitários: Disponibilizar um registo de ações sociais que permita aos utilizadores informar se um animal já recebeu alimentação, água ou medicação, evitando a sobrecarga ou a negligência de cuidados.
+- Promover o histórico de cuidados comunitários: Disponibilizar um registo de ações sociais que permita aos utilizadores informar se um animal já recebeu alimentação, água ou medicação, evitando a sobrecarga ou a negligência de cuidados.
 
-Fomentar a educação e auxílio emergencial: Disponibilizar uma secção informativa com legislação vigente, contactos de emergência e guias de primeiros socorros para situações de urgência animal.
+- Fomentar a educação e auxílio emergencial: Disponibilizar uma secção informativa com legislação vigente, contactos de emergência e guias de primeiros socorros para situações de urgência animal.
 
 ## Justificativa
 
