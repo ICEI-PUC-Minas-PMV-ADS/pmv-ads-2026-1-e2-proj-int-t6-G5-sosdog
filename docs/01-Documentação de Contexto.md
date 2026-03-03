@@ -48,11 +48,14 @@ Outro ponto relevante que motiva a equipe é a organização do cuidado comunit�
 ## Público-Alvo
 O público-alvo da aplicação é composto por cidadãos que interagem direta ou indiretamente com a causa animal, segmentados nos seguintes perfis:
 
-- Protetores Independentes e Voluntários
-   Pessoas que dedicam tempo ao resgate, alimentação e tratamento de animais de rua.
-- Tutores de Animais de Estimação
-   Proprietários de animais domésticos que buscam segurança ou auxílio em situações de perda.
-- Observadores e Colaboradores Casuais
-  Cidadãos que, ao presenciarem um animal em perigo ou perdido em seu trajeto, desejam ajudar sem necessariamente realizar o acolhimento físico.
-- Gestores de ONGs e Abrigos
-   Organizações que trabalham com resgate em larga escala e controle populacional.
+## Público-Alvo
+O público-alvo da aplicação é composto por cidadãos que interagem direta ou indiretamente com a causa animal, segmentados nos seguintes perfis:
+
+- Protetores Independentes e Voluntários:
+  * Pessoas que dedicam tempo ao resgate, alimentação e tratamento de animais de rua.*
+- Tutores de Animais de Estimação:
+  * Proprietários de animais domésticos que buscam segurança ou auxílio em situações de perda.*
+- Observadores e Colaboradores Casuais:
+  * Cidadãos que, ao presenciarem um animal em perigo ou perdido em seu trajeto, desejam ajudar sem necessariamente realizar o acolhimento físico.*
+- Gestores de ONGs e Abrigos:
+  * Organizações que trabalham com resgate em larga escala e controle populacional.*
