@@ -41,12 +41,15 @@ A motivação para este projeto reside, primeiramente, no impacto direto na saú
 Além disso, a ineficiência dos métodos convencionais de busca por animais domésticos é um fator determinante para este estudo. O uso de cartazes de papel e postagens em redes sociais genéricas apresenta um alcance limitado e uma "vida útil" curta, uma vez que o conteúdo é rapidamente enterrado por novos fluxos de informação, perdendo sua relevância no momento em que a precisão geográfica é mais necessária.
 
 Outro ponto relevante que motiva a equipe é a organização do cuidado comunitário. Frequentemente, a vontade de ajudar da população é desperdiçada por falta de coordenação e histórico de assistência. Assim, o projeto não apenas soluciona um problema logístico, mas promove uma cultura de cidadania e proteção animal mediada por uma arquitetura de software robusta, confiável e voltada para a eficiência social.
+
 ## Público-Alvo
+O público-alvo da aplicação é composto por cidadãos que interagem direta ou indiretamente com a causa animal, segmentados nos seguintes perfis:
 
-Descreva quem serão as pessoas que usarão a sua aplicação indicando os diferentes perfis. O objetivo aqui não é definir quem serão os clientes ou quais serão os papéis dos usuários na aplicação. A ideia é, dentro do possível, conhecer um pouco mais sobre o perfil dos usuários: conhecimentos prévios, relação com a tecnologia, relações hierárquicas, etc.
-
-> **Links Úteis**:
-> - [Público-alvo](https://blog.hotmart.com/pt-br/publico-alvo/)
-> - [Como definir o público alvo](https://exame.com/pme/5-dicas-essenciais-para-definir-o-publico-alvo-do-seu-negocio/)
-> - [Público-alvo: o que é, tipos, como definir seu público e exemplos](https://klickpages.com.br/blog/publico-alvo-o-que-e/)
-> - [Qual a diferença entre público-alvo e persona?](https://rockcontent.com/blog/diferenca-publico-alvo-e-persona/)
+- Protetores Independentes e Voluntários
+   Pessoas que dedicam tempo ao resgate, alimentação e tratamento de animais de rua.
+- Tutores de Animais de Estimação
+   Proprietários de animais domésticos que buscam segurança ou auxílio em situações de perda.
+- Observadores e Colaboradores Casuais
+  Cidadãos que, ao presenciarem um animal em perigo ou perdido em seu trajeto, desejam ajudar sem necessariamente realizar o acolhimento físico.
+- Gestores de ONGs e Abrigos
+   Organizações que trabalham com resgate em larga escala e controle populacional.
