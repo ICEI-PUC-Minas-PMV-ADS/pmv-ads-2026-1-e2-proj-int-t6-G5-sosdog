@@ -11,7 +11,7 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 ## Integrantes
 
 * Vitor de barros rigueira fernandes
-* Thalys Ferreira
+* Thalys Ferreira Silva
 * Helena
 * Ozias de Souza
 * Andryw Pedro da Silva
