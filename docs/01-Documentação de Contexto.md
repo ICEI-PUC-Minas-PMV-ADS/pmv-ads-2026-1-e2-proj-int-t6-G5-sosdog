@@ -1,6 +1,9 @@
 # Introdução
 
-Esta documentação descreve o desenvolvimento de uma plataforma web voltada ao auxílio e resgate de animais domésticos e de rua. O projeto integra geolocalização em tempo real e colaboração comunitária para criar uma rede de proteção animal digital, permitindo que usuários reportem perdas, avistamentos, para rastreamento e resgate de pets.
+O crescimento da população de animais em situação de rua e o alto índice de animais domésticos perdidos representam um desafio social e de saúde pública nos centros urbanos. A falta de uma plataforma centralizada e em tempo real para o monitoramento desses animais dificulta ações de resgate, assistência e reencontro por parte de tutores e protetores independentes.
+
+Nesse contexto, surge a proposta desta aplicação: uma plataforma de monitoramento georreferenciado colaborativo, projetada para conectar a comunidade em prol da causa animal. O sistema utiliza a tecnologia de geolocalização para mapear ocorrências, diferenciando visualmente animais avistados em situação de vulnerabilidade de animais perdidos que possuem tutores em busca.
+
 
 ## Problema
 Nesse momento você deve apresentar o problema que a sua aplicação deve  resolver. No entanto, não é a hora de comentar sobre a aplicação.
