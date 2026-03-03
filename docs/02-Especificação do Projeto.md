@@ -59,10 +59,14 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 ### Requisitos não Funcionais
 
-|ID     | Descrição do Requisito  |Prioridade |
-|-------|-------------------------|----|
-|RNF-001| A aplicação deve ser responsiva | MÉDIA | 
-|RNF-002| A aplicação deve processar requisições do usuário em no máximo 3s |  BAIXA | 
+| ID | Descrição do Requisito | Prioridade |
+|---|---|---|
+|RNF-001| A aplicação deve ser responsiva e otimizada primordialmente para dispositivos móveis (Mobile First). | ALTA |
+|RNF-002| A aplicação deve atualizar o mapa e processar buscas por ocorrências (raio de 5 km) em no máximo 3s. | ALTA |
+|RNF-003| O sistema deve estar disponível 24 horas por dia, 7 dias por semana, devido à imprevisibilidade dos resgates. | ALTA |
+|RNF-004| O sistema deve proteger os dados pessoais dos usuários (telefone/endereço) de acordo com a LGPD, exibindo-os apenas mediante autorização. | ALTA |
+|RNF-005| O aplicativo/plataforma web necessita de permissão ativa de acesso ao GPS do dispositivo do usuário para funcionar. | ALTA |
+|RNF-006| O sistema depende da abertura do aplicativo pelo usuário para atualizar e exibir as notificações internas de "matches" e alertas. | MÉDIA | 
 
 Com base nas Histórias de Usuário, enumere os requisitos da sua solução. Classifique esses requisitos em dois grupos:
 
