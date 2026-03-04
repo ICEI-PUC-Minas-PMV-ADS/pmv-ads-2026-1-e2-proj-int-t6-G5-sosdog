@@ -35,11 +35,21 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 ### Requisitos Funcionais
 
-|ID    | Descrição do Requisito  | Prioridade |
-|------|-----------------------------------------|----|
-|RF-001| A aplicação deve permitir que o usuário avalie uma agência de intercâmbio com base na sua experiência| ALTA | 
-|RF-002| A aplicação deve permitir que o usuário inclua comentários ao fazer uma avaliação de uma agência de intercâmbio    | ALTA |
-|RF-003| A aplicação deve permitir que o usuário consulte todas as agências de intercâmbio cadastradas ordenando-as com base em suas notas | ALTA |
+### Tabela de Requisitos Funcionais
+
+| ID | Descrição do Requisito | Prioridade |
+| :--- | :--- | :--- |
+| **RF-001** | O sistema deve permitir que o usuário marque a localização exata de um animal via GPS, diferenciando entre animal de rua/avistado (pino amarelo) e animal perdido/dono procurando (pino vermelho). | ALTA |
+| **RF-002** | O sistema deve permitir que o usuário alterne a visualização do mapa em camadas: "Apenas animais de rua", "Apenas animais perdidos" ou "Visualização geral". | MÉDIA |
+| **RF-003** | O sistema deve permitir filtrar o mapa por estado de saúde, tempo de avistamento (ex.: últimas 2h, 24h) e porte do animal. | MÉDIA |
+| **RF-004** | O sistema deve permitir que outros usuários confirmem uma marcação existente (validação) para atestar que a informação ainda é verídica, evitando duplicatas ou trotes. | ALTA |
+| **RF-005** | O sistema deve exigir que, ao marcar um animal, o usuário selecione o estado atual dele (Saudável, Ferido, Atropelado, Fêmea com filhotes ou Cão com coleira/perdido). | ALTA |
+| **RF-006** | O sistema deve permitir o registro, no card de um animal de rua, de informações caso ele tenha recebido água, comida ou medicação por algum usuário recentemente. | MÉDIA |
+| **RF-007** | O sistema deve permitir que o usuário faça o upload de fotos para facilitar a identificação visual rápida do animal no mapa e no feed. | ALTA |
+| **RF-008** | O sistema deve permitir que o usuário consulte ocorrências de animais em situação crítica ou perdidos dentro de um raio de até 5 km da sua localização atual, em mapa ou lista. | ALTA |
+| **RF-009** | O sistema deve permitir que os usuários adicionem comentários nas marcações para atualizar o paradeiro do animal. | MÉDIA |
+| **RF-010** | O sistema deve gerar automaticamente um cartaz digital (em PDF) para animais perdidos, contendo foto, dados do dono, observações e um QR Code para o último local avistado. | MÉDIA |
+| **RF-011** | O sistema deve dedicar uma seção para informar leis de proteção animal, contatos de emergência e instruções sobre o que fazer em casos de urgência. | BAIXA |
 
 ### Requisitos não Funcionais
 
@@ -51,21 +61,6 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 |RNF-004| O sistema deve proteger os dados pessoais dos usuários (telefone/endereço) de acordo com a LGPD, exibindo-os apenas mediante autorização. | ALTA |
 |RNF-005| O aplicativo/plataforma web necessita de permissão ativa de acesso ao GPS do dispositivo do usuário para funcionar. | ALTA |
 |RNF-006| O sistema depende da abertura do aplicativo pelo usuário para atualizar e exibir as notificações internas de "matches" e alertas. | MÉDIA | 
-
-Com base nas Histórias de Usuário, enumere os requisitos da sua solução. Classifique esses requisitos em dois grupos:
-
-- [Requisitos Funcionais
- (RF)](https://pt.wikipedia.org/wiki/Requisito_funcional):
- correspondem a uma funcionalidade que deve estar presente na
-  plataforma (ex: cadastro de usuário).
-- [Requisitos Não Funcionais
-  (RNF)](https://pt.wikipedia.org/wiki/Requisito_n%C3%A3o_funcional):
-  correspondem a uma característica técnica, seja de usabilidade,
-  desempenho, confiabilidade, segurança ou outro (ex: suporte a
-  dispositivos iOS e Android).
-Lembre-se que cada requisito deve corresponder à uma e somente uma
-característica alvo da sua solução. Além disso, certifique-se de que
-todos os aspectos capturados nas Histórias de Usuário foram cobertos.
 
 ## Restrições
 
