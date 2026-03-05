@@ -44,6 +44,15 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-009** | O sistema deve permitir que os usuários adicionem comentários nas marcações para atualizar o paradeiro do animal. | MÉDIA |
 | **RF-010** | O sistema deve gerar automaticamente um cartaz digital (em PDF) para animais perdidos, contendo foto, dados do dono, observações e um QR Code para o último local avistado. | MÉDIA |
 | **RF-011** | O sistema deve dedicar uma seção para informar leis de proteção animal, contatos de emergência e instruções sobre o que fazer em casos de urgência. | BAIXA |
+| **RF-012** | O sistema deve permitir que o usuário edite seus dados pessoais (nome, foto de perfil, e-mail e telefone). | ALTA |
+| **RF-013** | O sistema deve fornecer uma opção para exclusão permanente da conta e dos dados do usuário (Adequação LGPD). | ALTA |
+| **RF-014** | O sistema deve permitir que o usuário defina o raio de distância (ex.: 1km, 5km) para o recebimento de alertas de animais. | ALTA |
+| **RF-015** | O sistema deve permitir que o usuário filtre quais tipos de notificações deseja receber (perdidos, feridos ou todos). | MÉDIA |
+| **RF-016** | O sistema deve permitir ativar ou desativar notificações de interações da comunidade (validações e comentários). | BAIXA |
+| **RF-017** | O sistema deve permitir que o usuário defina a visualização padrão do mapa ao iniciar o aplicativo. | BAIXA |
+| **RF-018** | O sistema deve permitir configurar a ocultação automática de pinos antigos no mapa (ex.: mais de 7 dias). | MÉDIA |
+| **RF-019** | O sistema deve disponibilizar uma área de "Itens Salvos" para que o usuário acompanhe marcações favoritadas. | MÉDIA |
+| **RF-020** | O sistema deve conter uma central de Ajuda e Suporte, com FAQ e formulário para envio de dicas, opiniões e sugestões. | BAIXA |
 
 ### Requisitos não Funcionais
 
