@@ -15,13 +15,19 @@ Com base na análise das personas forma identificadas as seguintes histórias de
 
 |EU COMO... `PERSONA`| QUERO/PRECISO ... `FUNCIONALIDADE` |PARA ... `MOTIVO/VALOR`                 |
 |--------------------|------------------------------------|----------------------------------------|
-|Usuário: Tutor ou Voluntário  | marcar a localização exata de um animal no mapa           | que outros usuários saibam onde encontrá-lo ou a região em que foi perdido.    |
-|Usuário       | alternar entre diferentes camadas de visualização Perdidos vs. Rua                 | focar apenas nos casos que desejo ajudar no momento |
-|Voluntário       | registrar que forneci água ou comida a um cão comunitário                 | evitar que outros usuários dupliquem o esforço ou que o animal fique desassistido |
-|Morador local       | confirmar se um animal ainda está no local indicado                 | manter o mapa atualizado e evitar informações falsas. |
-|Tutor de um pet perdido       | receber um alerta se alguém cadastrar um "Cão de Rua" próximo à minha localização             | que eu possa verificar se é o meu animal.  |
-|Tutor       | gerar um PDF automático do meu cão perdido                 | imprimir e colar no bairro e aumentar as chances de encontrar meu pet perdido. |
-|Usuário       | classificar o estado de saúde do animal                 | que casos críticos recebam atenção prioritária da comunidade e de ONGs. |
+|Protetora Mariana  | Marcar a localização exata de um animal no mapa           | Que outros usuários saibam onde encontrá-lo ou a região em que foi perdido.    |
+|Coordenadora de ONG Juliana       | Alternar entre diferentes camadas de visualização Perdidos vs. Rua     | Focar apenas nos casos que desejo ajudar no momento. |
+|Protetora Mariana       | Registrar que forneci água ou comida a um cão comunitário           | Evitar que outros usuários dupliquem o esforço ou que o animal fique desassistido. |
+|Comerciante Patrícia      | Confirmar se um animal ainda está no local indicado                 | Manter o mapa atualizado e evitar informações falsas. |
+|Tutor Eduardo       | Receber um alerta se alguém cadastrar um "Cão de Rua" próximo à minha localização             | Que eu possa verificar se é o meu animal.  |
+|Tutor Eduardo       | Gerar um PDF automático do meu cão perdido                 | Imprimir e colar no bairro e aumentar as chances de encontrar meu pet perdido. |
+|Coordenadora de ONG Juliana        | Classificar o estado de saúde do animal                 | Garantir que casos críticos recebam atenção prioritária da comunidade e de ONGs. |
+|Coordenadora de ONG Juliana        | Filtrar o mapa por estado de saúde, porte e tempo de avistamento. | Otimizar o deslocamento da minha equipe de resgate com base na prioridade.  |
+|Motorista Lucas        | Fazer o upload de fotos rapidamente ao registrar um avistamento.                 | Facilitar a identificação visual sem precisar digitar descrições longas. |
+|Comerciante Patrícia         | Favoritar e adicionar comentários nas ocorrências.                 | Acompanhar o status de um animal que reportei e saber se ele já foi encaminhado. |
+|Tutor Eduardo        | Configurar o raio de distância e filtrar os tipos de alertas que recebo.   | Garantir notificações relevantes sem ser inundado por alertas distantes.  |
+|Protetora (Mariana)        | Acessar uma seção de contatos de emergência e guias rápidos.        | Saber a quem recorrer e como agir em situações de primeiros socorros na rua. |
+
 
 ## Requisitos
 
