@@ -90,8 +90,6 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 |06| O sistema depende de conexão com internet para registrar e visualizar dados|
 
 
-Enumere as restrições à sua solução. Lembre-se de que as restrições geralmente limitam a solução candidata.
-
 ## Diagrama de Casos de Uso
 
 O diagrama abaixo ilustra as principais interações entre os diferentes perfis de usuários e o **Sistema SOS Dog**, mapeando visualmente as funcionalidades descritas na nossa tabela de Requisitos Funcionais.
