@@ -76,10 +76,14 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 O projeto está restrito pelos itens apresentados na tabela a seguir.
 
-|ID| Restrição                                             |
-|--|-------------------------------------------------------|
-|01| O projeto deverá ser entregue até o final do semestre |
-|02| Não pode ser desenvolvido um módulo de backend        |
+|ID| Restrição                                                                 |
+|--|---------------------------------------------------------------------------|
+|01| O projeto deverá ser desenvolvido e entregue dentro do prazo da disciplina|
+|02| A solução será apresentada inicialmente como um protótipo funcional       |
+|03| O sistema depende da autorização do usuário para acesso ao GPS            |
+|04| A aplicação depende da colaboração dos usuários para registrar ocorrências|
+|05| O desenvolvimento utilizará as tecnologias definidas pela equipe e faculdade|
+|06| O sistema depende de conexão com internet para registrar e visualizar dados|
 
 
 Enumere as restrições à sua solução. Lembre-se de que as restrições geralmente limitam a solução candidata.
