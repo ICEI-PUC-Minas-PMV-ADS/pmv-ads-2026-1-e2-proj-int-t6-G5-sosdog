@@ -1,12 +1,17 @@
 # TÍTULO DO PROJETO
 
 `CURSO`
+Analise e Desenvolvimento de Sistemas
 
 `DISCIPLINA`
+Eixo 2 - Projeto: Desenvolvimento de uma Aplicação Interativa
 
 `SEMESTRE`
+2° Semestre
 
-Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo desenvolvido.
+O projeto em desenvolvimento é uma plataforma colaborativa e georreferenciada voltada para a proteção, assistência e monitoramento de animais perdidos e em situação de rua nos centros urbanos. Otimizada primordialmente para dispositivos móveis, a aplicação utiliza a tecnologia de geolocalização (GPS) para permitir que os cidadãos registrem avistamentos em tempo real num mapa interativo. O sistema diferencia visualmente os animais em estado de vulnerabilidade (comunitários/de rua) daqueles que possuem tutores em busca (perdidos), centralizando dados críticos que frequentemente perdem sua utilidade devido à volatilidade das redes sociais e à ineficácia dos cartazes físicos.
+
+Além do mapeamento dinâmico, o sistema atua como uma rede de apoio logístico para ONGs, protetores independentes e a comunidade em geral. A ferramenta oferece recursos práticos, como filtros de busca por raio de distância (até 5 km) e estado de saúde, validação social para garantir a veracidade e atualização das ocorrências, e um registro colaborativo de cuidados básicos prestados (como fornecimento de água e comida). Para tutores, agiliza a busca por meio da geração automática de cartazes digitais em PDF com QR Code. Em suma, o aplicativo transforma o avistamento casual em dados acionáveis, conectando a boa vontade da população em ações de resgate e cuidado estruturadas e eficientes.
 
 ## Integrantes
 
@@ -27,8 +32,8 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 
 * KAMBAM: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
 * URL da aplicação: https://seu-dominio.com/caminho
-* Status: online / instável / em manutenção (atualize conforme o caso)
-* Ambiente: produção / homologação
+* Status: Ofline 
+* Ambiente: homologação
 
 **Usuário(s) de teste (se houver):**
 * Login: usuario_teste
