@@ -92,11 +92,18 @@ Enumere as restrições à sua solução. Lembre-se de que as restrições geral
 > - [O que são Requisitos Funcionais e Requisitos Não Funcionais?](https://codificar.com.br/requisitos-funcionais-nao-funcionais/)
 > - [O que são requisitos funcionais e requisitos não funcionais?](https://analisederequisitos.com.br/requisitos-funcionais-e-requisitos-nao-funcionais-o-que-sao/)
 
+
 ## Diagrama de Casos de Uso
 
-O diagrama de casos de uso é o próximo passo após a elicitação de requisitos, que utiliza um modelo gráfico e uma tabela com as descrições sucintas dos casos de uso e dos atores. Ele contempla a fronteira do sistema e o detalhamento dos requisitos funcionais com a indicação dos atores, casos de uso e seus relacionamentos. 
+O diagrama abaixo ilustra as principais interações entre os diferentes perfis de usuários e o **Sistema SOS Dog**, mapeando visualmente as funcionalidades descritas na nossa tabela de Requisitos Funcionais.
 
-As referências abaixo irão auxiliá-lo na geração do artefato “Diagrama de Casos de Uso”.
+<img width="406" height="754" alt="Diagrama de Casos de Uso" src="https://github.com/user-attachments/assets/d7ac6590-47d0-44a7-a5a5-b0b26e9deedf" />
+
+### 📌 Destaques da Modelagem:
+
+* **Generalização de Atores (Herança):** Para evitar redundâncias visuais e manter o diagrama otimizado, aplicamos o conceito de herança da UML. O ator **Usuário Geral** concentra as ações comuns a todos no aplicativo (como visualizar o mapa, favoritar ocorrências e acessar a central de ajuda). Os perfis específicos (*Tutor, Voluntário, Membro da Comunidade e ONG*) herdam essas permissões básicas e possuem ligação direta apenas com suas ações exclusivas.
+* **Ator de Sistema Externo (`<<System>>`):** A **API - GPS** foi mapeada como um ator externo. O sistema depende ativamente desse serviço para capturar a localização exata no momento dos registros e para calcular o raio de busca de 5km no mapa.
+* **Relacionamentos de Inclusão (`<<include>>`):** Processos de registro, como "Registrar cão de rua" e "Cadastrar cão perdido", exigem obrigatoriamente etapas complementares para manter a qualidade dos dados. Por isso, utilizamos *includes* para mostrar que o sistema sempre acionará o "Marcar localização GPS" e o "Upload de foto" durante essas ações.
 
 > **Links Úteis**:
 > - [Criando Casos de Uso](https://www.ibm.com/docs/pt-br/elm/6.0?topic=requirements-creating-use-cases)
