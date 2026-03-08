@@ -58,7 +58,11 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-017** | O sistema deve permitir que o usuário defina a visualização padrão do mapa ao iniciar o aplicativo. | BAIXA |
 | **RF-018** | O sistema deve permitir configurar a ocultação automática de pinos antigos no mapa (ex.: mais de 7 dias). | MÉDIA |
 | **RF-019** | O sistema deve disponibilizar uma área de "Itens Salvos" para que o usuário acompanhe marcações favoritadas. | MÉDIA |
-| **RF-020** | O sistema deve conter uma central de Ajuda e Suporte, com FAQ e formulário para envio de dicas, opiniões e sugestões. | BAIXA |
+| **RF-020** | O sistema deve conter uma central de Ajuda e Suporte, com FAQ e formulário para envio de dicas, opiniões e sugestões. | BAIXA 
+| **RF-021** | O sistema deve permitir que um novo usuário crie uma conta informando nome completo, e-mail válido e senha. | ALTA |
+| **RF-022** | O sistema deve disponibilizar a funcionalidade de "Esqueci minha senha", permitindo que o usuário redefina seu acesso através de um link ou código enviado ao e-mail cadastrado. | ALTA |
+| **RF-023** | O sistema deve permitir que o usuário encerre a sua sessão ativa (logout) no dispositivo de forma segura. | ALTA |
+| **RF-024** | O sistema deve bloquear temporariamente a conta do usuário após um número limite de tentativas de login malsucedidas (ex.: 5 tentativas), por questões de segurança. | MÉDIA ||
 
 ### Requisitos não Funcionais
 
