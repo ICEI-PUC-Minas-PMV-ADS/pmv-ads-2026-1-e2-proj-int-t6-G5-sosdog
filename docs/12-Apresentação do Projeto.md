@@ -2,8 +2,8 @@
 
 ## Plataforma de Monitoramento Georreferenciado Colaborativo
 
--Nome: SOS dog 
--marca do projeto: (sem por enquanto)
+- Nome: SOS dog 
+- marca do projeto: (sem por enquanto)
 
 ## Vídeo de apresentação - Etapa 01
 [SOS_dog.pdf](https://github.com/user-attachments/files/25824758/Texto.do.seu.paragrafo.pdf)
