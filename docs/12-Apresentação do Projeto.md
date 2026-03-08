@@ -9,7 +9,7 @@ Nome:SOS dog e marca do projeto: (sem por enquanto)
 
 
 https://github.com/user-attachments/assets/b85d6eb5-dccf-45cd-a039-7b0fdf1ee390
-#video 1 - Apresentação do projeto - Etapa 1
+- video 1 - Apresentação do projeto - Etapa 1
 
 ## Vídeo de apresentação - Etapa 05
 
