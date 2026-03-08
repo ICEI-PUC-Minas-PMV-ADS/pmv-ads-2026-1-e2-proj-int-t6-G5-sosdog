@@ -1,4 +1,4 @@
-# TÍTULO DO PROJETO
+# Plataforma de Monitoramento Georreferenciado Colaborativo
 
 `CURSO`
 Analise e Desenvolvimento de Sistemas
