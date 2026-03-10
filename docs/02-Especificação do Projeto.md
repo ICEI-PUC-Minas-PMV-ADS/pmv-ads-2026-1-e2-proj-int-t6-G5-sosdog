@@ -39,30 +39,30 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 | ID | Descrição do Requisito | Prioridade |
 | :--- | :--- | :--- |
-| **RF-001** | O sistema deve permitir que o usuário marque a localização exata de um animal via GPS, diferenciando entre animal de rua/avistado (pino amarelo) e animal perdido/dono procurando (pino vermelho). | ALTA |
-| **RF-002** | O sistema deve permitir que o usuário alterne a visualização do mapa em camadas: "Apenas animais de rua", "Apenas animais perdidos" ou "Visualização geral". | MÉDIA |
-| **RF-003** | O sistema deve permitir filtrar o mapa por estado de saúde, tempo de avistamento (ex.: últimas 2h, 24h) e porte do animal. | MÉDIA |
-| **RF-004** | O sistema deve permitir que outros usuários confirmem uma marcação existente (validação) para atestar que a informação ainda é verídica, evitando duplicatas ou trotes. | ALTA |
-| **RF-005** | O sistema deve exigir que, ao marcar um animal, o usuário selecione o estado atual dele (Saudável, Ferido, Atropelado, Fêmea com filhotes ou Cão com coleira/perdido). | ALTA |
-| **RF-006** | O sistema deve permitir o registro, no card de um animal de rua, de informações caso ele tenha recebido água, comida ou medicação por algum usuário recentemente. | MÉDIA |
-| **RF-007** | O sistema deve permitir que o usuário faça o upload de fotos para facilitar a identificação visual rápida do animal no mapa e no feed. | ALTA |
-| **RF-008** | O sistema deve permitir que o usuário consulte ocorrências de animais em situação crítica ou perdidos dentro de um raio de até 5 km da sua localização atual, em mapa ou lista. | ALTA |
-| **RF-009** | O sistema deve permitir que os usuários adicionem comentários nas marcações para atualizar o paradeiro do animal. | MÉDIA |
-| **RF-010** | O sistema deve gerar automaticamente um cartaz digital (em PDF) para animais perdidos, contendo foto, dados do dono, observações e um QR Code para o último local avistado. | MÉDIA |
-| **RF-011** | O sistema deve dedicar uma seção para informar leis de proteção animal, contatos de emergência e instruções sobre o que fazer em casos de urgência. | BAIXA |
-| **RF-012** | O sistema deve permitir que o usuário edite seus dados pessoais (nome, foto de perfil, e-mail e telefone). | ALTA |
-| **RF-013** | O sistema deve fornecer uma opção para exclusão permanente da conta e dos dados do usuário (Adequação LGPD). | ALTA |
-| **RF-014** | O sistema deve permitir que o usuário defina o raio de distância (ex.: 1km, 5km) para o recebimento de alertas de animais. | ALTA |
-| **RF-015** | O sistema deve permitir que o usuário filtre quais tipos de notificações deseja receber (perdidos, feridos ou todos). | MÉDIA |
-| **RF-016** | O sistema deve permitir ativar ou desativar notificações de interações da comunidade (validações e comentários). | BAIXA |
-| **RF-017** | O sistema deve permitir que o usuário defina a visualização padrão do mapa ao iniciar o aplicativo. | BAIXA |
-| **RF-018** | O sistema deve permitir configurar a ocultação automática de pinos antigos no mapa (ex.: mais de 7 dias). | MÉDIA |
-| **RF-019** | O sistema deve disponibilizar uma área de "Itens Salvos" para que o usuário acompanhe marcações favoritadas. | MÉDIA |
-| **RF-020** | O sistema deve conter uma central de Ajuda e Suporte, com FAQ e formulário para envio de dicas, opiniões e sugestões. | BAIXA 
-| **RF-021** | O sistema deve permitir que um novo usuário crie uma conta informando nome completo, e-mail válido e senha. | ALTA |
-| **RF-022** | O sistema deve disponibilizar a funcionalidade de "Esqueci minha senha", permitindo que o usuário redefina seu acesso através de um link ou código enviado ao e-mail cadastrado. | ALTA |
-| **RF-023** | O sistema deve permitir que o usuário encerre a sua sessão ativa (logout) no dispositivo de forma segura. | ALTA |
-| **RF-024** | O sistema deve bloquear temporariamente a conta do usuário após um número limite de tentativas de login malsucedidas (ex.: 5 tentativas), por questões de segurança. | MÉDIA ||
+| **RF-001** | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento. | ALTA |
+| **RF-002** | Alternar a visualização do mapa por camadas baseadas no status do animal.| MÉDIA |
+| **RF-003** | Filtrar os animais no mapa por estado de saúde, tempo de avistamento e porte. | MÉDIA |
+| **RF-004** | Validar marcações de outros usuários para confirmar a veracidade das informações. | ALTA |
+| **RF-005** | Exigir a seleção do estado atual do animal durante o registro de uma marcação. | ALTA |
+| **RF-006** | Registrar o fornecimento recente de cuidados básicos aos animais marcados. | MÉDIA |
+| **RF-007** | Anexar fotos para facilitar a identificação visual do animal. | ALTA |
+| **RF-008** | Consultar ocorrências de animais próximos à localização atual do usuário.| ALTA |
+| **RF-009** | Adicionar comentários nas marcações para atualizar o status do animal. | MÉDIA |
+| **RF-010** | Gerar cartaz digital de busca para animais perdidos.(PDF) | MÉDIA |
+| **RF-011** | Disponibilizar seção informativa com leis, contatos de emergência e instruções de resgate. | BAIXA |
+| **RF-012** | Editar os dados de perfil do usuário. | ALTA |
+| **RF-013** | Excluir permanentemente a conta e os dados pessoais do usuário. | ALTA |
+| **RF-014** | Configurar o raio de distância para o recebimento de alertas. | ALTA |
+| **RF-015** | Filtrar os tipos de notificações de animais que deseja receber. | MÉDIA |
+| **RF-016** | Gerenciar o recebimento de notificações de interações da comunidade. | BAIXA |
+| **RF-017** | Definir a visualização padrão do mapa ao abrir o aplicativo. | BAIXA |
+| **RF-018** | Configurar a ocultação automática de marcações antigas no mapa. | MÉDIA |
+| **RF-019** | Salvar marcações favoritas em uma área dedicada para acompanhamento. | MÉDIA |
+| **RF-020** | Disponibilizar central de ajuda e suporte ao usuário. | BAIXA 
+| **RF-021** | Cadastrar nova conta de usuário. | ALTA |
+| **RF-022** | Redefinir a senha de acesso da conta. | ALTA |
+| **RF-023** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
+| **RF-024** | Bloquear temporariamente a conta após sucessivas tentativas de login inválidas. | MÉDIA ||
 
 ### Requisitos não Funcionais
 
