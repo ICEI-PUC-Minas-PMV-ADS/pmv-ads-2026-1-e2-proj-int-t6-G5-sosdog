@@ -103,8 +103,43 @@ O diagrama abaixo ilustra as principais interações entre os diferentes perfis 
 * **Relacionamentos de Inclusão (`<<include>>`):** Processos de registro, como "Registrar animal de rua" e "Cadastrar animal perdido", exigem obrigatoriamente etapas complementares para manter a qualidade dos dados. Por isso, utilizamos *includes* para mostrar que o sistema sempre acionará o "Marcar localização GPS" e o "Upload de foto" durante essas ações.
 * **Relacionamentos de Extensão (`<<extend>>`):** Aplicamos a relação de extensão apontando de "Filtrar ocorrências" para "Monitorar ocorrências". Isso demonstra tecnicamente que a aplicação de filtros é um comportamento opcional e complementar à ação principal de monitoramento realizada pela ONG/Administrador.
 
-### 📌 Destaques da Modelagem:
+## Diagrama de Fluxo (Fluxograma Principal)
 
-* **Generalização de Atores (Herança):** Para evitar redundâncias visuais e manter o diagrama otimizado, aplicamos o conceito de herança da UML. O ator **Usuário Geral** concentra as ações comuns a todos no aplicativo (como visualizar o mapa, favoritar ocorrências e acessar a central de ajuda). Os perfis específicos (*Tutor, Voluntário, Membro da Comunidade e ONG*) herdam essas permissões básicas e possuem ligação direta apenas com suas ações exclusivas.
-* **Ator de Sistema Externo (`<<System>>`):** A **API - GPS** foi mapeada como um ator externo. O sistema depende ativamente desse serviço para capturar a localização exata no momento dos registros e para calcular o raio de busca de 5km no mapa.
-* **Relacionamentos de Inclusão (`<<include>>`):** Processos de registro, como "Registrar cão de rua" e "Cadastrar cão perdido", exigem obrigatoriamente etapas complementares para manter a qualidade dos dados. Por isso, utilizamos *includes* para mostrar que o sistema sempre acionará o "Marcar localização GPS" e o "Upload de foto" durante essas ações.
+O fluxo abaixo representa a jornada principal do usuário dentro do **Sistema SOS Dog**, desde a autenticação até as interações com o mapa e o registro de novas ocorrências.
+
+```mermaid
+graph TD
+    A([Acesso ao App SOS Dog]) --> B{Usuário Logado?}
+    
+    %% Fluxo de Autenticação
+    B -- Não --> C[Tela de Login / Cadastro]
+    C --> D{Permissão de GPS?}
+    B -- Sim --> D
+    
+    D -- Negada --> E[Aviso: O app precisa do GPS para funcionar]
+    E --> D
+    
+    D -- Concedida --> F[[Tela Principal: Mapa de Ocorrências]]
+    
+    %% Ramificações a partir da Tela Principal
+    F --> G{O que deseja fazer?}
+    
+    %% Rota 1: Interagir com o Mapa
+    G -- Explorar Mapa --> H[Aplicar Filtros / Camadas]
+    H --> I[Visualizar Detalhes da Ocorrência]
+    I --> J[Ações: Favoritar, Comentar ou Cuidar]
+    J --> F
+    
+    %% Rota 2: Registrar Ocorrência
+    G -- Registrar Ocorrência --> K{Tipo de Registro}
+    K -- Animal de Rua --> L[Preencher Dados Básicos]
+    K -- Animal Perdido --> L
+    L --> M[Upload de Foto]
+    M --> N[Capturar Localização GPS]
+    N --> O[Informar Estado do Animal]
+    O --> P((Salvar Ocorrência))
+    P --> F
+    
+    %% Rota 3: Outros
+    G -- Acessar Menu --> Q[Configurações, Perfil ou Ajuda]
+    Q --> F
