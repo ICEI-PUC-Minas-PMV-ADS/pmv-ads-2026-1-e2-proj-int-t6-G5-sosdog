@@ -36,6 +36,18 @@ Não deixe de enumerar os casos de teste de forma sequencial e de garantir que o
 | Objetivo do Teste | Verificar se um usuário consegue confirmar que um animal ainda está no local indicado por outra pessoa. |
 | Passos | - Realizar login no sistema <br> - Clicar em um marcador existente no mapa criado por outro usuário <br> - Na janela de detalhes, clicar no botão "Confirmar Presença do Animal" <br> - Inserir um breve comentário (opcional) e confirmar |
 | Critério de Êxito | - O sistema registra a validação, atualizando o "Tempo de avistamento" do animal e aumentando a confiabilidade daquela marcação no mapa. |
+| | |
+| **Caso de Teste** | **CT06 – Tentativa de registro sem permissão de GPS** |
+| Requisito Associado | RNF-005 - O aplicativo/plataforma web necessita de permissão ativa de acesso ao GPS do dispositivo do usuário para funcionar. |
+| Objetivo do Teste | Verificar o comportamento do sistema quando o usuário tenta usar uma funcionalidade baseada em localização, mas nega o acesso ao GPS. |
+| Passos | - Realizar login no sistema <br> - Clicar no botão "Registrar Ocorrência" <br> - Quando o navegador/celular exibir o pop-up pedindo permissão de Localização, clicar em "Bloquear" ou "Não Permitir" |
+| Critério de Êxito | - O sistema deve interromper o fluxo de registro e exibir um aviso claro na tela (ex: "O uso do GPS é obrigatório para registrar um animal. Por favor, habilite nas configurações."), impedindo a conclusão do cadastro sem a localização exata. |
+| | |
+| **Caso de Teste** | **CT07 – Bloqueio de segurança por falha no login** |
+| Requisito Associado | RF-024 - Bloquear temporariamente a conta após sucessivas tentativas de login inválidas. |
+| Objetivo do Teste | Validar se o mecanismo de segurança contra ataques de força bruta está funcionando corretamente. |
+| Passos | - Acessar a tela de Login do SOS Dog <br> - Inserir um e-mail válido que já possua cadastro <br> - Inserir uma senha incorreta <br> - Clicar em "Entrar" <br> - Repetir o processo inserindo a senha incorreta por 5 vezes consecutivas |
+| Critério de Êxito | - Na quinta tentativa falha, o sistema deve exibir uma mensagem de "Conta temporariamente bloqueada por excesso de tentativas" e desabilitar o botão de login para aquele usuário por um tempo determinado. |
 
 > **Links Úteis**:
 > - [IBM - Criação e Geração de Planos de Teste](https://www.ibm.com/developerworks/br/local/rational/criacao_geracao_planos_testes_software/index.html)
