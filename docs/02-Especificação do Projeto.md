@@ -94,7 +94,14 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 
 O diagrama abaixo ilustra as principais interações entre os diferentes perfis de usuários e o **Sistema SOS Dog**, mapeando visualmente as funcionalidades descritas na nossa tabela de Requisitos Funcionais.
 
-<img width="406" height="754" alt="Diagrama de Casos de Uso" src="https://github.com/user-attachments/assets/d7ac6590-47d0-44a7-a5a5-b0b26e9deedf" />
+<img width="100%" alt="Diagrama de Casos de Uso" src="https://github.com/user-attachments/assets/7380327c-76da-406d-9849-d6a41579a0d7" />
+
+### 📌 Destaques da Modelagem:
+
+* **Generalização de Atores (Herança):** Para evitar redundâncias visuais e manter o diagrama otimizado, aplicamos o conceito de herança da UML. O ator **Usuário Geral** concentra as ações comuns a todos no aplicativo (como realizar login, visualizar o mapa, favoritar ocorrências e acessar a central de ajuda). Os perfis específicos (*Tutor, Voluntário, Membro da Comunidade e ONG*) herdam essas permissões básicas e possuem ligação direta apenas com suas ações exclusivas.
+* **Ator de Sistema Externo (`<<System>>`):** A **API - GPS** foi mapeada como um ator externo. O sistema depende ativamente desse serviço para capturar a localização exata no momento dos registros e para calcular o raio de busca de 5km no mapa.
+* **Relacionamentos de Inclusão (`<<include>>`):** Processos de registro, como "Registrar animal de rua" e "Cadastrar animal perdido", exigem obrigatoriamente etapas complementares para manter a qualidade dos dados. Por isso, utilizamos *includes* para mostrar que o sistema sempre acionará o "Marcar localização GPS" e o "Upload de foto" durante essas ações.
+* **Relacionamentos de Extensão (`<<extend>>`):** Aplicamos a relação de extensão apontando de "Filtrar ocorrências" para "Monitorar ocorrências". Isso demonstra tecnicamente que a aplicação de filtros é um comportamento opcional e complementar à ação principal de monitoramento realizada pela ONG/Administrador.
 
 ### 📌 Destaques da Modelagem:
 
