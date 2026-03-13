@@ -44,6 +44,15 @@ No registro, o usuário pode fazer o cadastro com e-mail, telefone e selecionar 
 
 <img width="1897" height="905" alt="Tela_de_Cadastro" src="https://github.com/user-attachments/assets/f576200b-0ea1-4f15-bb0d-349a6ce776e8" />
 
+TELA DE PERFIL
+
+Interface intuitiva para resgate animal: une monitoramento, feed de casos e geolocalização. Foca em urgências, adoção e cuidados colaborativos, facilitando a vida de ONGs e voluntários da causa.
+
+<img width="1586" height="909" alt="Tela_de_perfil" src="https://github.com/user-attachments/assets/2f87e5af-24f1-4200-81e6-2219c846db82" />
+
+
+
+
 
 > **Links Úteis**:
 > - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
