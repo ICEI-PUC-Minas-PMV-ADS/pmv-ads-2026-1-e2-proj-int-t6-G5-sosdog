@@ -32,13 +32,19 @@ TELA PRINCIPAL
 Plataforma de resgate animal: gerencia casos, buscas e adoções com mapas, galeria e suporte.
 <img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/4e03dcde-f004-456c-98b5-9e2d707af990" />
 
-TELA DE LOGIN/CADASTRO
+TELA DE LOGIN
 
 interface com campos de usuário e senha, opções para lembrar login e recuperar acesso, além de um link para cadastro. 
 
 <img width="1164" height="643" alt="Tela_de_Login" src="https://github.com/user-attachments/assets/a4821b20-1dee-40fa-ad9f-bdd6b1e40d72" />
 
- 
+TELA DE CADASTRO
+
+No registro, o usuário pode fazer o cadastro com e-mail, telefone e selecionar seu perfil entre: adotante, voluntário, apoiador ou representante de instituição.
+
+<img width="1897" height="905" alt="Tela_de_Cadastro" src="https://github.com/user-attachments/assets/f576200b-0ea1-4f15-bb0d-349a6ce776e8" />
+
+
 > **Links Úteis**:
 > - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
 > - [Ferramentas de Wireframes](https://rockcontent.com/blog/wireframes/)
