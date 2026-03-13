@@ -25,9 +25,6 @@ As referências abaixo irão auxiliá-lo na geração do artefato “Diagramas d
 ![Exemplo de Wireframe](img/wireframe-example.png)
 
 Os wireframes são protótipos utilizados no design de interfaces para representar a estrutura de um site e o relacionamento entre suas páginas. Eles funcionam como ilustrações do layout e da disposição dos elementos essenciais da interface.
-<img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/224609f4-ba60-48e8-a0f4-be757d74319d" />
-<img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/224609f4-ba60-48e8-a0f4-be757d74319d" />
-
 Nesta seção, é FUNDAMENTAL indicar, para cada tela/wireframe proposto, quais requisitos do projeto estão sendo contemplados por aquela tela.
 
 TELA PRINCIPAL
