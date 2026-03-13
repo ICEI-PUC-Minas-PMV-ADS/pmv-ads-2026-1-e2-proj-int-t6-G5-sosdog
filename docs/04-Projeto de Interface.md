@@ -28,6 +28,7 @@ Os wireframes são protótipos utilizados no design de interfaces para represent
 Nesta seção, é FUNDAMENTAL indicar, para cada tela/wireframe proposto, quais requisitos do projeto estão sendo contemplados por aquela tela.
 
 TELA PRINCIPAL
+Plataforma de resgate animal: gerencia casos, buscas e adoções com mapas, galeria e suporte.
 <img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/4e03dcde-f004-456c-98b5-9e2d707af990" />
 
 
