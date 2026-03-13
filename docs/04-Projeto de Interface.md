@@ -32,9 +32,7 @@ Nesta seção, é FUNDAMENTAL indicar, para cada tela/wireframe proposto, quais 
 
 TELA PRINCIPAL
 <img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/4e03dcde-f004-456c-98b5-9e2d707af990" />
-<img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/4e03dcde-f004-456c-98b5-9e2d707af990" />
-![Uploading Tela_de_principal.png…]()
-![Uploading Tela_de_principal.png…]()
+
 
  
 > **Links Úteis**:
