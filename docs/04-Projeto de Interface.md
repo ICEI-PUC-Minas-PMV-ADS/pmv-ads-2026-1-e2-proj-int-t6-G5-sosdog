@@ -54,6 +54,8 @@ Interface intuitiva para resgate animal: une monitoramento, feed de casos e geol
 
 TELA DE CONFIGURAÇÕES
 
+A página de Configurações é a central de controle do Pet SOS. Nela, o usuário personaliza alertas de resgate, ajusta o mapa, edita seu perfil e gerencia sua privacidade (LGPD).
+
 ![LOGIN](../src/img/Tela_de_configurações.png)
 
 
