@@ -40,6 +40,7 @@ interface com campos de usuário e senha, opções para lembrar login e recupera
 
 TELA DE CADASTRO
 
+![LOGIN](../src/img/)
 No registro, o usuário pode fazer o cadastro com e-mail, telefone e selecionar seu perfil entre: adotante, voluntário, apoiador ou representante de instituição.
 
 <img width="1897" height="905" alt="Tela_de_Cadastro" src="https://github.com/user-attachments/assets/f576200b-0ea1-4f15-bb0d-349a6ce776e8" />
