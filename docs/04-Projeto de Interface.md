@@ -53,6 +53,8 @@ Interface intuitiva para resgate animal: une monitoramento, feed de casos e geol
 
 TELA DE CONFIGURAÇÕES
 
+![LOGIN](../documentos/img/Tela_de_configurações.png)
+
 
 
 
