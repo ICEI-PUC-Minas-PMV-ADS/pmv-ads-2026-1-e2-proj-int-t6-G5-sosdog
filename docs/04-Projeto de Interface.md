@@ -56,6 +56,10 @@ TELA DE CONFIGURAÇÕES
 
 
 
+
+
+
+
 > **Links Úteis**:
 > - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
 > - [Ferramentas de Wireframes](https://rockcontent.com/blog/wireframes/)
