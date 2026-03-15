@@ -51,6 +51,8 @@ Interface intuitiva para resgate animal: une monitoramento, feed de casos e geol
 
 <img width="1286" height="727" alt="Tela_de_perfil" src="https://github.com/user-attachments/assets/9df8255d-a71b-46ec-ae30-03883d6e2a55" />
 
+TELA DE CONFIGURAÇÕES
+
 
 
 > **Links Úteis**:
