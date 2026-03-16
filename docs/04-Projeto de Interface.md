@@ -49,8 +49,9 @@ TELA DE PERFIL
 
 Interface intuitiva para resgate animal: une monitoramento, feed de casos e geolocalização. Foca em urgências, adoção e cuidados colaborativos, facilitando a vida de ONGs e voluntários da causa.
 
+<img width="1183" height="661" alt="Tela_de_Usuário" src="https://github.com/user-attachments/assets/e79dda6f-df1a-445f-8eae-0c40018c740c" />
 
-<img width="1286" height="727" alt="Tela_de_perfil" src="https://github.com/user-attachments/assets/9df8255d-a71b-46ec-ae30-03883d6e2a55" />
+
 
 TELA DE CONFIGURAÇÕES
 
