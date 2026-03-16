@@ -67,14 +67,14 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 ### Requisitos não Funcionais
 
 | ID | Descrição do Requisito | Prioridade |
-|---|---|---|
-| RNF-001 | A aplicação deve ser responsiva e otimizada primordialmente para dispositivos móveis (Mobile First). | ALTA |
-| RNF-002 | A aplicação deve atualizar o mapa e processar buscas por ocorrências (raio de 5 km) em no máximo 3s. | ALTA |
-| RNF-003 | O sistema deve estar disponível 24 horas por dia, 7 dias por semana, devido à imprevisibilidade dos resgates. | ALTA |
-| RNF-004 | O sistema deve proteger os dados pessoais dos usuários (telefone/endereço) de acordo com a LGPD, exibindo-os apenas mediante autorização. | ALTA |
-| RNF-005 | O aplicativo/plataforma web necessita de permissão ativa de acesso ao GPS do dispositivo do usuário para funcionar. | ALTA |
-| RNF-006 | O sistema depende da abertura do aplicativo pelo usuário para atualizar e exibir as notificações internas de "matches" e alertas. | MÉDIA |
-| RNF-007 | A aplicação web deve ser totalmente compatível e funcional nas versões mais recentes dos principais navegadores mobile e desktop (Google Chrome, Safari e Mozilla Firefox). | ALTA |
+| :--- | :--- | :--- |
+| **RNF-001** | Garantir responsividade e otimização com foco primordial em dispositivos móveis (*Mobile First*). | ALTA |
+| **RNF-002** | Processar buscas e atualizar o mapa (raio de 5 km) em no máximo 3 segundos. | ALTA |
+| **RNF-003** | Manter alta disponibilidade (24/7) para suportar a imprevisibilidade dos resgates. | ALTA |
+| **RNF-004** | Proteger dados sensíveis em conformidade com a LGPD, exigindo autorização explícita para exibição de contatos. | ALTA |
+| **RNF-005** | Exigir permissão ativa de acesso ao GPS do dispositivo para a liberação das funções de mapa. | ALTA |
+| **RNF-006** | Sincronizar e exibir notificações internas apenas mediante a abertura do aplicativo pelo usuário. | MÉDIA |
+| **RNF-007** | Garantir compatibilidade total com as versões mais recentes dos principais navegadores (Chrome, Safari e Firefox). | ALTA |
 
 ## Restrições
 
