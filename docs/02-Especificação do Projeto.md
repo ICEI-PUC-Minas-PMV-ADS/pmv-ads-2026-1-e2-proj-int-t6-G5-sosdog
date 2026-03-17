@@ -118,3 +118,49 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
 * **Exploração do Mapa:** Na tela principal, o usuário pode explorar as ocorrências ao redor, aplicar filtros, visualizar detalhes específicos de cada animal e interagir com as publicações (favoritar ou comentar).
 * **Registro de Ocorrências:** Ao optar por registrar um animal (seja de rua ou perdido), o fluxo guia o usuário pelo preenchimento de dados descritivos, upload de foto, captura automática da localização via GPS e informação sobre o estado de saúde, finalizando com o salvamento no sistema.
 * **Menu Secundário:** Acesso às opções de configurações da conta e central de ajuda do aplicativo.
+
+* ### Modelo Entidade Relacionamento
+
+  ```mermaid
+   erDiagram
+    USUARIO ||--o{ OCORRENCIA : "Registra"
+    USUARIO ||--o{ COMENTARIO : "Escreve"
+    USUARIO }|--o{ FAVORITO : "Salva"
+    OCORRENCIA ||--o{ COMENTARIO : "Recebe"
+    OCORRENCIA }|--o{ FAVORITO : "Eh Favoritado"
+
+    USUARIO {
+        int ID_Usuario PK
+        string Nome
+        string Email
+        string Senha
+        string Foto_Perfil
+        datetime Data_Cadastro
+    }
+
+    OCORRENCIA {
+        int ID_Ocorrencia PK
+        string Tipo
+        string Status
+        string Foto_Animal
+        string Descricao
+        float Latitude
+        float Longitude
+        datetime Data_Registro
+        int ID_Usuario FK
+    }
+
+    COMENTARIO {
+        int ID_Comentario PK
+        string Texto
+        datetime Data_hora
+        int ID_Usuario FK
+        int ID_Ocorrencia FK
+    }
+
+    FAVORITO {
+        int ID_Favorito PK
+        int ID_Usuario FK
+        int ID_Ocorrencia FK
+    }
+  ```
