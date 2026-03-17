@@ -164,3 +164,22 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
         int ID_Ocorrencia FK
     }
   ```
+  Entidades Principais:
+Usuário: Armazena as informações de perfil, credenciais de acesso e data de registro de quem utiliza a plataforma.
+
+Ocorrência: O núcleo do sistema. Registra os detalhes do animal (foto, descrição), o status (aberto/resolvido) e a geolocalização (latitude/longitude) para facilitar o resgate ou encontro.
+
+Comentário: Permite a interação social e a troca de informações em tempo real sobre uma ocorrência específica.
+
+Favorito: Uma entidade de associação que permite aos usuários salvarem ocorrências de seu interesse para acompanhamento rápido.
+
+Regras de Negócio e Relacionamentos:
+Um para Muitos (1..N): * Um Usuário pode registrar várias Ocorrências, mas cada ocorrência pertence a apenas um autor.
+
+Um Usuário pode escrever diversos Comentários.
+
+Uma Ocorrência pode receber múltiplos Comentários de diferentes pessoas.
+
+Muitos para Muitos (N..N):
+
+A relação de Favoritos conecta Usuários e Ocorrências, permitindo que vários usuários favoritem a mesma postagem e que um único usuário tenha uma lista de várias postagens favoritas.
