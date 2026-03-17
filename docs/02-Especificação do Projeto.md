@@ -103,43 +103,18 @@ O diagrama abaixo ilustra as principais interações entre os diferentes perfis 
 * **Relacionamentos de Inclusão (`<<include>>`):** Processos de registro, como "Registrar animal de rua" e "Cadastrar animal perdido", exigem obrigatoriamente etapas complementares para manter a qualidade dos dados. Por isso, utilizamos *includes* para mostrar que o sistema sempre acionará o "Marcar localização GPS" e o "Upload de foto" durante essas ações.
 * **Relacionamentos de Extensão (`<<extend>>`):** Aplicamos a relação de extensão apontando de "Filtrar ocorrências" para "Monitorar ocorrências". Isso demonstra tecnicamente que a aplicação de filtros é um comportamento opcional e complementar à ação principal de monitoramento realizada pela ONG/Administrador.
 
+
 ## Diagrama de Fluxo (Fluxograma Principal)
 
 O fluxo abaixo representa a jornada principal do usuário dentro do **Sistema SOS Dog**, desde a autenticação até as interações com o mapa e o registro de novas ocorrências.
 
-```mermaid
-graph TD
-    A([Acesso ao App SOS Dog]) --> B{Usuário Logado?}
-    
-    %% Fluxo de Autenticação
-    B -- Não --> C[Tela de Login / Cadastro]
-    C --> D{Permissão de GPS?}
-    B -- Sim --> D
-    
-    D -- Negada --> E[Aviso: O app precisa do GPS para funcionar]
-    E --> D
-    
-    D -- Concedida --> F[[Tela Principal: Mapa de Ocorrências]]
-    
-    %% Ramificações a partir da Tela Principal
-    F --> G{O que deseja fazer?}
-    
-    %% Rota 1: Interagir com o Mapa
-    G -- Explorar Mapa --> H[Aplicar Filtros / Camadas]
-    H --> I[Visualizar Detalhes da Ocorrência]
-    I --> J[Ações: Favoritar, Comentar ou Cuidar]
-    J --> F
-    
-    %% Rota 2: Registrar Ocorrência
-    G -- Registrar Ocorrência --> K{Tipo de Registro}
-    K -- Animal de Rua --> L[Preencher Dados Básicos]
-    K -- Animal Perdido --> L
-    L --> M[Upload de Foto]
-    M --> N[Capturar Localização GPS]
-    N --> O[Informar Estado do Animal]
-    O --> P((Salvar Ocorrência))
-    P --> F
-    
-    %% Rota 3: Outros
-    G -- Acessar Menu --> Q[Configurações, Perfil ou Ajuda]
-    Q --> F
+<img width="100%" alt="Diagrama de Fluxo SOS Dog" src="https://github.com/user-attachments/assets/80c2f34e-749c-4ac6-95f0-1753eac79fb6" />
+
+### Entendendo o Fluxo
+
+O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divididos nas seguintes etapas principais:
+
+* **Autenticação e Permissões:** O fluxo inicia validando o acesso do usuário (Login/Cadastro) e verificando a permissão de uso do GPS. Como o sistema é baseado em geolocalização, a concessão do GPS é obrigatória para acessar a Tela Principal (Mapa).
+* **Exploração do Mapa:** Na tela principal, o usuário pode explorar as ocorrências ao redor, aplicar filtros, visualizar detalhes específicos de cada animal e interagir com as publicações (favoritar ou comentar).
+* **Registro de Ocorrências:** Ao optar por registrar um animal (seja de rua ou perdido), o fluxo guia o usuário pelo preenchimento de dados descritivos, upload de foto, captura automática da localização via GPS e informação sobre o estado de saúde, finalizando com o salvamento no sistema.
+* **Menu Secundário:** Acesso às opções de configurações da conta e central de ajuda do aplicativo.
