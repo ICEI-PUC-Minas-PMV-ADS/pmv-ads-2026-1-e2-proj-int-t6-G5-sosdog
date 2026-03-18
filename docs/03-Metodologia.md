@@ -3,7 +3,9 @@
 
 <span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md"> Documentação de Especificação</a></span>
 
-Descreva aqui a metodologia de trabalho do grupo para atacar o problema. Definições sobre os ambiente de trabalho utilizados pela  equipe para desenvolver o projeto. Abrange a relação de ambientes utilizados, a estrutura para gestão do código fonte, além da definição do processo e ferramenta através dos quais a equipe se organiza (Gestão de Times).
+Nossa equipe adota uma abordagem baseada em metodologias ágeis, combinando práticas de Scrum e Kanban para organizar as atividades do projeto. Essa escolha nos permite dividir o trabalho em etapas, acompanhar o progresso das tarefas e manter a colaboração entre os integrantes ao longo do desenvolvimento.
+
+O gerenciamento das atividades é realizado por meio de ferramentas online que nos permitem acompanhar o andamento das tarefas, registrar responsabilidades e visualizar o progresso do projeto. Dessa forma, mantemos o fluxo de trabalho organizado e garantimos alinhamento entre os membros da equipe durante as diferentes etapas do projeto.
 
 ## Controle de Versão
 
@@ -39,39 +41,35 @@ Discuta como a configuração do projeto foi feita na ferramenta de versionament
 
 ### Divisão de Papéis
 
-Apresente a divisão de papéis entre os membros do grupo.
+A organização do trabalho segue uma estrutura inspirada no Scrum, na qual um integrante do grupo atua como Scrum Master, sendo responsável por organizar as tarefas de cada etapa do projeto.
 
-> **Links Úteis**:
-> - [11 Passos Essenciais para Implantar Scrum no seu 
-> Projeto](https://mindmaster.com.br/scrum-11-passos/)
-> - [Scrum em 9 minutos](https://www.youtube.com/watch?v=XfvQWnRgxG0)
+As atividades são registradas no quadro de acompanhamento do projeto e cada integrante seleciona as tarefas pelas quais ficará responsável. Durante o desenvolvimento, mantemos comunicação constante para alinhar as entregas, esclarecer dúvidas e garantir que as atividades estejam de acordo com os objetivos definidos pelo grupo.
 
 ### Processo
 
-Coloque  informações sobre detalhes da implementação do Scrum seguido pelo grupo. O grupo poderá fazer uso de ferramentas on-line para acompanhar o andamento do projeto, a execução das tarefas e o status de desenvolvimento da solução.
- 
-> **Links Úteis**:
-> - [Project management, made simple](https://github.com/features/project-management/)
-> - [Sobre quadros de projeto](https://docs.github.com/pt/github/managing-your-work-on-github/about-project-boards)
-> - [Como criar Backlogs no Github](https://www.youtube.com/watch?v=RXEy6CFu9Hk)
-> - [Tutorial Slack](https://slack.com/intl/en-br/)
+Para acompanhar o andamento das tarefas, utilizamos o GitHub Projects, que funciona como um quadro de organização baseado no método Kanban. As atividades são registradas como issues e organizadas nas seguintes etapas do fluxo de trabalho:
+
+- `Backlog`: tarefas planejadas para o projeto
+- `Ready`: tarefas prontas para serem iniciadas
+- `In Progress`: tarefas em desenvolvimento
+- `In Review`: tarefas em revisão pelo grupo
+- `Done`: tarefas concluídas
+
+Cada integrante escolhe as tarefas disponíveis no quadro e atualiza o status conforme o andamento do trabalho. Esse modelo nos permite acompanhar o progresso do projeto de forma visual e facilita a organização das atividades da equipe.
+
+A comunicação entre os membros ocorre principalmente por meio do WhatsApp, utilizado para troca rápida de informações no dia a dia. Para reuniões de alinhamento e discussões mais detalhadas sobre o andamento do projeto, utilizamos o Microsoft Teams.
 
 ### Ferramentas
 
 As ferramentas empregadas no projeto são:
 
-- Editor de código.
-- Ferramentas de comunicação
-- Ferramentas de desenho de tela (_wireframing_)
+- `Visual Studio Code`: editor de código utilizado para desenvolvimento e edição dos arquivos do projeto.
+- `Git`: sistema de controle de versão utilizado para gerenciar as alterações no código.
+- `GitHub`: plataforma utilizada para hospedagem do repositório e gerenciamento do projeto.
+- `GitHub Projects`: ferramenta utilizada para organização e acompanhamento das tarefas do projeto.
+- `Figma`: ferramenta utilizada para criação dos protótipos e design das interfaces do sistema.
+- `WhatsApp`: utilizado para comunicação rápida entre os integrantes da equipe no dia a dia.
+- `Microsoft Teams`: utilizado para reuniões e alinhamentos do grupo.
+- 
+Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvimento e a colaboração entre os membros da equipe. O Visual Studio Code foi adotado como editor de código por ser leve, amplamente utilizado no desenvolvimento web e possuir boa integração com o Git, utilizado para controle de versão do projeto. O GitHub foi selecionado para hospedagem do repositório e gerenciamento das tarefas, permitindo integrar o controle de versão com o acompanhamento das atividades por meio do GitHub Projects. Para o desenvolvimento das interfaces e protótipos do sistema utilizamos o Figma, que facilita a criação e o compartilhamento de telas entre os membros do grupo. Já para comunicação e alinhamento das atividades utilizamos WhatsApp no dia a dia e Microsoft Teams para reuniões e discussões mais detalhadas do projeto.
 
-O editor de código foi escolhido porque ele possui uma integração com o
-sistema de versão. As ferramentas de comunicação utilizadas possuem
-integração semelhante e por isso foram selecionadas. Por fim, para criar
-diagramas utilizamos essa ferramenta por melhor captar as
-necessidades da nossa solução.
-
-Liste quais ferramentas foram empregadas no desenvolvimento do projeto, justificando a escolha delas, sempre que possível.
- 
-> **Possíveis Ferramentas que auxiliarão no gerenciamento**: 
-> - [Slack](https://slack.com/)
-> - [Github](https://github.com/)
