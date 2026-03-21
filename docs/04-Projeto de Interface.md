@@ -30,7 +30,8 @@ Nesta seção, é FUNDAMENTAL indicar, para cada tela/wireframe proposto, quais 
 TELA PRINCIPAL
 
 Plataforma de resgate animal: gerencia casos, buscas e adoções com mapas, galeria e suporte.
-<img width="1449" height="803" alt="Tela_de_principal" src="https://github.com/user-attachments/assets/4e03dcde-f004-456c-98b5-9e2d707af990" />
+<img width="1545" height="874" alt="Tela_Principal" src="https://github.com/user-attachments/assets/25aba538-45bc-45cb-9bf7-09b5899b0814" />
+
 
 TELA DE LOGIN
 
