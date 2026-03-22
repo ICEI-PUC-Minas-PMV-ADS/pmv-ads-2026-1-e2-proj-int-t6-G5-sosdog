@@ -54,7 +54,21 @@ header {
     gap: 15px;
 }
 
-.logo-box { background-color: rgba(255,255,255, 0.1); border-radius: 10px; width: 90px; height: 65px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+
+.logo-box { 
+   
+    background-image: url('../img/sua-imagem-aqui.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px; 
+    width: 90px; 
+    height: 65px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    flex-shrink: 0; 
+}
 .modal-logo { height: 50px; width: auto; object-fit: contain; }
 
 .nav-menu { display: flex; gap: 30px; justify-content: center; }
@@ -220,7 +234,25 @@ header {
 
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; }
 .modal-overlay.active { display: flex; }
-.modal-content { background: #fff; padding: 40px; border-radius: 16px; width: 90%; max-width: 500px; position: relative; text-align: center; max-height: 95vh; overflow-y: auto; color: var(--text-dark);}
+
+
+.modal-content { 
+    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('../img/sua-imagem-login.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 40px; 
+    border-radius: 16px; 
+    width: 90%; 
+    max-width: 500px; 
+    position: relative; 
+    text-align: center; 
+    max-height: 95vh; 
+    overflow-y: auto; 
+    color: var(--text-dark);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
 .close-btn { position: absolute; top: 15px; right: 25px; font-size: 32px; cursor: pointer; color: #666; }
 .close-btn:hover { color: #d94848; }
 .modal-content h2 { font-size: 24px; margin-bottom: 20px; color: var(--header-bg);}
