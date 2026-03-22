@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Adoção e Resgate</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/tela_perfil_usuário.css">
+</head>
+
+<body>
+
+    <header class="top-header">
+        <div class="logo">
+            <i class="fa-solid fa-paw fa-3x" style="color: #c94c4c;"></i>
+        </div>
+        <nav class="main-nav">
+            <a href="#mapa"><i class="fa-solid fa-location-dot"></i> Mapa dos Casos</a>
+            <a href="#feed"><i class="fa-solid fa-folder-open"></i> Feed de Casos</a>
+        </nav>
+        <div class="user-menu">
+            <button class="btn-home" onclick="window.location.href='../html/home.html'"><i class="fa-solid fa-house"></i> HOME</button>
+            
+            <div class="user-profile">
+                <img src="../img/Maria.jpg" alt="Avatar">
+                <div class="user-info">
+                    <strong>Sandra_SOS</strong>
+                    <span>@Sandra_SOS</span>
+                    <div class="user-actions">
+                        <small style="cursor:pointer;" onclick="window.location.href='../html/EditarPerfil.html'"><i class="fa-solid fa-pen"></i> Editar Perfil</small>
+                        <small style="cursor:pointer;" onclick="fazerLogoutGeral()"><i class="fa-solid fa-right-from-bracket"></i> Sair</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+
+        <aside class="left-sidebar">
+            <div class="cases-list">
+                <div class="case-card">
+                    <img src="../img/labrador.png" alt="Cachorro">
+                    <div class="case-details">
+                        <div class="case-header">
+                            <span>Id: 0000x001</span>
+                            <span class="badge badge-green">Saudável</span>
+                        </div>
+                        <p><strong>Local:</strong> Parque Central</p>
+                        <p><strong>Status:</strong> Saudável - Médio - Macho</p>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <img src="../img/amoraa.jpg" alt="Cachorro">
+                    <div class="case-details">
+                        <div class="case-header">
+                            <span>Id: 0000x002</span>
+                            <span class="badge badge-green">Saudável</span>
+                        </div>
+                        <p><strong>Local:</strong> Parque Central</p>
+                        <p><strong>Status:</strong> Saudável - Médio - Macho</p>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <img src="../img/closeup-shot.jpg" alt="Cachorro">
+                    <div class="case-details">
+                        <div class="case-header">
+                            <span>Id: 0000x003</span>
+                            <span class="badge badge-green">Saudável</span>
+                        </div>
+                        <p><strong>Local:</strong> Parque Central</p>
+                        <p><strong>Status:</strong> Saudável - Médio - Macho</p>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <img src="../img/carameloselfie.jpg" alt="Cachorro">
+                    <div class="case-details">
+                        <div class="case-header">
+                            <span>Id: 0000x004</span>
+                            <span class="badge badge-green">Saudável</span>
+                        </div>
+                        <p><strong>Local:</strong> Parque Central</p>
+                        <p><strong>Status:</strong> Saudável - Médio - Macho</p>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <img src="../img/caramelo.jpeg" alt="Cachorro">
+                    <div class="case-details">
+                        <div class="case-header">
+                            <span>Id: 0000x005</span>
+                            <span class="badge badge-green">Saudável</span>
+                        </div>
+                        <p><strong>Local:</strong> Parque Central</p>
+                        <p><strong>Status:</strong> Saudável - Médio - Macho</p>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="sidebar-buttons">
+                <button class="btn-orange" onclick="alert('Página de Urgência em desenvolvimento!')">Urgente <i class="fa-solid fa-user-clock"></i></button>
+                <button class="btn-orange" onclick="alert('Formulário de Reporte em desenvolvimento!')">Reportar Cachorro <i class="fa-solid fa-pen-to-square"></i></button>
+            </div>
+        </aside>
+
+        <section class="main-content">
+            <div class="feed-header">
+                <h2>feed de notícias</h2>
+                
+            </div>
+
+            <div class="swiper swiper-feed">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-dog card-icon"></i>
+                            <img src="../img/cute-abandoned.jpg" alt="Cachorro">
+                            <h3>ID do animal</h3>
+                            <div class="tags">
+                                <span>Macho</span><span>Pelo Médio</span><span>Pequeno</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Cachorro muito dócil precisa de um lar</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-cat card-icon"></i>
+                            <img src="../img/caramelo.jpg" alt="Gato">
+                            <h3>ID do animal</h3>
+                            <div class="tags">
+                                <span>Macho</span><span>Pelo Cinza</span><span>Pequeno</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Gatinho perdido perto da padaria pandele 3 aninhos.</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-dog card-icon"></i>
+                            <img src="../img/caramelo.jpeg" alt="Cachorro">
+                            <h3>Cachorro Resgatado</h3>
+                            <div class="tags">
+                                <span>Fêmea</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Muito brincalhona e adora crianças. Precisa de espaço.</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-dog card-icon"></i>
+                            <img src="../img/amoraa.jpg" alt="Cachorro">
+                            <h3>ID do animal 04</h3>
+                            <div class="tags">
+                                <span>Macho</span><span>Pelo Médio</span><span>Pequeno</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Cachorro muito dócil precisa de um lar</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-cat card-icon"></i>
+                            <img src="../img/caramelosoridente.jpeg" alt="Gato">
+                            <h3>ID do animal 05</h3>
+                            <div class="tags">
+                                <span>Macho</span><span>Pelo Cinza</span><span>Pequeno</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Gatinho perdido perto da padaria pandele 3 aninhos.</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-dog card-icon"></i>
+                            <img src="../img/billy.jpg.png" alt="Cachorro">
+                            <h3>Cachorro Resgatado 06</h3>
+                            <div class="tags">
+                                <span>Fêmea</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Muito brincalhona e adora crianças. Precisa de espaço.</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-dog card-icon"></i>
+                            <img src="../img/white-dog.jpg" alt="Cachorro">
+                            <h3>ID do animal 07</h3>
+                            <div class="tags">
+                                <span>Macho</span><span>Pelo Médio</span><span>Pequeno</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Cachorro muito dócil precisa de um lar</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-cat card-icon"></i>
+                            <img src="../img/pug-dog.jpg" alt="Gato">
+                            <h3>ID do animal 08</h3>
+                            <div class="tags">
+                                <span>Macho</span><span>Pelo Cinza</span><span>Pequeno</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Gatinho perdido perto da padaria pandele 3 aninhos.</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="feed-card">
+                            <i class="fa-solid fa-dog card-icon"></i>
+                            <img src="../img/carameloselfie.jpg" alt="Cachorro">
+                            <h3>Cachorro Resgatado 09</h3>
+                            <div class="tags">
+                                <span>Fêmea</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
+                            </div>
+                            <div class="observations">
+                                <strong>Observações:</strong>
+                                <p>Muito brincalhona e adora crianças. Precisa de espaço.</p>
+                            </div>
+                            <div class="card-actions">
+                                <i class="fa-solid fa-share" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-heart" style="cursor: pointer;"></i>
+                                <i class="fa-regular fa-bookmark" style="cursor: pointer;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-button-prev feed-prev"></div>
+                <div class="swiper-button-next feed-next"></div>
+            </div>
+
+            <div class="lost-pets-section">
+                <div class="swiper swiper-lost">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/bull-terrier.jpg" alt="Zeus">
+                            <p>Zeus</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/boxer-dog.jpg" alt="Luke">
+                            <p>Luke</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/angle-dog-looking.jpg" alt="Café">
+                            <p>Café</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/ussell-terrier.jpg" alt="Totó">
+                            <p>Totó</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/dogmarrom.jpg" alt="Bolinha">
+                            <p>Bolinha</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/cute-dog-puppy.jpg" alt="Mia">
+                            <p>Mia</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/pug-dog.jpg" alt="Thor">
+                            <p>Thor</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="../img/boxer-dog.jpg" alt="Mel">
+                            <p>Mel</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Nina">
+                            <p>Nina</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Bidu">
+                            <p>Bidu</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Fred">
+                            <p>Fred</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Luna">
+                            <p>Luna</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Chico">
+                            <p>Chico</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Bob">
+                            <p>Bob</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Simba">
+                            <p>Simba</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Lola">
+                            <p>Lola</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Amora">
+                            <p>Amora</p>
+                        </div>
+                        <div class="swiper-slide lost-card">
+                            <span class="lost-tag">Procura-se</span>
+                            <img src="https://placehold.co/80x80" alt="Milo">
+                            <p>Milo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="swiper-button-prev lost-prev"></div>
+                    <div class="swiper-button-next lost-next"></div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="right-sidebar">
+            <div class="bio-box">
+                <h4>Bio</h4>
+                <p>Amo animais, Resgato e procuro lares cheios de amor para cães de rua.</p>
+            </div>
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Pesquisar...">
+            </div>
+
+            <div class="sponsored-section">
+                <h3><i class="fa-solid fa-bullhorn"></i> Sugestões para você</h3>
+
+                <div class="ad-card" onclick="alert('Redirecionando para a loja de rações...')">
+                    <div class="ad-badge pulse">15% OFF</div>
+                    <img src="https://placehold.co/260x100/ffcc80/d9826a?text=Ração+Premium" alt="Ração Premium">
+                    <div class="ad-content">
+                        <h4>NutriPet Premium</h4>
+                        <p>Ração super premium para cães e gatos. Frete grátis na primeira compra!</p>
+                        <button class="btn-ad"><i class="fa-solid fa-cart-shopping"></i> Comprar Agora</button>
+                    </div>
+                </div>
+
+                <div class="ad-card" onclick="alert('Redirecionando para a clínica...')">
+                    <img src="https://placehold.co/260x100/a2c1a3/385b54?text=Clínica+Vet" alt="Clínica Veterinária">
+                    <div class="ad-content">
+                        <h4>Clínica Vida Animal</h4>
+                        <p>Check-up completo e vacinação com 20% de desconto neste mês.</p>
+                        <button class="btn-ad btn-vet"><i class="fa-solid fa-stethoscope"></i> Agendar Consulta</button>
+                    </div>
+                </div>
+
+                <div class="ad-card" onclick="alert('Abrindo o iFood...')">
+                    <img src="https://placehold.co/260x100/ea1d2c/ffffff?text=iFood+Pets" alt="iFood Pets">
+                    <div class="ad-content">
+                        <h4>iFood Pets</h4>
+                        <p>Faltou petisco? Tudo para o seu pet entregue em minutos na sua porta!</p>
+                        <button class="btn-ad btn-ifood"><i class="fa-solid fa-motorcycle"></i> Pedir no iFood</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="../javascript/tela_perfil_usuario.html.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Perfil - Pet SOS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../css/EditarPerfil.css">
+</head>
+<body>
+
+  <div class="edit-profile-container">
+    
+    <div class="header-title">
+      <a href="tela_perfil_usuario.html" title="Voltar ao Painel"><i class="fas fa-arrow-left"></i></a>
+      <h2>Editar perfil</h2>
+    </div>
+
+    <div class="profile-photo-card">
+      <div class="profile-info">
+        <img src="https://placehold.co/60x60/4f7c75/white?text=U" alt="Foto de Perfil" id="foto-perfil-edit" class="img-perfil-global">
+        <div class="profile-names">
+          <span class="username" id="username-edit">usuario</span>
+          <span class="fullname nome-perfil-global" id="fullname-edit">Nome do Usuário</span>
+        </div>
+      </div>
+      
+      <input type="file" id="input-foto-arquivo" accept="image/*" style="display: none;">
+      <button type="button" class="btn-change-photo" id="btn-mudar-foto">Mudar foto</button>
+    </div>
+
+    <form id="form-editar-perfil">
+      
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" id="input-nome-edit" placeholder="Seu nome completo" required>
+      </div>
+
+      <div class="form-group">
+        <label>Mudar Perfil (Tipo de Conta)</label>
+        <select id="input-perfil-edit">
+          <option value="Adotante">Adotante</option>
+          <option value="Voluntário">Voluntário</option>
+          <option value="Apoiador">Apoiador</option>
+          <option value="ONG/Instituição">ONG/Instituição</option>
+        </select>
+        <span class="helper-text">Isso define como você interage e é visto na plataforma Pet SOS.</span>
+      </div>
+
+      <div class="form-group">
+        <label>Site / Link Útil</label>
+        <input type="text" id="input-site-edit" placeholder="https://seudominio.com.br">
+        <span class="helper-text">Adicione um link para sua ONG, Instagram ou página de arrecadação.</span>
+      </div>
+
+      <div class="form-group">
+        <label>Bio (Sua Missão)</label>
+        <div class="textarea-wrapper">
+          <textarea id="input-bio-edit" maxlength="150" oninput="atualizarContador()">Amo animais. Resgato e procuro lares cheios de amor para cães de rua. 🐾</textarea>
+          <span class="char-count" id="contador-bio">73 / 150</span>
+        </div>
+      </div>
+
+      <div class="form-group toggle-group">
+        <label>Mostrar selo de Voluntário</label>
+        <label class="switch">
+          <input type="checkbox" id="input-selo-edit" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Gênero</label>
+        <select id="input-genero-edit">
+          <option value="feminino">Feminino</option>
+          <option value="masculino">Masculino</option>
+          <option value="nao-informar">Prefiro não informar</option>
+        </select>
+        <span class="helper-text">Isso não fará parte do seu perfil público. Serve apenas para nossas estatísticas.</span>
+      </div>
+
+      <div class="form-group toggle-group">
+        <div class="toggle-text">
+          <label>Alertas de animais urgentes</label>
+          <span class="helper-text">Permite receber notificações sobre cães em situação de risco na sua região.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="input-alertas-edit" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="footer-info">
+        Certas informações do perfil, como seu nome, a bio e os links, são visíveis para todos os usuários da plataforma.
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">Salvar Alterações</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="../javascript/EditarPerfil.js"></script>
+</body>
+</html>

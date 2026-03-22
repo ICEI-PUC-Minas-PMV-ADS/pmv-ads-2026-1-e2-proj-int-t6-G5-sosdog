@@ -18,31 +18,26 @@
         </div>
 
         <nav class="nav-menu">
-            <a href="#" class="nav-item">
+            <a href="link" class="nav-item">
                 <img src="../img/mapa_de_casos.png" alt="Mapa dos Casos" width="35" height="35"> Mapa dos Casos
             </a>
-            <a href="#" class="nav-item">
+            <a href="link" class="nav-item">
                 <img src="../img/feed_de_casos.png" alt="Feed de Casos" width="35" height="35"> Feed de Casos
-            </a>
-            <a href="#" class="nav-item">
-                <img src="../img/apoia-s.png" alt="Apoia-se" width="35" height="35"> Apoia-se
-            </a>
-            <a href="#" class="nav-item">
-                <img src="../img/galeria.png" alt="Galeria" width="35" height="35"> Galeria
-            </a>
-            <a href="#" class="nav-item">
-                <img src="../img/ongs.png" alt="ONGs" width="35" height="35"> ONGs
             </a>
         </nav>
 
-        <div class="header-right">
+        <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
             <div class="search-bar">
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Busca...">
             </div>
-            <a href="#" class="nav-item" id="loginBtn">
-                <i class="far fa-user-circle"></i> login/cadastrar
-            </a>
+            
+            <button id="btnTelaUsuario" class="btn-home" style="display: none; background-color: white; color: #385b54; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-user"></i> USUÁRIO
+            </button>
+            
+            <div id="userMenuContainer" class="user-menu" style="display: flex; align-items: center;">
+                </div>
         </div>
     </header>
 
@@ -151,7 +146,16 @@
         </div>
 
         <div class="center-panel">
-            <h2 class="section-title">feed de notícias</h2>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 class="section-title" style="margin: 0;">feed de notícias</h2>
+                
+                <div style="position: relative;">
+                    <button id="btnSelecionarEstado" style="background-color: #385b54; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                        <i class="fas fa-map-marker-alt"></i> Selecionar Estado
+                    </button>
+                </div>
+            </div>
 
             <div class="feed-swiper-container">
                 <i class="fas fa-chevron-left custom-arrow feed-prev"></i>
@@ -284,7 +288,12 @@
                 <div>porte</div>
             </div>
 
-            <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">Registro de Ações <span style="float: right; font-weight: normal; font-size: 14px;">Usuário:</span></div>
+            <div style="font-weight: bold; font-size: 16px; margin-top: 15px;">Observações:</div>
+            <div class="obs-box" style="height: auto; min-height: 50px; margin-top: 5px;">
+                Cachorro muito dócil, encontrado próximo à praça.
+            </div>
+
+            <div style="font-weight: bold; font-size: 16px; margin-top: 15px;">Registro de Ações <span style="float: right; font-weight: normal; font-size: 14px;">Usuário:</span></div>
 
             <div class="action-register">
                 <button class="circle-btn agua">Água</button>
@@ -300,27 +309,13 @@
 
             <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">Comentários:</div>
             <div class="comments-section">
-                <div class="comment-row">
-                    <img src="../img/Maria.jpg" class="comment-avatar" alt="User">
-                    <div class="comment-bubble">Maria: Amém o cuidado com nossos humaninhos</div>
                 </div>
-                <div class="comment-row">
-                    <img src="../img/Maria.jpg" class="comment-avatar" alt="User">
-                    <div class="comment-bubble">Maria: Amém o cuidado com nossos humaninhos</div>
-                </div>
-                <div class="comment-row">
-                    <img src="../img/Pedro.jpg" class="comment-avatar" alt="User">
-                    <div class="comment-bubble">Pedro: Perfeito o cuidado</div>
-                </div>
-                <div class="comment-row">
-                    <img src="../img/Pedro.jpg" class="comment-avatar" alt="User">
-                    <div class="comment-bubble">Pedro: Perfeito o cuidado</div>
-                </div>
-                <div class="comment-row">
-                    <img src="../img/Pedro.jpg" class="comment-avatar" alt="User">
-                    <div class="comment-bubble">Pedro: Perfeito o cuidado</div>
-                </div>
+
+            <div class="add-comment-box">
+                <input type="text" id="newCommentText" placeholder="Escreva um comentário...">
+                <button id="btnSendComment" title="Enviar"><i class="fas fa-paper-plane"></i></button>
             </div>
+            
         </div>
     </div>
 
@@ -383,7 +378,7 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="../javascript/home..js"></script> 
+    <script src="../javascript/home.js"></script> 
 </body>
 
 </html>
