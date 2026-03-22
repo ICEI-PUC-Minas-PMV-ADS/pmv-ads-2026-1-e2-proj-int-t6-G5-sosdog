@@ -48,9 +48,10 @@ No registro, o usuário pode fazer o cadastro com e-mail, telefone e selecionar 
 
 TELA DE PERFIL
 
-Interface intuitiva para resgate animal: une monitoramento, feed de casos e geolocalização. Foca em urgências, adoção e cuidados colaborativos, facilitando a vida de ONGs e voluntários da causa.
+Interface intuitiva para resgate animais: une monitoramento, feed de casos e geolocalização. Foca em urgências, adoção e cuidados colaborativos, tela com conta na lateral de .
 
-<img width="1183" height="661" alt="Tela_de_Usuário" src="https://github.com/user-attachments/assets/e79dda6f-df1a-445f-8eae-0c40018c740c" />
+<img width="1918" height="871" alt="tela_de_usuário" src="https://github.com/user-attachments/assets/d76e486b-edc4-46d8-b7fd-f0b6b412fafb" />
+
 
 
 
