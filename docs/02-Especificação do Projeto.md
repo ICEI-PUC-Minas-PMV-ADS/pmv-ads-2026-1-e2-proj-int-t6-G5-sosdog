@@ -42,7 +42,6 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-001** | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento. | ALTA |
 | **RF-002** | Alternar a visualização do mapa por camadas baseadas no status do animal.| MÉDIA |
 | **RF-003** | Filtrar os animais no mapa por estado de saúde, tempo de avistamento e porte. | MÉDIA |
-| **RF-004** | Validar marcações de outros usuários para confirmar a veracidade das informações. | ALTA |
 | **RF-005** | Exigir a seleção do estado atual do animal durante o registro de uma marcação. | ALTA |
 | **RF-006** | Registrar o fornecimento recente de cuidados básicos aos animais marcados. | MÉDIA |
 | **RF-007** | Anexar fotos para facilitar a identificação visual do animal. | ALTA |
@@ -52,13 +51,6 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-011** | Disponibilizar seção informativa com leis, contatos de emergência e instruções de resgate. | BAIXA |
 | **RF-012** | Editar os dados de perfil do usuário. | ALTA |
 | **RF-013** | Excluir permanentemente a conta e os dados pessoais do usuário. | ALTA |
-| **RF-014** | Configurar o raio de distância para o recebimento de alertas. | ALTA |
-| **RF-015** | Filtrar os tipos de notificações de animais que deseja receber. | MÉDIA |
-| **RF-016** | Gerenciar o recebimento de notificações de interações da comunidade. | BAIXA |
-| **RF-017** | Definir a visualização padrão do mapa ao abrir o aplicativo. | BAIXA |
-| **RF-018** | Configurar a ocultação automática de marcações antigas no mapa. | MÉDIA |
-| **RF-019** | Salvar marcações favoritas em uma área dedicada para acompanhamento. | MÉDIA |
-| **RF-020** | Disponibilizar central de ajuda e suporte ao usuário. | BAIXA 
 | **RF-021** | Cadastrar nova conta de usuário. | ALTA |
 | **RF-022** | Redefinir a senha de acesso da conta. | ALTA |
 | **RF-023** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
