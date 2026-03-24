@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById("loginBtn");
 
+    // Chama a função para alterar a tela caso o usuário já esteja logado
+    verificarEstadoLogin();
+
     // =========================================================
     // INTERCEPTADOR DE CLIQUES (BLOQUEIO PARA NÃO LOGADOS)
     // =========================================================
@@ -33,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================================
-    // LÓGICA DE ABERTURA DO MODAL (SEU CÓDIGO ORIGINAL)
+    // LÓGICA DE ABERTURA DO MODAL
     // =========================================================
     if (loginBtn) {
         loginBtn.addEventListener("click", async (e) => {
@@ -186,3 +189,73 @@ function iniciarEventosDoModal() {
         });
     }
 }
+
+// =========================================================
+// VERIFICAÇÃO DE ESTADO DE LOGIN NA TELA PRINCIPAL
+// =========================================================
+async function verificarEstadoLogin() {
+    const isLogado = localStorage.getItem("sos_logado") === "true";
+    
+    // Pega os elementos atuais da tela
+    const btnLogin = document.querySelector(".btnLogin"); // Botão de login/cadastrar
+    const userMenuContainer = document.getElementById("userMenuContainer"); // Container vazio no header
+    const sidebarAtual = document.querySelector(".right-sidebar.dog-profile-sidebar"); // Sidebar do cachorro
+
+    if (isLogado) {
+        // 1. Esconde o botão de Login
+        if (btnLogin) {
+            btnLogin.style.display = "none";
+        }
+
+        try {
+            // 2. Busca o arquivo HTML que contém os elementos de usuário logado
+            const response = await fetch("./pages/logadoModal.html");
+            
+            if (!response.ok) throw new Error("Erro ao carregar logadoModal.html");
+            
+            const htmlText = await response.text();
+            
+            // Cria uma div temporária para podermos "recortar" os pedaços do HTML
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = htmlText;
+
+            // 3. Pega o menu do usuário (div class="user-menu") e injeta no header
+            const novoUserMenu = tempDiv.querySelector(".user-menu");
+            if (novoUserMenu && userMenuContainer) {
+                userMenuContainer.innerHTML = novoUserMenu.innerHTML;
+                
+                // Opcional: Você pode pegar os dados do localStorage para trocar o Nome e @ do usuário na tela
+                const usuarioSalvo = JSON.parse(localStorage.getItem('sos_usuario'));
+                if (usuarioSalvo && usuarioSalvo.nome) {
+                    const nomeElement = userMenuContainer.querySelector(".user-info strong");
+                    if (nomeElement) nomeElement.textContent = usuarioSalvo.nome;
+                    const nomeElementspan = userMenuContainer.querySelector(".user-info span");
+                    if (nomeElementspan) nomeElementspan.textContent = `@${usuarioSalvo.nome}`;
+                }
+            }
+
+            // 4. Pega a nova sidebar (aside class="right-sidebar") e substitui a do cachorro
+            const novaSidebar = tempDiv.querySelector("aside.right-sidebar");
+            if (novaSidebar && sidebarAtual) {
+                // Substitui o HTML interno
+                sidebarAtual.innerHTML = novaSidebar.innerHTML;
+                // Atualiza as classes para remover 'dog-profile-sidebar' e não quebrar o CSS
+                sidebarAtual.className = novaSidebar.className; 
+            }
+
+        } catch (error) {
+            console.error("Erro ao alterar a interface para usuário logado:", error);
+        }
+    }
+}
+
+// =========================================================
+// FUNÇÃO DE LOGOUT GERAL
+// =========================================================
+window.fazerLogoutGeral = function() {
+    // Remove o status de logado
+    localStorage.removeItem("sos_logado");
+
+    // Atualiza a página para voltar ao estado normal (deslogado)
+    window.location.reload();
+};

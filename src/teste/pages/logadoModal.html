@@ -1,0 +1,75 @@
+<div class="user-menu">
+    <button class="btn-home"
+        onclick="window.location.href='../html/home.html'"><i
+            class="fa-solid fa-house"></i> HOME</button>
+    <div class="user-profile">
+        <img src="../img/Maria.jpg" alt="Avatar">
+        <div class="user-info">
+            <strong>Sandra_SOS</strong>
+            <span>@Sandra_SOS</span>
+            <div class="user-actions">
+                <small style="cursor:pointer;"
+                    onclick="window.location.href='../html/EditarPerfil.html'"><i
+                        class="fa-solid fa-pen"></i> Editar
+                    Perfil</small>
+                <small style="cursor:pointer;" onclick="fazerLogoutGeral()"><i
+                        class="fa-solid fa-right-from-bracket"></i>
+                    Sair</small>
+            </div>
+        </div>
+    </div>
+</div>
+<aside class="right-sidebar">
+    <div class="bio-box">
+        <h4>Bio</h4>
+        <p>Amo animais, Resgato e procuro lares cheios de amor para cães
+            de rua.</p>
+    </div>
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Pesquisar...">
+    </div>
+    <div class="sponsored-section">
+        <h3><i class="fa-solid fa-bullhorn"></i> Sugestões para você
+        </h3>
+        <div class="ad-card"
+            onclick="alert('Redirecionando para a loja de rações...')">
+            <div class="ad-badge pulse">15% OFF</div>
+            <img src="https://placehold.co/260x100/ffcc80/d9826a?text=Ração+Premium"
+                alt="Ração Premium">
+            <div class="ad-content">
+                <h4>NutriPet Premium</h4>
+                <p>Ração super premium para cães e gatos. Frete grátis
+                    na primeira compra!</p>
+                <button class="btn-ad"><i class="fa-solid fa-cart-shopping"></i>
+                    Comprar
+                    Agora</button>
+            </div>
+        </div>
+        <div class="ad-card"
+            onclick="alert('Redirecionando para a clínica...')">
+            <img src="https://placehold.co/260x100/a2c1a3/385b54?text=Clínica+Vet"
+                alt="Clínica Veterinária">
+            <div class="ad-content">
+                <h4>Clínica Vida Animal</h4>
+                <p>Check-up completo e vacinação com 20% de desconto
+                    neste mês.</p>
+                <button class="btn-ad btn-vet"><i
+                        class="fa-solid fa-stethoscope"></i> Agendar
+                    Consulta</button>
+            </div>
+        </div>
+        <div class="ad-card" onclick="alert('Abrindo o iFood...')">
+            <img src="https://placehold.co/260x100/ea1d2c/ffffff?text=iFood+Pets"
+                alt="iFood Pets">
+            <div class="ad-content">
+                <h4>iFood Pets</h4>
+                <p>Faltou petisco? Tudo para o seu pet entregue em
+                    minutos na sua porta!</p>
+                <button class="btn-ad btn-ifood"><i
+                        class="fa-solid fa-motorcycle"></i> Pedir no
+                    iFood</button>
+            </div>
+        </div>
+    </div>
+</aside>
