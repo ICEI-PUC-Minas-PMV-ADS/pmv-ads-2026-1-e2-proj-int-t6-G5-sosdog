@@ -1,25 +1,13 @@
-/* ==================== VARIÁVEIS GERAIS ==================== */
 :root {
-    /* Paleta de Cores baseada na imagem */
     --bg-main: #eff2f1;
-    /* Fundo geral mais claro */
     --bg-sidebar-right: #d5dcd9;
-    /* Fundo da barra lateral direita */
     --bg-lost-section: #cdd4d1;
-    /* Fundo da seção de perdidos */
-
     --primary-green: #385b54;
-    /* Verde escuro (Header, bordas, textos destaque) */
     --light-green: #a2c1a3;
-    /* Verde claro (Tags Saudável, Água) */
     --primary-orange: #e07a5f;
-    /* Laranja (Urgente, Comida) */
     --white: #ffffff;
-
     --text-dark: #333333;
     --text-muted: #666666;
-
-    /* Padrões de Layout */
     --border-radius-md: 10px;
     --border-radius-lg: 15px;
     --border-main: 2px solid var(--primary-green);
@@ -31,6 +19,13 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
 }
 
 body {
@@ -42,7 +37,6 @@ body {
     overflow: hidden;
 }
 
-/* Scrollbar Customizada */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -75,7 +69,6 @@ body {
 
 .logo i {
     color: #cc4444;
-    /* Cor do coração/pata na imagem */
 }
 
 .main-nav {
@@ -104,7 +97,6 @@ body {
     font-size: 22px;
 }
 
-
 /* ==================== USER MENU ==================== */
 .user-menu {
     display: flex;
@@ -114,8 +106,6 @@ body {
 
 .btn-home {
     background-color: white;
-    color: var(--header-bg);
-    border: none;
     padding: 10px 20px;
     border-radius: 20px;
     font-weight: bold;
@@ -123,6 +113,8 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    color: black;
+    border: none;
 }
 
 .user-profile {
@@ -151,14 +143,8 @@ body {
     color: #ccc;
     cursor: pointer;
 }
-.btn-home {
-    background-color: white; color: var(--header-bg); border: none;
-    padding: 10px 20px; border-radius: 20px; font-weight: bold;
-    cursor: pointer; display: flex; align-items: center; gap: 8px;
-    color: black;
-}
 
-/* ==================== .RIGHT-SIDE-HIDE ==================== */
+/* ==================== RIGHT SIDEBAR ==================== */
 .right-sidebar {
     background: #d3dbd8;
     padding: 15px;
@@ -171,7 +157,6 @@ body {
     border-radius: 15px;
 }
 
-/* Estilização da barra de rolagem */
 .right-sidebar::-webkit-scrollbar {
     width: 4px;
 }
@@ -181,7 +166,6 @@ body {
     border-radius: 10px;
 }
 
-/* Caixa de Bio */
 .bio-box {
     background: white;
     padding: 10px;
@@ -199,7 +183,6 @@ body {
     font-size: 11px;
 }
 
-/* Caixa de Pesquisa */
 .search-box {
     display: flex;
     align-items: center;
@@ -234,7 +217,6 @@ body {
     gap: 8px;
 }
 
-/* Cards de Anúncio */
 .ad-card {
     background: white;
     border-radius: 8px;
@@ -265,7 +247,6 @@ body {
     object-fit: cover;
 }
 
-/* Conteúdo interno do anúncio */
 .ad-content {
     padding: 8px;
     text-align: center;
@@ -288,7 +269,6 @@ body {
     line-height: 1.1;
 }
 
-/* Animação do Badge "15% OFF" */
 .ad-badge {
     position: absolute;
     top: 5px;
@@ -307,20 +287,11 @@ body {
 }
 
 @keyframes pulse-animation {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
-/* Botões dos anúncios */
 .btn-ad {
     background-color: var(--header-bg);
     color: white;
@@ -353,10 +324,7 @@ body {
     background-color: var(--header-bg);
 }
 
-/* ==================== MODAL ==================== */
-/* =========================================
-   ESTILOS DO LOGO DO MODAL
-   ========================================= */
+/* ==================== MODAL LOGIN ==================== */
 .modal-logo {
     height: 35px;
     width: auto;
@@ -364,9 +332,6 @@ body {
     margin-bottom: 15px;
 }
 
-/* =========================================
-   ESTILOS DO MODAL (OVERLAY E CONTAINER)
-   ========================================= */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -387,10 +352,8 @@ body {
 
 .modal-content {
     background-color: var(--bg-main);
-    /* Usando o fundo claro da sua paleta */
     padding: 35px 30px;
     border-radius: var(--border-radius-lg);
-    /* Usando a sua variável de borda */
     width: 90%;
     max-width: 400px;
     position: relative;
@@ -419,13 +382,9 @@ body {
     font-size: 22px;
     margin-bottom: 25px;
     color: var(--primary-green);
-    /* Atualizado para a nova variável */
     font-weight: 700;
 }
 
-/* =========================================
-   FORMULÁRIOS E INPUTS
-   ========================================= */
 .login-form input {
     width: 100%;
     padding: 12px 15px;
@@ -435,14 +394,12 @@ body {
     font-size: 14px;
     color: var(--text-dark);
     background-color: #e8f0fe;
-    /* Mantido o azul claro padrão de preenchimento (autofill) */
     box-sizing: border-box;
 }
 
 .login-form input:focus {
     outline: none;
     border-color: var(--primary-green);
-    /* Atualizado para a nova variável */
 }
 
 .phone-group {
@@ -451,9 +408,6 @@ body {
     width: 100%;
 }
 
-/* =========================================
-   BOTÕES PRINCIPAIS
-   ========================================= */
 .btn-entrar,
 .btn-cadastrar {
     width: 100%;
@@ -464,13 +418,11 @@ body {
     cursor: pointer;
     margin-top: 5px;
     color: var(--white);
-    /* Atualizado para a nova variável */
     border: none;
 }
 
 .btn-entrar {
     background-color: var(--primary-orange);
-    /* Atualizado para a nova variável laranja */
 }
 
 .btn-entrar:hover {
@@ -479,16 +431,12 @@ body {
 
 .btn-cadastrar {
     background-color: var(--primary-green);
-    /* Atualizado para a nova variável verde */
 }
 
 .btn-cadastrar:hover {
     opacity: 0.9;
 }
 
-/* =========================================
-   LINKS (Cadastre-se)
-   ========================================= */
 .register-link {
     margin-top: 20px;
     font-size: 13px;
@@ -497,7 +445,6 @@ body {
 
 .register-link a {
     color: var(--primary-orange);
-    /* Atualizado para a nova variável */
     font-weight: bold;
     text-decoration: underline;
 }
@@ -506,9 +453,6 @@ body {
     opacity: 0.8;
 }
 
-/* =========================================
-   BOTÕES DE ESQUECI SENHA/USUÁRIO
-   ========================================= */
 .forgot-buttons-container {
     display: flex;
     gap: 12px;
@@ -520,9 +464,7 @@ body {
     padding: 10px;
     background-color: transparent;
     color: var(--primary-green);
-    /* Atualizado */
     border: 1.5px solid var(--primary-green);
-    /* Atualizado */
     border-radius: 6px;
     font-size: 13px;
     font-weight: bold;
@@ -532,14 +474,9 @@ body {
 
 .btn-esqueci:hover {
     background-color: var(--primary-green);
-    /* Atualizado */
     color: var(--white);
-    /* Atualizado */
 }
 
-/* =========================================
-   SELEÇÃO DE PERFIL (CADASTRO)
-   ========================================= */
 .button-group {
     display: flex;
     flex-wrap: wrap;
@@ -560,44 +497,26 @@ body {
     transition: 0.3s;
 }
 
-.btn-adotante {
-    background-color: #ff9f43;
-}
-
-.btn-voluntario {
-    background-color: #54a0ff;
-}
-
-.btn-apoiador {
-    background-color: #10ac84;
-}
-
-.btn-ong {
-    background-color: #5f27cd;
-}
+.btn-adotante { background-color: #ff9f43; }
+.btn-voluntario { background-color: #54a0ff; }
+.btn-apoiador { background-color: #10ac84; }
+.btn-ong { background-color: #5f27cd; }
 
 /* ==================== LADO DIREITO DO HEADER E BUSCA ==================== */
 .header-right {
     display: flex;
     align-items: center;
-    /* Centraliza verticalmente todos os itens */
     gap: 25px;
-    /* Espaço entre a busca e o login */
 }
 
-/* Estilo da Barra de Pesquisa */
 .search-bar {
     background-color: var(--white);
     border-radius: 25px;
-    /* Bordas mais arredondadas */
     padding: 10px 18px;
-    /* Mais padding para espaçamento interno */
     display: flex;
     align-items: center;
     width: 280px;
-    /* Um pouco mais longa */
     gap: 12px;
-    /* Espaço entre lupa e texto */
 }
 
 .search-bar i {
@@ -614,38 +533,28 @@ body {
     background: transparent;
 }
 
-/* Estilo do Bloco de Login (Estado Deslogado) */
 .login-block {
     display: flex;
     flex-direction: column;
-    /* Empilha o ícone sobre o texto */
     align-items: center;
-    /* Centraliza horizontalmente o ícone e o texto */
     text-decoration: none;
-    /* Remove o sublinhado */
     color: var(--white);
-    /* Cor branca para ícone e texto */
     text-align: center;
     cursor: pointer;
     gap: 5px;
-    /* Espaço entre o ícone e o texto */
 }
 
 .login-block i {
     font-size: 24px;
-    /* Tamanho do ícone */
     color: var(--white);
 }
 
 .login-block span {
     font-weight: bold;
-    /* Texto em negrito */
     font-size: 13px;
-    /* Tamanho do texto */
     color: var(--white);
 }
 
-/* Estilo do Botão do Usuário Logado */
 .btn-usuario {
     background-color: var(--white);
     color: var(--primary-green);
@@ -664,34 +573,19 @@ body {
     background-color: #f0f0f0;
 }
 
-/* Container do Menu */
-.user-menu {
-    display: flex;
-    align-items: center;
-}
-
-/* ==========================================
-   ESTILO DO BOTÃO DE LOGIN
-   ========================================== */
-
 .btnLogin {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-
-
     background-color: transparent;
     border: 2px;
     border-radius: 25px;
-
-
     text-decoration: none;
     color: #ffffff;
     font-family: inherit;
     font-size: 16px;
     font-weight: bold;
-
     transition: all 0.3s ease;
     cursor: pointer;
 }
@@ -700,12 +594,10 @@ body {
     font-size: 22px;
 }
 
-
 /* ==================== LAYOUT PRINCIPAL (GRID) ==================== */
 .dashboard-container {
     display: grid;
     grid-template-columns: 280px 1fr 300px;
-    /* Esquerda, Centro Fluido, Direita */
     gap: 20px;
     padding: 0 20px 10px 20px;
     width: 100%;
@@ -734,11 +626,9 @@ body {
     flex-grow: 1;
     overflow-y: auto;
     padding-right: 8px;
-    /* Um pouco mais de espaço para a scrollbar */
     display: flex;
     flex-direction: column;
     gap: 12px;
-    /* Separa os cards de forma elegante sem usar margin */
 }
 
 .case-card {
@@ -746,14 +636,11 @@ body {
     background-color: var(--white);
     border: var(--border-main);
     border-radius: var(--border-radius-lg);
-    /* Cantos mais arredondados */
     padding: 10px;
     gap: 15px;
     align-items: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    /* Sombra bem leve */
     transition: all 0.3s ease;
-    /* Animação suave */
     cursor: pointer;
 }
 
@@ -768,7 +655,6 @@ body {
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    /* Borda mais clara e suave para a foto do pet */
     border: 2px solid var(--light-green);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
@@ -786,14 +672,12 @@ body {
     align-items: center;
     font-size: 13px;
     font-weight: 600;
-    /* Menos pesado que o 700 */
     color: var(--primary-green);
 }
 
 .case-details p {
     font-size: 11px;
     color: var(--text-muted);
-    /* Texto secundário mais claro */
     line-height: 1.3;
 }
 
@@ -803,7 +687,6 @@ body {
 }
 
 .badge-green {
-    /* Fundo levemente transparente para a tag não gritar na tela */
     background-color: rgba(162, 193, 163, 0.3);
     padding: 4px 10px;
     border-radius: 12px;
@@ -842,6 +725,159 @@ body {
     filter: brightness(0.9);
 }
 
+
+/* ==================== MODAL DE REPORTAR CASOS ==================== */
+
+.modal-overlay-report {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+}
+
+.modal-content-report {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.close-report {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+}
+
+.close-report:hover {
+    color: #333;
+}
+
+.modal-content-report h2 {
+    text-align: center;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input[type="text"],
+.input-group select,
+.input-group textarea,
+.input-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #555;
+}
+
+.input-group textarea {
+    resize: vertical;
+}
+
+.row-group {
+    display: flex;
+    gap: 10px;
+}
+.row-group .half {
+    flex: 1;
+}
+
+.section-label {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #444;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.btn-group-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.opt-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    position: relative;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.opt-btn input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.opt-btn:has(input:checked) {
+    opacity: 1;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.2);
+}
+
+.opt-orange { background-color: #fca34d; }
+.opt-blue { background-color: #4da3fc; }
+
+.btn-submit-report {
+    width: 100%;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-submit-report:hover {
+    background-color: #27ae60;
+}
+
 /* ==================== CONTEÚDO CENTRAL (Feed) ==================== */
 .main-content {
     display: flex;
@@ -851,7 +887,6 @@ body {
     position: relative;
 }
 
-/* Garante que ambos ocupem o espaço total disponível */
 #container-feed-completo,
 #container-mapa {
     width: 100%;
@@ -860,20 +895,16 @@ body {
     flex-direction: column;
 }
 
-/* O mapa propriamente dito */
 #map {
     width: 100%;
     flex-grow: 1;
-    /* Faz o mapa ocupar todo o espaço abaixo do header "Mapa dos Casos" */
     border-radius: 15px;
     border: 2px solid var(--primary-green);
     background-color: #eee;
-    /* Cor de fundo enquanto carrega */
 }
 
 .swiper-slide {
     height: auto;
-    /* Deixa o Swiper controlar a altura do slide */
     display: flex;
 }
 
@@ -905,9 +936,7 @@ body {
 
 .feed-swiper {
     width: calc(100% - 80px);
-    /* Espaço para as setas */
     padding: 15px 0 40px 0;
-    /* Espaço inferior para paginação */
     overflow: hidden;
 }
 
@@ -918,10 +947,8 @@ body {
     padding: 15px;
     display: flex;
     flex-direction: column;
-    /* Alinha os itens em coluna */
     width: 100%;
     height: 100%;
-    /* Força o card a ocupar toda a altura do slide */
     box-sizing: border-box;
 }
 
@@ -937,14 +964,12 @@ body {
     object-fit: cover;
     border-radius: 8px;
     flex-shrink: 0;
-    /* Impede a imagem de espremer se houver muito texto */
 }
 
 .feed-card h3 {
     margin: 12px 0 8px 0;
     font-size: 16px;
     height: 20px;
-    /* Altura fixa para o título */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -956,9 +981,7 @@ body {
     margin-bottom: 12px;
     flex-wrap: wrap;
     height: 50px;
-    /* Ajuste conforme a necessidade de linhas de tags */
     overflow-y: auto;
-    /* Scroll interno se houver tags demais */
 }
 
 .tag {
@@ -977,15 +1000,11 @@ body {
     padding: 10px;
     font-size: 12px;
     background: #fafafa;
-
-    /* TRUQUE MÁGICO: Altura fixa e limite de linhas */
     height: 65px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
-    /* Mostra no máximo 3 linhas de texto */
     -webkit-box-orient: vertical;
-
     margin-bottom: 15px;
 }
 
@@ -995,7 +1014,6 @@ body {
     padding-top: 10px;
     border-top: 1px solid #eee;
     margin-top: auto;
-    /* Empurra as ações para o fim do card */
 }
 
 .feed-actions i {
@@ -1020,7 +1038,6 @@ body {
     color: var(--header-bg);
 }
 
-/* Estilização das bolinhas do Swiper */
 .swiper-pagination-bullet-active {
     background: var(--header-bg) !important;
 }
@@ -1066,7 +1083,6 @@ body {
     font-weight: bold;
 }
 
-/* Setas do Swiper */
 .swiper-button-next,
 .swiper-button-prev {
     color: var(--primary-green) !important;
@@ -1120,7 +1136,6 @@ body {
     margin-bottom: 5px;
 }
 
-/* Grid de Status */
 .status-box {
     background-color: #e4e9e7;
     border-radius: var(--border-radius-md);
@@ -1136,7 +1151,6 @@ body {
     margin-bottom: 4px;
 }
 
-/* Ações (Água e Comida) */
 .actions-labels {
     display: flex;
     justify-content: space-between;
@@ -1176,7 +1190,6 @@ body {
     background-color: #7ab583;
 }
 
-/* Verde claro da imagem */
 .btn-comida {
     background-color: var(--primary-orange);
 }
@@ -1191,19 +1204,18 @@ body {
     display: flex;
     align-items: center;
 }
-/* Container para alinhar o avatar, o input e o botão perfeitamente */
+
 .comment-input-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* Estilo do botão de enviar */
 .btn-send-comment {
-    background-color:var(--light-green); /* Verde claro */
+    background-color: var(--light-green);
     color: white;
     border: none;
-    border-radius: 50%; /* Deixa o botão redondo */
+    border-radius: 50%;
     width: 38px;
     height: 38px;
     display: flex;
@@ -1211,17 +1223,15 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    flex-shrink: 0; /* Impede que o botão encolha se o input crescer */
+    flex-shrink: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-/* Ícone dentro do botão */
 .btn-send-comment i {
     font-size: 14px;
-    margin-left: -2px; /* Ajuste fino para o ícone de avião de papel parecer centralizado */
+    margin-left: -2px;
 }
 
-/* Efeitos ao passar o mouse e clicar */
 .btn-send-comment:hover {
     background-color: var(--primary-green);
     transform: scale(1.1);
@@ -1231,15 +1241,6 @@ body {
     transform: scale(0.95);
 }
 
-/* Localização */
-
-
-
-
-
-
-
-/* Comentários */
 .comments-section {
     display: flex;
     flex-direction: column;
@@ -1251,12 +1252,6 @@ body {
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.comment-input-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .comment-input {
@@ -1285,92 +1280,126 @@ body {
     color: var(--text-dark);
     line-height: 1.3;
 }
+/* ==================== RESPONSIVIDADE EVOLUÍDA ==================== */
 
-/* ==================== RESPONSIVIDADE ==================== */
-@media (max-width: 1200px) {
-    .dashboard-container {
-        grid-template-columns: 260px 1fr;
-    }
-
-    .dog-profile-sidebar {
-        grid-column: 1 / -1;
-        height: auto;
+/* 1. TELAS ULTRA-GRANDES (Monitores 4K, Desktop Largo)  */
+@media (min-width: 1440px) {
+    .top-header, .dashboard-container {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
-@media (max-width: 850px) {
-    body {
-        height: auto;
-        overflow-y: auto;
+/* 2. AJUSTE PARA LAPTOPS E TABLETS (Horizontal)*/
+@media (max-width: 1200px) {
+    .dashboard-container {
+        grid-template-columns: 280px 1fr;
     }
+    .right-sidebar {
+        grid-column: 1 / -1;
+        height: auto;
+        order: 3;
+    }
+}
 
-    .top-header {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-        border-radius: 0;
+/* 3. TABLETS E CELULARES GRANDES (Vertical)*/
+@media (max-width: 992px) {
+    body {
+        overflow-y: auto;
+        height: auto;
     }
 
     .dashboard-container {
         display: flex;
         flex-direction: column;
-        padding: 15px;
+        padding: 10px;
     }
 
-    .left-sidebar,
-    .main-content,
-    .right-sidebar {
+    .top-header {
+        flex-direction: column;
+        padding: 20px 15px;
         height: auto;
-        overflow: visible;
+        border-radius: 0 0 20px 20px;
     }
 
-    .feed-card img {
-        height: 250px;
+    .main-nav {
+        width: 100%;
+        justify-content: space-around;
+        margin: 15px 0;
     }
+
+    .header-right {
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: none;
+    }
+
+    .main-content { order: 1; }
+    .left-sidebar { order: 2; height: auto; max-height: none; }
+    .right-sidebar { order: 3; }
 }
 
-@media (max-width: 480px) {
+/* 4. CELULARES (iPhone 14 Pro Max, Androids comuns)*/
+@media (max-width: 500px) {
     .main-nav {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px;
+    }
+
+    .main-nav a {
+        background: rgba(255,255,255,0.1);
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .user-menu {
+        width: 100%;
+        justify-content: center;
+        background: rgba(0,0,0,0.05);
+        padding: 10px;
+        border-radius: 15px;
+    }
+
+    .btn-home {
+        width: 100%;
         justify-content: center;
     }
 
-    .user-info {
-        display: none;
+
+    .case-card {
+        padding: 15px;
     }
 
     .feed-card img {
-        height: 200px;
+        height: 220px;
+    }
+}
+
+/* 5. TELAS MUITO PEQUENAS (iPhone SE, Apple Watch ou Mini browsers) */
+@media (max-width: 360px) {
+    .main-nav {
+        grid-template-columns: 1fr; 
     }
 
-    .actions-content {
+    .top-header h1, .logo {
+        font-size: 18px;
+    }
+
+    .action-buttons {
         flex-direction: column;
+        align-items: center;
     }
-}
-@media (max-width: 1100px) {
-    .right-sidebar { 
-        grid-column: 1 / -1; 
-        position: relative; 
-        top: 0; 
-        height: auto; 
-    }
-}
 
-@media (max-width: 800px) {
-    .right-sidebar { 
-        position: relative; 
-        top: 0; 
-        height: auto; 
-        overflow: visible; 
-    }
-    .user-menu { 
-        width: 100%; 
-        justify-content: space-between; 
-    }
-}
-
-@media (max-width: 480px) {
-    .user-info { 
-        display: none; 
+    .btn-circle {
+        width: 100%;
+        border-radius: 10px;
+        height: 45px;
     }
 }
