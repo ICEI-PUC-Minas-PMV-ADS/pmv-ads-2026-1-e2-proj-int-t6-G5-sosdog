@@ -18,10 +18,10 @@
         </div>
 
         <nav class="nav-menu">
-            <a href="link" class="nav-item">
+            <a href="#" class="nav-item">
                 <img src="../img/mapa_de_casos.png" alt="Mapa dos Casos" width="35" height="35"> Mapa dos Casos
             </a>
-            <a href="link" class="nav-item">
+            <a href="#" class="nav-item">
                 <img src="../img/feed_de_casos.png" alt="Feed de Casos" width="35" height="35"> Feed de Casos
             </a>
         </nav>
@@ -32,12 +32,37 @@
                 <input type="text" placeholder="Busca...">
             </div>
             
-            <button id="btnTelaUsuario" class="btn-home" style="display: none; background-color: white; color: #385b54; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-user"></i> USUÁRIO
-            </button>
+            <div id="loginBtnContainer">
+                <a href="#" class="nav-item" id="loginBtn" style="display: flex; flex-direction: column; align-items: center; color: white; text-decoration: none;">
+                    <i class="far fa-user-circle" style="font-size: 24px; margin-bottom: 5px;"></i> login/cadastrar
+                </a>
+            </div>
+
+            <div id="loggedInContainer" style="display: none; align-items: center; gap: 20px;">
+                
+                <a href="tela_perfil_usuario.html" id="btnTelaUsuarioFixo" style="background-color: white; color: #385b54; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-user"></i> USUÁRIO
+                </a>
             
-            <div id="userMenuContainer" class="user-menu" style="display: flex; align-items: center;">
+                <div class="user-profile" style="display: flex; align-items: center; gap: 15px;">
+                    <img src="../img/sua_foto_aqui.jpg" onerror="this.src='https://placehold.co/45x45'" alt="Avatar" style="border-radius: 50%; width: 45px; height: 45px; object-fit: cover; border: 2px solid #a2c1a3; flex-shrink: 0;">
+                    
+                    <div class="user-info" style="display: flex; flex-direction: column; justify-content: center; text-align: left; min-width: max-content;">
+                        <strong id="userNameDisplay" style="color: white; font-size: 15px; margin-bottom: 2px; line-height: 1.1;">Nome do Usuário</strong>
+                        <span id="userArrobaDisplay" style="color: #a2c1a3; font-size: 13px; margin-bottom: 6px; line-height: 1.1;">@usuario</span>
+                        
+                        <div class="user-actions" style="display: flex; align-items: center; gap: 15px; font-size: 12px;">
+                            <a href="EditarPerfil.html" style="color: #ccc; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 5px;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#ccc'">
+                                <i class="fas fa-pen"></i> Editar Perfil
+                            </a>
+                            <a href="#" onclick="fazerLogoutGeral(event)" style="color: #ccc; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 5px;" onmouseover="this.style.color='#f07565'" onmouseout="this.style.color='#ccc'">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
         </div>
     </header>
 
@@ -308,8 +333,8 @@
             </div>
 
             <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">Comentários:</div>
-            <div class="comments-section">
-                </div>
+            
+            <div class="comments-section"></div>
 
             <div class="add-comment-box">
                 <input type="text" id="newCommentText" placeholder="Escreva um comentário...">
@@ -345,6 +370,8 @@
             </div>
 
             <div id="formRegisterBox" style="display: none;"> 
+                <img src="../img/logodog.png" alt="Logo do Portal" class="modal-logo">
+                
                 <h2>Criar Conta</h2>
                 <form id="formAcaoCadastro" class="login-form">
                     <input type="text" id="cadNome" placeholder="Nome Completo" required>
@@ -366,7 +393,6 @@
                         <button type="button" class="btn-perfil btn-adotante">Adotante</button>
                         <button type="button" class="btn-perfil btn-voluntario">Voluntário</button>
                         <button type="button" class="btn-perfil btn-apoiador">Apoiador</button>
-                        
                     </div>
 
                     <button type="submit" class="btn-cadastrar">Finalizar Cadastro</button>

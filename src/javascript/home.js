@@ -1,74 +1,80 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
+document.addEventListener("DOMContentLoaded", function () {
+
     
     try {
-        new Swiper('.feed-swiper', {
-            slidesPerView: 1, spaceBetween: 15, loop: true,
-            navigation: { nextEl: '.feed-next', prevEl: '.feed-prev' },
-            breakpoints: { 768: { slidesPerView: 2, spaceBetween: 25 } }
+        const swiperFeed = new Swiper('.feed-swiper', {
+            slidesPerView: 2,
+            spaceBetween: 20,
+            grabCursor: true,
+            loop: true,
+            navigation: {
+                nextEl: '.feed-next',
+                prevEl: '.feed-prev',
+            },
+            breakpoints: {
+                320: { slidesPerView: 1 },
+                768: { slidesPerView: 2 }
+            }
         });
 
-        new Swiper('.lost-swiper', {
-            slidesPerView: 2, spaceBetween: 10, loop: true,
-            navigation: { nextEl: '.lost-next', prevEl: '.lost-prev' },
-            breakpoints: { 600: { slidesPerView: 3, spaceBetween: 15 }, 1024: { slidesPerView: 4 } }
+        const swiperLost = new Swiper('.lost-swiper', {
+            slidesPerView: 4,
+            spaceBetween: 15,
+            grabCursor: true,
+            loop: true,
+            navigation: {
+                nextEl: '.lost-next',
+                prevEl: '.lost-prev',
+            },
+            breakpoints: {
+                320: { slidesPerView: 2 },
+                768: { slidesPerView: 3 },
+                1024: { slidesPerView: 4 }
+            }
         });
-    } catch (e) { console.error("Erro Swiper:", e); }
+    } catch (e) {
+        console.error("Erro ao iniciar o Swiper:", e);
+    }
 
     
-    const container = document.getElementById('userMenuContainer');
-    const btnTelaUsuario = document.getElementById('btnTelaUsuario');
     const loginModal = document.getElementById('loginModal');
+    const loginBtnContainer = document.getElementById('loginBtnContainer');
+    const loggedInContainer = document.getElementById('loggedInContainer');
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userArrobaDisplay = document.getElementById('userArrobaDisplay');
+    const loginBtn = document.getElementById('loginBtn');
 
     function atualizarCabecalho() {
         const isLogado = localStorage.getItem('sos_logado') === 'true';
         const usuarioSalvo = JSON.parse(localStorage.getItem('sos_usuario') || '{}');
 
-        if (isLogado && usuarioSalvo.nome && container) {
+        if (isLogado && usuarioSalvo.nome) {
+            
             const arroba = '@' + usuarioSalvo.nome.split(' ')[0].toLowerCase();
             
-            if (btnTelaUsuario) {
-                btnTelaUsuario.style.display = 'flex';
-                btnTelaUsuario.onclick = function() {
-                    window.location.href = 'tela_perfil_usuario.html';
-                };
-            }
             
-            container.innerHTML = `
-                <div class="user-profile" style="display: flex; align-items: center; gap: 15px;">
-                    <img src="https:
-                    
-                    <div class="user-info" style="display: flex; flex-direction: column; text-align: left;">
-                        <strong style="color: white; font-size: 14px; margin-bottom: 2px;">${usuarioSalvo.nome}</strong>
-                        <span style="color: var(--light-green, #a2c1a3); font-size: 12px; margin-bottom: 5px;">${arroba}</span>
-                        
-                        <div class="user-actions" style="display: flex; gap: 15px; font-size: 12px;">
-                            <small style="cursor: pointer; color: #ccc; transition: 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#ccc'" onclick="window.location.href='EditarPerfil.html'">
-                                <i class="fas fa-pen"></i> Editar Perfil
-                            </small>
-                            <small style="cursor: pointer; color: #ccc; transition: 0.2s;" onmouseover="this.style.color='#f07565'" onmouseout="this.style.color='#ccc'" onclick="fazerLogout()">
-                                <i class="fas fa-sign-out-alt"></i> Sair
-                            </small>
-                        </div>
-                    </div>
-                </div>`;
-        } else if (container) {
+            if (userNameDisplay) userNameDisplay.textContent = usuarioSalvo.nome;
+            if (userArrobaDisplay) userArrobaDisplay.textContent = arroba;
             
-            if (btnTelaUsuario) btnTelaUsuario.style.display = 'none';
-
-            container.innerHTML = `
-                <a href="#" class="nav-item" id="loginBtn" style="display: flex; flex-direction: column; align-items: center; color: white; text-decoration: none;">
-                    <i class="far fa-user-circle" style="font-size: 24px; margin-bottom: 5px;"></i> login/cadastrar
-                </a>`;
             
-            document.getElementById('loginBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                if (loginModal) loginModal.classList.add('active');
-            });
+            if (loginBtnContainer) loginBtnContainer.style.display = 'none';
+            if (loggedInContainer) loggedInContainer.style.display = 'flex';
+        } else {
+            
+            if (loginBtnContainer) loginBtnContainer.style.display = 'block';
+            if (loggedInContainer) loggedInContainer.style.display = 'none';
         }
     }
     
     atualizarCabecalho();
+
+    
+    if (loginBtn) {
+        loginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (loginModal) loginModal.classList.add('active');
+        });
+    }
 
     
     const showRegisterBtn = document.getElementById('showRegister');
@@ -77,19 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const formRegisterBox = document.getElementById('formRegisterBox');
     const btnCloseModal = document.getElementById('closeModal');
 
-    
     if (btnCloseModal) {
         btnCloseModal.addEventListener('click', () => {
             if (loginModal) loginModal.classList.remove('active');
         });
     }
 
-    
     window.addEventListener('click', (event) => {
         if (event.target === loginModal) loginModal.classList.remove('active');
     });
 
-    
     if (showRegisterBtn && formLoginBox && formRegisterBox) {
         showRegisterBtn.addEventListener('click', (e) => { 
             e.preventDefault(); 
@@ -98,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    
     if (showLoginBtn && formLoginBox && formRegisterBox) {
         showLoginBtn.addEventListener('click', (e) => { 
             e.preventDefault(); 
@@ -124,21 +126,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formAcaoCadastro) {
         formAcaoCadastro.addEventListener('submit', function (e) {
             e.preventDefault(); 
-            const nome = document.getElementById('cadNome').value;
-            const email = document.getElementById('cadEmail').value;
+            
+            const nome = document.getElementById('cadNome').value.trim();
+            const email = document.getElementById('cadEmail').value.trim();
             const senha = document.getElementById('cadSenha').value;
             const confirmaSenha = document.getElementById('cadConfirmaSenha').value;
+
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailRegex.test(email)) {
+                alert('Por favor, insira um endereço de e-mail válido (ex: seu.nome@email.com).');
+                return;
+            }
 
             if (senha !== confirmaSenha) { 
                 alert('Erro: As senhas não coincidem!'); 
                 return; 
             }
+            
             if (perfilSelecionado === '') { 
                 alert('Selecione seu perfil (Adotante, Voluntário, etc).'); 
                 return; 
             }
 
-            
             const novoUsuario = { nome: nome, email: email, senha: senha, perfil: perfilSelecionado };
             localStorage.setItem('sos_usuario', JSON.stringify(novoUsuario));
             localStorage.setItem('sos_logado', 'true');
@@ -154,12 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formAcaoLogin) {
         formAcaoLogin.addEventListener('submit', (e) => {
             e.preventDefault();
-            const emailDigitado = document.getElementById('loginEmail').value;
+            const emailDigitado = document.getElementById('loginEmail').value.trim();
             const senhaDigitada = document.getElementById('loginSenha').value;
             
             let usuarioSalvo = null;
             try { usuarioSalvo = JSON.parse(localStorage.getItem('sos_usuario')); } catch(e) {}
-
             
             if (usuarioSalvo && usuarioSalvo.email === emailDigitado && usuarioSalvo.senha === senhaDigitada) {
                 localStorage.setItem('sos_logado', 'true');
@@ -167,15 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 atualizarCabecalho();
                 location.reload();
             } 
-            
             else if (emailDigitado === 'teste@portal.com' && senhaDigitada === '123456') {
                 localStorage.setItem('sos_logado', 'true');
-                localStorage.setItem('sos_usuario', JSON.stringify({ nome: 'Ozias Souza', email: emailDigitado, senha: senhaDigitada }));
+                localStorage.setItem('sos_usuario', JSON.stringify({ nome: 'Visitante', email: emailDigitado, senha: senhaDigitada }));
                 if (loginModal) loginModal.classList.remove('active');
                 atualizarCabecalho();
                 location.reload(); 
             } else {
-                alert('E-mail ou senha incorretos! Cadastre-se primeiro.');
+                alert('E-mail ou senha incorretos! Verifique se digitou corretamente.');
             }
         });
     }
@@ -216,11 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('click', () => dropdown.style.display = 'none');
     }
-
 });
 
 
-function fazerLogout() {
+function fazerLogoutGeral(e) {
+    if (e) e.preventDefault(); 
     localStorage.removeItem('sos_logado');
     location.reload();
 }
