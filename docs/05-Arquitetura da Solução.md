@@ -10,15 +10,71 @@ O diagrama UML acima descreve a estrutura estática do sistema, detalhando as cl
 
 ![Diagrama de Classe SosDog](img/diagrama%20de%20classe.jpeg)
 
-## Modelo ER (Projeto Conceitual)
+* ### Modelo Entidade Relacionamento
 
-O Modelo ER representa através de um diagrama como as entidades (coisas, objetos) se relacionam entre si na aplicação interativa.
+  ```mermaid
+   erDiagram
+    USUARIO ||--o{ OCORRENCIA : "Registra"
+    USUARIO ||--o{ COMENTARIO : "Escreve"
+    USUARIO }|--o{ FAVORITO : "Salva"
+    OCORRENCIA ||--o{ COMENTARIO : "Recebe"
+    OCORRENCIA }|--o{ FAVORITO : "Eh Favoritado"
 
-Sugestão de ferramentas para geração deste artefato: LucidChart e Draw.io.
+    USUARIO {
+        int ID_Usuario PK
+        string Nome
+        string Email
+        string Senha
+        string Foto_Perfil
+        datetime Data_Cadastro
+    }
 
-A referência abaixo irá auxiliá-lo na geração do artefato “Modelo ER”.
+    OCORRENCIA {
+        int ID_Ocorrencia PK
+        string Tipo
+        string Status
+        string Foto_Animal
+        string Descricao
+        float Latitude
+        float Longitude
+        datetime Data_Registro
+        int ID_Usuario FK
+    }
 
-> - [Como fazer um diagrama entidade relacionamento | Lucidchart](https://www.lucidchart.com/pages/pt/como-fazer-um-diagrama-entidade-relacionamento)
+    COMENTARIO {
+        int ID_Comentario PK
+        string Texto
+        datetime Data_hora
+        int ID_Usuario FK
+        int ID_Ocorrencia FK
+    }
+
+    FAVORITO {
+        int ID_Favorito PK
+        int ID_Usuario FK
+        int ID_Ocorrencia FK
+    }
+  ```
+  Entidades Principais:
+Usuário: Armazena as informações de perfil, credenciais de acesso e data de registro de quem utiliza a plataforma.
+
+Ocorrência: O núcleo do sistema. Registra os detalhes do animal (foto, descrição), o status (aberto/resolvido) e a geolocalização (latitude/longitude) para facilitar o resgate ou encontro.
+
+Comentário: Permite a interação social e a troca de informações em tempo real sobre uma ocorrência específica.
+
+Favorito: Uma entidade de associação que permite aos usuários salvarem ocorrências de seu interesse para acompanhamento rápido.
+
+Regras de Negócio e Relacionamentos:
+Um para Muitos (1..N): * Um Usuário pode registrar várias Ocorrências, mas cada ocorrência pertence a apenas um autor.
+
+Um Usuário pode escrever diversos Comentários.
+
+Uma Ocorrência pode receber múltiplos Comentários de diferentes pessoas.
+
+Muitos para Muitos (N..N):
+
+A relação de Favoritos conecta Usuários e Ocorrências, permitindo que vários usuários favoritem a mesma postagem e que um único usuário tenha uma lista de várias postagens favoritas.
+
 
 ## Projeto da Base de Dados
 
