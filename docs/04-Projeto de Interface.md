@@ -7,15 +7,22 @@ Visão geral da interação do usuário pelas telas do sistema e protótipo inte
 
  Apresente as principais interfaces da plataforma. Discuta como ela foi elaborada de forma a atender os requisitos funcionais, não funcionais e histórias de usuário abordados nas <a href="2-Especificação do Projeto.md"> Documentação de Especificação</a>.
 
-## Diagrama de Fluxo
+## Diagrama de Fluxo (Fluxograma Principal)
 
-O diagrama apresenta o estudo do fluxo de interação do usuário com o sistema interativo e  muitas vezes sem a necessidade do desenho do design das telas da interface. Isso permite que o design das interações seja bem planejado e gere impacto na qualidade no design do wireframe interativo que será desenvolvido logo em seguida.
+O fluxo abaixo representa a jornada principal do usuário dentro do **Sistema SOS Dog**, desde a autenticação até as interações com o mapa e o registro de novas ocorrências.
 
-O diagrama de fluxo pode ser desenvolvido com “boxes” que possuem internamente a indicação dos principais elementos de interface - tais como menus e acessos - e funcionalidades, tais como editar, pesquisar, filtrar, configurar - e a conexão entre esses boxes a partir do processo de interação. Você pode ver mais explicações e exemplos https://www.lucidchart.com/blog/how-to-make-a-user-flow-diagram.
+<img width="100%" alt="Diagrama de Fluxo SOS Dog" src="https://github.com/user-attachments/assets/80c2f34e-749c-4ac6-95f0-1753eac79fb6" />
 
-![Exemplo de Diagrama de Fluxo](img/diagramafluxo2.jpg)
+### Entendendo o Fluxo
 
-As referências abaixo irão auxiliá-lo na geração do artefato “Diagramas de Fluxo”.
+O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divididos nas seguintes etapas principais:
+
+* **Autenticação e Permissões:** O fluxo inicia validando o acesso do usuário (Login/Cadastro) e verificando a permissão de uso do GPS. Como o sistema é baseado em geolocalização, a concessão do GPS é obrigatória para acessar a Tela Principal (Mapa).
+* **Exploração do Mapa:** Na tela principal, o usuário pode explorar as ocorrências ao redor, aplicar filtros, visualizar detalhes específicos de cada animal e interagir com as publicações (favoritar ou comentar).
+* **Registro de Ocorrências:** Ao optar por registrar um animal (seja de rua ou perdido), o fluxo guia o usuário pelo preenchimento de dados descritivos, upload de foto, captura automática da localização via GPS e informação sobre o estado de saúde, finalizando com o salvamento no sistema.
+* **Menu Secundário:** Acesso às opções de configurações da conta e central de ajuda do aplicativo.
+
+
 
 > **Links Úteis**:
 > - [Fluxograma online: seis sites para fazer gráfico sem instalar nada | Produtividade | TechTudo](https://www.techtudo.com.br/listas/2019/03/fluxograma-online-seis-sites-para-fazer-grafico-sem-instalar-nada.ghtml)
