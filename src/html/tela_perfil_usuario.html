@@ -15,24 +15,30 @@
 <body>
 
     <header class="top-header">
-        <div class="logo">
-            <i class="fa-solid fa-paw fa-3x" style="color: #c94c4c;"></i>
+        <div class="logo-box" style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 15px;">
+            <img src="../img/logo_love.png" alt="Logo do Portal" style="height: 100px; width: auto; max-width: 150%;">
         </div>
+        
         <nav class="main-nav">
             <a href="#mapa"><i class="fa-solid fa-location-dot"></i> Mapa dos Casos</a>
             <a href="#feed"><i class="fa-solid fa-folder-open"></i> Feed de Casos</a>
         </nav>
         <div class="user-menu">
-            <button class="btn-home" onclick="window.location.href='../html/home.html'"><i class="fa-solid fa-house"></i> HOME</button>
-            
+            <button class="btn-home" onclick="window.location.href='../html/home.html'"><i
+                    class="fa-solid fa-house"></i> HOME</button>
+
             <div class="user-profile">
-                <img src="../img/Maria.jpg" alt="Avatar">
+                <img src="../img/Maria.jpg" alt="Avatar" class="img-perfil-global">
                 <div class="user-info">
-                    <strong>Sandra_SOS</strong>
-                    <span>@Sandra_SOS</span>
+                    <strong class="nome-perfil-global">Sandra_SOS</strong>
+                    
+                    <span class="tipo-perfil-global" style="background-color: #4f7c75; color: white; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-top: 2px; display: inline-block;">Adotante</span>
+                    
                     <div class="user-actions">
-                        <small style="cursor:pointer;" onclick="window.location.href='../html/EditarPerfil.html'"><i class="fa-solid fa-pen"></i> Editar Perfil</small>
-                        <small style="cursor:pointer;" onclick="fazerLogoutGeral()"><i class="fa-solid fa-right-from-bracket"></i> Sair</small>
+                        <small style="cursor:pointer;" onclick="window.location.href='../html/EditarPerfil.html'"><i
+                                class="fa-solid fa-pen"></i> Editar Perfil</small>
+                        <small style="cursor:pointer;" onclick="fazerLogoutGeral()"><i
+                                class="fa-solid fa-right-from-bracket"></i> Sair</small>
                     </div>
                 </div>
             </div>
@@ -47,7 +53,7 @@
                     <img src="../img/labrador.png" alt="Cachorro">
                     <div class="case-details">
                         <div class="case-header">
-                            <span>Id: 0000x001</span>
+                            <span>Id: Marley</span>
                             <span class="badge badge-green">Saudável</span>
                         </div>
                         <p><strong>Local:</strong> Parque Central</p>
@@ -58,7 +64,7 @@
                     <img src="../img/amoraa.jpg" alt="Cachorro">
                     <div class="case-details">
                         <div class="case-header">
-                            <span>Id: 0000x002</span>
+                            <span>Id: Amora</span>
                             <span class="badge badge-green">Saudável</span>
                         </div>
                         <p><strong>Local:</strong> Parque Central</p>
@@ -69,7 +75,7 @@
                     <img src="../img/closeup-shot.jpg" alt="Cachorro">
                     <div class="case-details">
                         <div class="case-header">
-                            <span>Id: 0000x003</span>
+                            <span>Id:Pretin</span>
                             <span class="badge badge-green">Saudável</span>
                         </div>
                         <p><strong>Local:</strong> Parque Central</p>
@@ -80,7 +86,7 @@
                     <img src="../img/carameloselfie.jpg" alt="Cachorro">
                     <div class="case-details">
                         <div class="case-header">
-                            <span>Id: 0000x004</span>
+                            <span>Id: Caramelolins</span>
                             <span class="badge badge-green">Saudável</span>
                         </div>
                         <p><strong>Local:</strong> Parque Central</p>
@@ -91,35 +97,39 @@
                     <img src="../img/caramelo.jpeg" alt="Cachorro">
                     <div class="case-details">
                         <div class="case-header">
-                            <span>Id: 0000x005</span>
+                            <span>Id: RexMerlon</span>
                             <span class="badge badge-green">Saudável</span>
                         </div>
                         <p><strong>Local:</strong> Parque Central</p>
                         <p><strong>Status:</strong> Saudável - Médio - Macho</p>
                     </div>
-                    
+
                 </div>
             </div>
 
             <div class="sidebar-buttons">
-                <button class="btn-orange" onclick="alert('Página de Urgência em desenvolvimento!')">Urgente <i class="fa-solid fa-user-clock"></i></button>
-                <button class="btn-orange" onclick="alert('Formulário de Reporte em desenvolvimento!')">Reportar Cachorro <i class="fa-solid fa-pen-to-square"></i></button>
+                <button class="btn-orange" onclick="alert('Página de Urgência em desenvolvimento!')">Urgente <i
+                        class="fa-solid fa-user-clock"></i></button>
+                <button class="btn-orange" onclick="alert('Formulário de Reporte em desenvolvimento!')">Reportar
+                    Cachorro <i class="fa-solid fa-pen-to-square"></i></button>
             </div>
         </aside>
 
         <section class="main-content">
             <div class="feed-header">
                 <h2>feed de notícias</h2>
-                
             </div>
 
             <div class="swiper swiper-feed">
                 <div class="swiper-wrapper">
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-dog card-icon"></i>
-                            <img src="../img/cute-abandoned.jpg" alt="Cachorro">
-                            <h3>ID do animal</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-dog card-icon"></i>
+                                <img src="../img/cute-abandoned.jpg" class="feed-img" alt="Cachorro">
+                                <h3>RajadoNelson</h3>
+                            </a>
                             <div class="tags">
                                 <span>Macho</span><span>Pelo Médio</span><span>Pequeno</span><span>Adulto</span>
                             </div>
@@ -134,11 +144,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-cat card-icon"></i>
-                            <img src="../img/caramelo.jpg" alt="Gato">
-                            <h3>ID do animal</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-cat card-icon"></i>
+                                <img src="../img/caramelo.jpg" class="feed-img" alt="Gato">
+                                <h3>Caca</h3>
+                            </a>
                             <div class="tags">
                                 <span>Macho</span><span>Pelo Cinza</span><span>Pequeno</span><span>Adulto</span>
                             </div>
@@ -153,13 +166,16 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-dog card-icon"></i>
-                            <img src="../img/caramelo.jpeg" alt="Cachorro">
-                            <h3>Cachorro Resgatado</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-dog card-icon"></i>
+                                <img src="../img/caramelo.jpeg" class="feed-img" alt="Cachorro">
+                                <h3>RexNelson</h3>
+                            </a>
                             <div class="tags">
-                                <span>Fêmea</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
+                                <span>Macho</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
                             </div>
                             <div class="observations">
                                 <strong>Observações:</strong>
@@ -172,11 +188,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-dog card-icon"></i>
-                            <img src="../img/amoraa.jpg" alt="Cachorro">
-                            <h3>ID do animal 04</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-dog card-icon"></i>
+                                <img src="../img/amoraa.jpg" class="feed-img" alt="Cachorro">
+                                <h3>Amora</h3>
+                            </a>
                             <div class="tags">
                                 <span>Macho</span><span>Pelo Médio</span><span>Pequeno</span><span>Adulto</span>
                             </div>
@@ -191,11 +210,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-cat card-icon"></i>
-                            <img src="../img/caramelosoridente.jpeg" alt="Gato">
-                            <h3>ID do animal 05</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-cat card-icon"></i>
+                                <img src="../img/caramelosoridente.jpeg" class="feed-img" alt="Gato">
+                                <h3>Sorriso</h3>
+                            </a>
                             <div class="tags">
                                 <span>Macho</span><span>Pelo Cinza</span><span>Pequeno</span><span>Adulto</span>
                             </div>
@@ -210,11 +232,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-dog card-icon"></i>
-                            <img src="../img/billy.jpg.png" alt="Cachorro">
-                            <h3>Cachorro Resgatado 06</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-dog card-icon"></i>
+                                <img src="../img/billy.jpg.png" class="feed-img" alt="Cachorro">
+                                <h3>lindolfo</h3>
+                            </a>
                             <div class="tags">
                                 <span>Fêmea</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
                             </div>
@@ -229,11 +254,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-dog card-icon"></i>
-                            <img src="../img/white-dog.jpg" alt="Cachorro">
-                            <h3>ID do animal 07</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-dog card-icon"></i>
+                                <img src="../img/white-dog.jpg" class="feed-img" alt="Cachorro">
+                                <h3>Spaike</h3>
+                            </a>
                             <div class="tags">
                                 <span>Macho</span><span>Pelo Médio</span><span>Pequeno</span><span>Adulto</span>
                             </div>
@@ -248,11 +276,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-cat card-icon"></i>
-                            <img src="../img/pug-dog.jpg" alt="Gato">
-                            <h3>ID do animal 08</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-cat card-icon"></i>
+                                <img src="../img/Lola.jpeg" class="feed-img" alt="Gato">
+                                <h3>lola</h3>
+                            </a>
                             <div class="tags">
                                 <span>Macho</span><span>Pelo Cinza</span><span>Pequeno</span><span>Adulto</span>
                             </div>
@@ -267,11 +298,14 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="swiper-slide">
-                        <div class="feed-card">
-                            <i class="fa-solid fa-dog card-icon"></i>
-                            <img src="../img/carameloselfie.jpg" alt="Cachorro">
-                            <h3>Cachorro Resgatado 09</h3>
+                        <div class="feed-card" style="position: relative;">
+                            <a href="pagina_detalhes.html" class="card-link">
+                                <i class="fa-solid fa-dog card-icon"></i>
+                                <img src="../img/carameloselfie.jpg" class="feed-img" alt="Cachorro">
+                                <h3>Vitor</h3>
+                            </a>
                             <div class="tags">
                                 <span>Fêmea</span><span>Pelo Curto</span><span>Grande</span><span>Adulto</span>
                             </div>
@@ -286,9 +320,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="swiper-button-prev feed-prev"></div>
+                    </div>
+                    <div class="swiper-button-prev feed-prev"></div>
                 <div class="swiper-button-next feed-next"></div>
             </div>
 
@@ -386,7 +419,7 @@
                             <p>Milo</p>
                         </div>
                     </div>
-                    
+
                     <div class="swiper-button-prev lost-prev"></div>
                     <div class="swiper-button-next lost-next"></div>
                 </div>
@@ -396,7 +429,7 @@
         <aside class="right-sidebar">
             <div class="bio-box">
                 <h4>Bio</h4>
-                <p>Amo animais, Resgato e procuro lares cheios de amor para cães de rua.</p>
+                <p class="bio-perfil-global">Amo animais, Resgato e procuro lares cheios de amor para cães de rua.</p>
             </div>
 
             <div class="search-box">
@@ -407,9 +440,18 @@
             <div class="sponsored-section">
                 <h3><i class="fa-solid fa-bullhorn"></i> Sugestões para você</h3>
 
+                <div class="comment-card">
+                    <h4><i class="fa-solid fa-comment-dots"></i> Deixe seu comentário</h4>
+                    <textarea id="textoComentarioPerfil" placeholder="Escreva aqui o que você achou, ou deixe uma mensagem de apoio..."
+                        rows="3" onkeypress="if(event.key === 'Enter') { event.preventDefault(); window.enviarComentarioDoPerfil(); }"></textarea>
+                    <button class="btn-comment" onclick="window.enviarComentarioDoPerfil()">
+                        <i class="fa-solid fa-paper-plane"></i> Enviar
+                    </button>
+                </div>
+
                 <div class="ad-card" onclick="alert('Redirecionando para a loja de rações...')">
                     <div class="ad-badge pulse">15% OFF</div>
-                    <img src="https://placehold.co/260x100/ffcc80/d9826a?text=Ração+Premium" alt="Ração Premium">
+                    <img src="../img/racao_premium.jpg" alt="Ração Premium">
                     <div class="ad-content">
                         <h4>NutriPet Premium</h4>
                         <p>Ração super premium para cães e gatos. Frete grátis na primeira compra!</p>
@@ -425,23 +467,15 @@
                         <button class="btn-ad btn-vet"><i class="fa-solid fa-stethoscope"></i> Agendar Consulta</button>
                     </div>
                 </div>
-
-                <div class="ad-card" onclick="alert('Abrindo o iFood...')">
-                    <img src="https://placehold.co/260x100/ea1d2c/ffffff?text=iFood+Pets" alt="iFood Pets">
-                    <div class="ad-content">
-                        <h4>iFood Pets</h4>
-                        <p>Faltou petisco? Tudo para o seu pet entregue em minutos na sua porta!</p>
-                        <button class="btn-ad btn-ifood"><i class="fa-solid fa-motorcycle"></i> Pedir no iFood</button>
-                    </div>
-                    
-                </div>
             </div>
         </aside>
 
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="../javascript/tela_perfil_usuario.html.js"></script>
+    <script src="../javascript/tela_perfil_usuario.js"></script>
+    
+    <script src="../javascript/EditarPerfil.js"></script>
 </body>
 
 </html>

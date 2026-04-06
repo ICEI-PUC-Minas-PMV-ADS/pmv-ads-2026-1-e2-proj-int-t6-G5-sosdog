@@ -1,78 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOS Dog</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="../css/home.css">
 </head>
-
 <body>
 
-    <header>
-        <div class="logo-box">
-            <img src="../img/logo_love.png" alt="Logo do Portal" class="modal-logo">
+    <header class="header">
+        <div class="logo-box" style="display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 15px;">
+            <img src="../img/logo_love.png" alt="Logo do Portal" class="header-logo" style="height: 80px; width: auto; max-width: 100%;">
         </div>
 
-        <nav class="nav-menu">
-            <a href="#" class="nav-item">
-                <img src="../img/mapa_de_casos.png" alt="Mapa dos Casos" width="35" height="35"> Mapa dos Casos
+        <nav class="nav-menu" aria-label="Menu principal">
+            <a href="#mapa-casos" class="nav-item">
+                <i class="fa-solid fa-map-location-dot" style="font-size: 24px; color: white; margin-bottom: 5px;"></i>
+                <span>Mapa dos Casos</span>
             </a>
-            <a href="#" class="nav-item">
-                <img src="../img/feed_de_casos.png" alt="Feed de Casos" width="35" height="35"> Feed de Casos
+
+            <a href="#feed-casos" class="nav-item">
+                <i class="fa-solid fa-rss" style="font-size: 24px; color: white; margin-bottom: 5px;"></i>
+                <span>Feed de Casos</span>
             </a>
         </nav>
 
-        <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+        <div class="header-right">
             <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Busca...">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="text" id="searchBarTop" placeholder="Busca..." aria-label="Buscar">
             </div>
-            
+
             <div id="loginBtnContainer">
-                <a href="#" class="nav-item" id="loginBtn" style="display: flex; flex-direction: column; align-items: center; color: white; text-decoration: none;">
-                    <i class="far fa-user-circle" style="font-size: 24px; margin-bottom: 5px;"></i> login/cadastrar
+                <a href="#" class="nav-item login-btn-link" id="loginBtn">
+                    <i class="far fa-user-circle login-btn-icon" aria-hidden="true"></i>
+                    <span>login/cadastrar</span>
                 </a>
             </div>
 
-            <div id="loggedInContainer" style="display: none; align-items: center; gap: 20px;">
-                
-                <a href="tela_perfil_usuario.html" id="btnTelaUsuarioFixo" style="background-color: white; color: #385b54; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-user"></i> USUÁRIO
+            <div id="loggedInContainer" class="logged-in-container hidden">
+                <a href="tela_perfil_usuario.html" id="btnTelaUsuarioFixo" class="btn-user-fixed">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    <span>USUÁRIO</span>
                 </a>
-            
-                <div class="user-profile" style="display: flex; align-items: center; gap: 15px;">
-                    <img src="../img/sua_foto_aqui.jpg" onerror="this.src='https://placehold.co/45x45'" alt="Avatar" style="border-radius: 50%; width: 45px; height: 45px; object-fit: cover; border: 2px solid #a2c1a3; flex-shrink: 0;">
-                    
-                    <div class="user-info" style="display: flex; flex-direction: column; justify-content: center; text-align: left; min-width: max-content;">
-                        <strong id="userNameDisplay" style="color: white; font-size: 15px; margin-bottom: 2px; line-height: 1.1;">Nome do Usuário</strong>
-                        <span id="userArrobaDisplay" style="color: #a2c1a3; font-size: 13px; margin-bottom: 6px; line-height: 1.1;">@usuario</span>
+
+                <div class="user-profile user-profile-box">
+                    <img
+                        src="https://placehold.co/45x45"
+                        onerror="this.src='https://placehold.co/45x45'"
+                        alt="Avatar do usuário"
+                        class="user-avatar img-perfil-global"
+                        id="homeUserAvatar"
+                    >
+
+                    <div class="user-info user-info-text">
+                        <strong id="homeUserName" class="user-name nome-perfil-global">Nome do Usuário</strong>
+                        <span id="homeTipoPerfil" class="tipo-perfil-usuario">Adotante</span>
                         
-                        <div class="user-actions" style="display: flex; align-items: center; gap: 15px; font-size: 12px;">
-                            <a href="EditarPerfil.html" style="color: #ccc; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 5px;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#ccc'">
-                                <i class="fas fa-pen"></i> Editar Perfil
+
+                        <span id="homeSeloVoluntario" class="selo-voluntario" style="display: none;">
+                            <i class="fa-solid fa-badge-check" aria-hidden="true"></i>
+                            Voluntário
+                        </span>
+
+                        <div class="user-actions user-actions-links">
+                            <a href="EditarPerfil.html" class="action-link" id="btnEditarPerfilHome">
+                                <i class="fas fa-pen" aria-hidden="true"></i>
+                                <span>Editar Perfil</span>
                             </a>
-                            <a href="#" onclick="fazerLogoutGeral(event)" style="color: #ccc; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 5px;" onmouseover="this.style.color='#f07565'" onmouseout="this.style.color='#ccc'">
-                                <i class="fas fa-sign-out-alt"></i> Sair
+
+                            <a href="#" id="btnLogout" class="action-link action-link-logout">
+                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                <span>Sair</span>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </header>
 
-    <div class="main-container">
-
-        <div class="left-panel">
+    <main class="main-container">
+        <section class="left-panel">
             <div class="status-card">
                 <div class="status-img-container">
-                    <img src="../img/white-dog.jpg" alt="Cachorro">
-                    <div class="status-img-bg"><i class="fas fa-paw"></i><i class="fas fa-paw"></i></div>
+                    <img src="../img/white-dog.jpg" alt="Cachorro Luck">
+                    <div class="status-img-bg">
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                    </div>
                 </div>
                 <div class="status-info">
                     <strong>Id:</strong> Luck<br>
@@ -84,61 +103,74 @@
 
             <div class="status-card">
                 <div class="status-img-container">
-                    <img src="../img/pug-dog.jpg" alt="Cachorro">
-                    <div class="status-img-bg"><i class="fas fa-paw"></i><i class="fas fa-paw"></i></div>
-                </div>
-                <div class="status-info">
-                    <strong>Id:</strong> Pituco <br>
-                    <strong>Local:</strong> Parque Central<br><br>
-                    <strong>Status:</strong> Saudável - Médio - Macho
-                </div>
-                <div class="badge-saudavel">Saudável</div>
-            </div>
-
-            <div class="status-card">
-                <div class="status-img-container">
-                    <img src="../img/purebred.jpg" alt="Cachorro">
-                    <div class="status-img-bg"><i class="fas fa-paw"></i><i class="fas fa-paw"></i></div>
-                </div>
-                <div class="status-info">
-                    <strong>Id:</strong> Pretinha <br>
-                    <strong>Local:</strong> Parque Central<br><br>
-                    <strong>Status:</strong> Saudável - Médio - Macho
-                </div>
-                <div class="badge-saudavel">Saudável</div>
-            </div>
-
-            <div class="status-card">
-                <div class="status-img-container">
-                    <img src="../img/cac.rua.jpg" alt="Cachorro">
-                    <div class="status-img-bg"><i class="fas fa-paw"></i><i class="fas fa-paw"></i></div>
-                </div>
-                <div class="status-info">
-                    <strong>Id:</strong> Capitão <br>
-                    <strong>Local:</strong> Parque Central<br><br>
-                    <strong>Status:</strong> Saudável - Médio - Macho
-                </div>
-                <div class="badge-saudavel">Saudável</div>
-            </div>
-
-            <div class="status-card">
-                <div class="status-img-container">
-                    <img src="../img/dog-looking.jpg" alt="Cachorro">
-                    <div class="status-img-bg"><i class="fas fa-paw"></i><i class="fas fa-paw"></i></div>
-                </div>
-                <div class="status-info">
-                    <strong>Id:</strong> Amora <br>
-                    <strong>Local:</strong> Parque Central<br><br>
-                    <strong>Status:</strong> Saudável - Médio - Macho
-                </div>
-                <div class="badge-saudavel">Saudável</div>
-            </div>
-
-            <div class="status-card">
-                <div class="status-img-container">
-                    <img src="../img/pretinha.avif" alt="Cachorro">
+                    <img src="../img/pug-dog.jpg" alt="Cachorro Pituco">
                     <div class="status-img-bg">
-                        <i class="fas fa-paw"></i><i class="fas fa-paw"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="status-info">
+                    <strong>Id:</strong> Pituco<br>
+                    <strong>Local:</strong> Parque Central<br><br>
+                    <strong>Status:</strong> Saudável - Médio - Macho
+                </div>
+                <div class="badge-saudavel">Saudável</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-img-container">
+                    <img src="../img/purebred.jpg" alt="Cachorro Pretinha">
+                    <div class="status-img-bg">
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="status-info">
+                    <strong>Id:</strong> Pretinha<br>
+                    <strong>Local:</strong> Parque Central<br><br>
+                    <strong>Status:</strong> Saudável - Médio - Macho
+                </div>
+                <div class="badge-saudavel">Saudável</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-img-container">
+                    <img src="../img/cac.rua.jpg" alt="Cachorro Capitão">
+                    <div class="status-img-bg">
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="status-info">
+                    <strong>Id:</strong> Capitão<br>
+                    <strong>Local:</strong> Parque Central<br><br>
+                    <strong>Status:</strong> Saudável - Médio - Macho
+                </div>
+                <div class="badge-saudavel">Saudável</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-img-container">
+                    <img src="../img/dog-looking.jpg" alt="Cachorro Amora">
+                    <div class="status-img-bg">
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="status-info">
+                    <strong>Id:</strong> Amora<br>
+                    <strong>Local:</strong> Parque Central<br><br>
+                    <strong>Status:</strong> Saudável - Médio - Macho
+                </div>
+                <div class="badge-saudavel">Saudável</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-img-container">
+                    <img src="../img/pretinha.avif" alt="Cachorro Mole">
+                    <div class="status-img-bg">
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="status-info">
@@ -148,12 +180,13 @@
                 </div>
                 <div class="badge-saudavel">Saudável</div>
             </div>
-            
+
             <div class="status-card">
                 <div class="status-img-container">
-                    <img src="../img/labradordormindo.png" alt="Cachorro">
+                    <img src="../img/labradordormindo.png" alt="Cachorro Max">
                     <div class="status-img-bg">
-                        <i class="fas fa-paw"></i><i class="fas fa-paw"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="status-info">
@@ -164,85 +197,185 @@
                 <div class="badge-saudavel">Saudável</div>
             </div>
 
-            <div class="left-buttons">
-                <button class="btn-urgente">Urgente <i class="fas fa-user-clock"></i></button>
-                <button class="btn-reportar">Reportar Cachorro <i class="far fa-edit"></i></button>
-            </div>
-        </div>
-
-        <div class="center-panel">
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 class="section-title" style="margin: 0;">feed de notícias</h2>
-                
-                <div style="position: relative;">
-                    <button id="btnSelecionarEstado" style="background-color: #385b54; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                        <i class="fas fa-map-marker-alt"></i> Selecionar Estado
-                    </button>
+            <div class="status-card">
+                <div class="status-img-container">
+                    <img src="../img/poodle.jpg" alt="Cachorro Rex">
+                    <div class="status-img-bg">
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                        <i class="fas fa-paw" aria-hidden="true"></i>
+                    </div>
                 </div>
+                <div class="status-info">
+                    <strong>Id:</strong> Rex<br>
+                    <strong>Local:</strong> Parque Central<br><br>
+                    <strong>Status:</strong> Saudável - Médio - Macho
+                </div>
+                <div class="badge-saudavel">Saudável</div>
             </div>
+
+            <div class="left-buttons">
+                <button class="btn-urgente" type="button" onclick="window.location.href='Urgencia.html'">
+                    Urgente <i class="fas fa-user-clock" aria-hidden="true"></i>
+                </button>
+                <button class="btn-reportar" type="button" onclick="window.location.href='Reportar.html'">
+                    Reportar Cachorro <i class="far fa-edit" aria-hidden="true"></i>
+                </button>
+            </div>
+        </section>
+
+        <section class="center-panel">
+            <div class="feed-header" id="feed-casos">
+                <h2 class="section-title feed-title">feed de notícias</h2>
+
+                <div class="location-selector-container" style="position: relative; z-index: 100;">
+                    <button id="btnSelecionarEstado" class="btn-select-state" type="button">
+                        <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                        <span>Selecionar Estado</span>
+                        <i class="fas fa-chevron-down" style="margin-left: 5px; font-size: 11px;"></i>
+                    </button>
+                    
+                    <div id="dropdownEstado" class="dropdown-content">
+                        <button class="dropdown-item" type="button">SP</button>
+                        <button class="dropdown-item" type="button">RJ</button>
+                        <button class="dropdown-item" type="button">MG</button>
+                        <button class="dropdown-item" type="button">RS</button>
+                        <button class="dropdown-item" type="button">PR</button>
+                        <button class="dropdown-item" type="button">SC</button>
+                        <button class="dropdown-item" type="button">BA</button>
+                        <button class="dropdown-item" type="button">CE</button>
+                        <button class="dropdown-item" type="button">PE</button>
+                        <button class="dropdown-item" type="button">GO</button>
+                        <button class="dropdown-item" type="button">ES</button>
+                        <button class="dropdown-item" type="button">DF</button>
+                        <button class="dropdown-item" type="button">AM</button>
+                        <button class="dropdown-item" type="button">PA</button>
+                        <button class="dropdown-item" type="button">MT</button>
+                        <button class="dropdown-item" type="button">MS</button>
+                        <button class="dropdown-item" type="button">PB</button>
+                        <button class="dropdown-item" type="button">RN</button>
+                        <button class="dropdown-item" type="button">AL</button>
+                        <button class="dropdown-item" type="button">SE</button>
+                        <button class="dropdown-item" type="button">PI</button>
+                        <button class="dropdown-item" type="button">MA</button>
+                        <button class="dropdown-item" type="button">TO</button>
+                        <button class="dropdown-item" type="button">RO</button>
+                        <button class="dropdown-item" type="button">AC</button>
+                        <button class="dropdown-item" type="button">RR</button>
+                        <button class="dropdown-item" type="button">AP</button>
+                    </div>
+                </div>
+                </div>
 
             <div class="feed-swiper-container">
-                <i class="fas fa-chevron-left custom-arrow feed-prev"></i>
+                <button class="custom-arrow feed-prev" type="button" aria-label="Anterior">
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
 
                 <div class="swiper feed-swiper">
-                    <div class="swiper-wrapper">
+                    <div class="swiper-wrapper" id="feedContainer">
                         <div class="swiper-slide">
-                            <div class="feed-card">
-                                <i class="fas fa-dog" style="font-size: 20px;"></i>
-                                <img src="../img/cac.rua.jpg" alt="Foto do Animal" class="feed-img">
-                                <h3>ID do animal</h3>
+                            <div class="feed-card" data-busca="cachorro capitao macho medio pequeno adulto caramelo">
+                                <i class="fas fa-dog feed-card-icon" aria-hidden="true"></i>
+                                <img src="../img/cac.rua.jpg" alt="Foto do animal" class="feed-img" id="mainFeedImage0">
+                                <h3>Capitão</h3>
                                 <div class="tags">
-                                    <span class="tag">Macho</span> <span class="tag">Pelo Médio</span> <span class="tag">Pequeno</span> <span class="tag">Adulto</span>
+                                    <span class="tag">Macho</span>
+                                    <span class="tag">Pelo Médio</span>
+                                    <span class="tag">Pequeno</span>
+                                    <span class="tag">Adulto</span>
                                 </div>
-                                <div class="obs-box"><strong>Observações:</strong><br>Cachorro muito dócil precisa de um lar</div>
-                                <div class="feed-actions"><i class="fas fa-share"></i> <i class="far fa-heart"></i> <i class="far fa-bookmark"></i></div>
+                                <div class="obs-box">
+                                    <strong>Observações:</strong><br>
+                                    Cachorro muito dócil precisa de um lar
+                                </div>
+                                <div class="feed-actions">
+                                    <i class="fas fa-share" aria-hidden="true"></i>
+                                    <i class="far fa-heart" aria-hidden="true"></i>
+                                    <i class="far fa-bookmark" aria-hidden="true"></i>
+                                </div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
-                            <div class="feed-card">
-                                <i class="fas fa-cat" style="font-size: 20px;"></i>
-                                <img src="../img/gatorua.jpg" class="feed-img" alt="Gato">
-                                <h3>ID do animal</h3>
+                            <div class="feed-card" data-busca="gato macho cinza pequeno adulto">
+                                <i class="fas fa-cat feed-card-icon" aria-hidden="true"></i>
+                                <img src="../img/gatorua.jpg" class="feed-img" alt="Gato" id="mainFeedImage1">
+                                <h3>Mickey</h3>
                                 <div class="tags">
-                                    <span class="tag">Macho</span> <span class="tag">Pelo Cinza</span> <span class="tag">Pequeno</span> <span class="tag">Adulto</span>
+                                    <span class="tag">Macho</span>
+                                    <span class="tag">Pelo Cinza</span>
+                                    <span class="tag">Pequeno</span>
+                                    <span class="tag">Adulto</span>
                                 </div>
-                                <div class="obs-box"><strong>Observações:</strong><br>Gatinho perdido perto da padaria pandele 3 aninhos, não tem costume de sair de casa.</div>
-                                <div class="feed-actions"><i class="fas fa-share"></i> <i class="far fa-heart"></i> <i class="far fa-bookmark"></i></div>
+                                <div class="obs-box">
+                                    <strong>Observações:</strong><br>
+                                    Gatinho perdido perto da padaria, tem 3 aninhos e não costuma sair de casa.
+                                </div>
+                                <div class="feed-actions">
+                                    <i class="fas fa-share" aria-hidden="true"></i>
+                                    <i class="far fa-heart" aria-hidden="true"></i>
+                                    <i class="far fa-bookmark" aria-hidden="true"></i>
+                                </div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
-                            <div class="feed-card">
-                                <i class="fas fa-dog" style="font-size: 20px;"></i>
-                                <img src="../img/amora.jpg" class="feed-img" alt="Cachorro">
-                                <h3>ID do animal</h3>
+                            <div class="feed-card" data-busca="cachorro femea amora pelo curto medio filhote branco">
+                                <i class="fas fa-dog feed-card-icon" aria-hidden="true"></i>
+                                <img src="../img/amora.jpg" class="feed-img" alt="Cachorro" id="mainFeedImage2">
+                                <h3>Amora</h3>
                                 <div class="tags">
-                                    <span class="tag">Fêmea</span> <span class="tag">Pelo Curto</span> <span class="tag">Médio</span> <span class="tag">Filhote</span>
+                                    <span class="tag">Fêmea</span>
+                                    <span class="tag">Pelo Curto</span>
+                                    <span class="tag">Médio</span>
+                                    <span class="tag">Filhote</span>
                                 </div>
-                                <div class="obs-box"><strong>Observações:</strong><br>Encontrada na praça principal, muito brincalhona.</div>
-                                <div class="feed-actions"><i class="fas fa-share"></i> <i class="far fa-heart"></i> <i class="far fa-bookmark"></i></div>
+                                <div class="obs-box">
+                                    <strong>Observações:</strong><br>
+                                    Encontrada na praça principal, muito brincalhona.
+                                </div>
+                                <div class="feed-actions">
+                                    <i class="fas fa-share" aria-hidden="true"></i>
+                                    <i class="far fa-heart" aria-hidden="true"></i>
+                                    <i class="far fa-bookmark" aria-hidden="true"></i>
+                                </div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
-                            <div class="feed-card">
-                                <i class="fas fa-cat" style="font-size: 20px;"></i>
-                                <img src="../img/gatocinza.jpg" class="feed-img" alt="Gato">
-                                <h3>ID do animal</h3>
+                            <div class="feed-card" data-busca="gato femea rajado pequeno adulto">
+                                <i class="fas fa-cat feed-card-icon" aria-hidden="true"></i>
+                                <img src="../img/gatocinza.jpg" class="feed-img" alt="Gato" id="mainFeedImage3">
+                                <h3>Cotoco</h3>
                                 <div class="tags">
-                                    <span class="tag">Fêmea</span> <span class="tag">Rajado</span> <span class="tag">Pequeno</span> <span class="tag">Adulto</span>
+                                    <span class="tag">Fêmea</span>
+                                    <span class="tag">Rajado</span>
+                                    <span class="tag">Pequeno</span>
+                                    <span class="tag">Adulto</span>
                                 </div>
-                                <div class="obs-box"><strong>Observações:</strong><br>Gata super mansa procurando os donos originais.</div>
-                                <div class="feed-actions"><i class="fas fa-share"></i> <i class="far fa-heart"></i> <i class="far fa-bookmark"></i></div>
+                                <div class="obs-box">
+                                    <strong>Observações:</strong><br>
+                                    Gata super mansa procurando os donos originais.
+                                </div>
+                                <div class="feed-actions">
+                                    <i class="fas fa-share" aria-hidden="true"></i>
+                                    <i class="far fa-heart" aria-hidden="true"></i>
+                                    <i class="far fa-bookmark" aria-hidden="true"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <i class="fas fa-chevron-right custom-arrow feed-next"></i>
+                <button class="custom-arrow feed-next" type="button" aria-label="Próximo">
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
             </div>
 
-            <div class="lost-container">
-                <i class="fas fa-chevron-left custom-arrow lost-prev" style="font-size: 40px;"></i>
+            <div class="lost-container" id="mapa-casos">
+                <button class="custom-arrow lost-prev lost-arrow-large" type="button" aria-label="Anterior">
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
 
                 <div class="swiper lost-swiper">
                     <div class="swiper-wrapper">
@@ -253,6 +386,7 @@
                                 <div class="lost-name">Zeus</div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
                             <div class="lost-card">
                                 <div class="lost-card-title">Procura-se</div>
@@ -260,6 +394,7 @@
                                 <div class="lost-name">Luke</div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
                             <div class="lost-card">
                                 <div class="lost-card-title">Procura-se</div>
@@ -267,13 +402,15 @@
                                 <div class="lost-name">Café</div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
                             <div class="lost-card">
                                 <div class="lost-card-title">Procura-se</div>
-                                <img src="../img/8630416.png" class="lost-img" alt="totó">
-                                <div class="lost-name">totó</div>
+                                <img src="../img/8630416.png" class="lost-img" alt="Totó">
+                                <div class="lost-name">Totó</div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
                             <div class="lost-card">
                                 <div class="lost-card-title">Procura-se</div>
@@ -281,6 +418,7 @@
                                 <div class="lost-name">Max</div>
                             </div>
                         </div>
+
                         <div class="swiper-slide">
                             <div class="lost-card">
                                 <div class="lost-card-title">Procura-se</div>
@@ -291,120 +429,138 @@
                     </div>
                 </div>
 
-                <i class="fas fa-chevron-right custom-arrow lost-next" style="font-size: 40px;"></i>
+                <button class="custom-arrow lost-next lost-arrow-large" type="button" aria-label="Próximo">
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
             </div>
-        </div>
+        </section>
 
-        <div class="right-panel">
+        <aside class="right-panel">
             <img src="../img/labradorr.jpg" class="hero-img" alt="Cachorro dormindo">
 
             <div class="right-header">
                 <h2>ID do Cachorro</h2>
-                <i class="far fa-edit edit-icon"></i>
+                <i class="far fa-edit edit-icon" aria-hidden="true"></i>
             </div>
 
-            <div style="font-size: 16px; color: #555;">Status</div>
+            <div class="right-panel-subtitle">Status</div>
 
             <div class="status-grid">
                 <div>sexo</div>
-                <div>Sociabilidade</div>
+                <div>sociabilidade</div>
                 <div>cor/pelagem</div>
-                <div>Filhotes/adulto</div>
+                <div>filhotes/adulto</div>
                 <div>porte</div>
             </div>
 
-            <div style="font-weight: bold; font-size: 16px; margin-top: 15px;">Observações:</div>
-            <div class="obs-box" style="height: auto; min-height: 50px; margin-top: 5px;">
+            <div class="right-panel-title">Observações:</div>
+            <div class="obs-box obs-box-expanded">
                 Cachorro muito dócil, encontrado próximo à praça.
             </div>
 
-            <div style="font-weight: bold; font-size: 16px; margin-top: 15px;">Registro de Ações <span style="float: right; font-weight: normal; font-size: 14px;">Usuário:</span></div>
+            <div class="right-panel-title">
+                Registro de Ações <span class="user-span-right">Usuário:</span>
+            </div>
 
             <div class="action-register">
-                <button class="circle-btn agua">Água</button>
-                <button class="circle-btn comida">Comida</button>
+                <button class="circle-btn agua" type="button">Água</button>
+                <button class="circle-btn comida" type="button">Comida</button>
                 <div class="user-info-box">ID usuário:<br>Data/hora<br>alimentação</div>
             </div>
 
-            <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">Validação de localização</div>
+            <div class="right-panel-title-sm">Validação de localização</div>
             <div class="location-box">
-                <div style="line-height: 1.4;"><i class="fas fa-map-marker-alt" style="color: #d94848;"></i> Localização Atual<br><strong>Parque Central</strong></div>
-                <button class="btn-verificar"><i class="fas fa-map-marker-alt"></i> Verificar<br>localização</button>
+                <div class="location-text">
+                    <i class="fas fa-map-marker-alt icon-danger" aria-hidden="true"></i>
+                    Localização Atual<br>
+                    <strong>Parque Central</strong>
+                </div>
+                <button class="btn-verificar" type="button" onclick="window.location.href='Localizacao.html'">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                    Verificar<br>localização
+                </button>
             </div>
 
-            <div style="font-weight: bold; font-size: 16px; margin-top: 10px;">Comentários:</div>
-            
-            <div class="comments-section"></div>
-
-            <div class="add-comment-box">
-                <input type="text" id="newCommentText" placeholder="Escreva um comentário...">
-                <button id="btnSendComment" title="Enviar"><i class="fas fa-paper-plane"></i></button>
+            <div class="right-panel-title-sm">Bio do usuário:</div>
+            <div class="obs-box obs-box-expanded" id="homeUserBio">
+                Amo animais e procuro lares cheios de amor.
             </div>
-            
-        </div>
-    </div>
 
-    <div id="loginModal" class="modal-overlay">
+            <div class="right-panel-title-sm">Comentários:</div>
+            <div class="comments-section" id="commentsArea"></div>
+        </aside>
+    </main>
+
+    <div id="loginModal" class="modal-overlay" aria-hidden="true">
         <div class="modal-content">
-            <span class="close-btn" id="closeModal">&times;</span>
+            <button type="button" class="close-btn" id="closeModal" aria-label="Fechar modal">&times;</button>
 
-            <div id="formLoginBox" style="display: block;">
+            <div id="formLoginBox">
                 <img src="../img/logodog.png" alt="Logo do Portal" class="modal-logo">
-                
                 <h2>Bem-vindo!</h2>
+
                 <form id="formAcaoLogin" class="login-form">
                     <input type="email" id="loginEmail" placeholder="Seu E-mail" required>
                     <input type="password" id="loginSenha" placeholder="Sua Senha" required>
                     <button type="submit" class="btn-entrar">Entrar</button>
-                    <p class="register-link">Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a></p>
+                    <p class="register-link">
+                        Não tem uma conta?
+                        <a href="#" id="showRegister">Cadastre-se</a>
+                    </p>
                 </form>
 
                 <div class="forgot-buttons-container">
-                    <button type="button" class="btn-esqueci" onclick="window.location.href='EsqueciSenha.html'">
-                        Esqueci a Senha
-                    </button>
-                    <button type="button" class="btn-esqueci" onclick="window.location.href='EsqueciUsuario.html'">
-                        Esqueci o Usuário
-                    </button>
+                    <button type="button" id="btnEsqueciSenha" class="btn-esqueci">Esqueci a Senha</button>
+                    <button type="button" id="btnEsqueciUsuario" class="btn-esqueci">Esqueci o Usuário</button>
                 </div>
             </div>
 
-            <div id="formRegisterBox" style="display: none;"> 
+            <div id="formRegisterBox" style="display: none;">
                 <img src="../img/logodog.png" alt="Logo do Portal" class="modal-logo">
-                
                 <h2>Criar Conta</h2>
-                <form id="formAcaoCadastro" class="login-form">
+
+                <form id="formAcaoCadastro" class="login-form" novalidate>
                     <input type="text" id="cadNome" placeholder="Nome Completo" required>
                     <input type="email" id="cadEmail" placeholder="Seu E-mail" required>
-                    
-                    <p class="input-label" style="text-align: left; margin: 10px 0 5px; font-size: 14px; font-weight: bold; color: #555;">
-                        <i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp:
+
+                    <p class="whatsapp-label">
+                        <i class="fab fa-whatsapp icon-whatsapp" aria-hidden="true"></i>
+                        WhatsApp:
                     </p>
+
                     <div class="phone-group">
-                        <input type="tel" id="cadDDD" placeholder="DDD" maxlength="2" required style="width: 25%;">
-                        <input type="tel" id="cadTelefone" placeholder="Número (ex: 98765-4321)" maxlength="10" required style="width: 75%;">
+                        <input type="tel" id="cadDDD" placeholder="DDD" maxlength="2" required class="input-ddd">
+                        <input type="tel" id="cadTelefone" placeholder="Número (ex: 98765-4321)" maxlength="10" required class="input-telefone">
                     </div>
 
                     <input type="password" id="cadSenha" placeholder="Crie uma Senha" required>
                     <input type="password" id="cadConfirmaSenha" placeholder="Confirme a Senha" required>
 
                     <p>Selecione seu perfil:</p>
+
                     <div class="button-group">
-                        <button type="button" class="btn-perfil btn-adotante">Adotante</button>
-                        <button type="button" class="btn-perfil btn-voluntario">Voluntário</button>
-                        <button type="button" class="btn-perfil btn-apoiador">Apoiador</button>
+                        <button type="button" class="btn-perfil btn-adotante" data-profile="Adotante">Adotante</button>
+                        <button type="button" class="btn-perfil btn-voluntario" data-profile="Voluntário">Voluntário</button>
+                        <button type="button" class="btn-perfil btn-apoiador" data-profile="Apoiador">Apoiador</button>
+                        
                     </div>
 
-                    <button type="submit" class="btn-cadastrar">Finalizar Cadastro</button>
-                    
-                    <p class="register-link">Já tem uma conta? <a href="#" id="showLogin">Faça Login</a></p>
+                    <input type="hidden" id="cadPerfil" name="cadPerfil" value="">
+
+                    <button type="submit" id="btnCadastrar" class="btn-cadastrar">
+                        Finalizar Cadastro
+                    </button>
+
+                    <p class="register-link">
+                        Já tem uma conta?
+                        <a href="#" id="showLogin">Faça Login</a>
+                    </p>
                 </form>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="../javascript/home.js"></script> 
-</body>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="../javascript/home.js"></script>
+</body>
 </html>
