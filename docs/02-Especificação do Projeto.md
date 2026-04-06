@@ -96,18 +96,4 @@ O diagrama abaixo ilustra as principais interações entre os diferentes perfis 
 * **Relacionamentos de Extensão (`<<extend>>`):** Aplicamos a relação de extensão apontando de "Filtrar ocorrências" para "Monitorar ocorrências". Isso demonstra tecnicamente que a aplicação de filtros é um comportamento opcional e complementar à ação principal de monitoramento realizada pela ONG/Administrador.
 
 
-## Diagrama de Fluxo (Fluxograma Principal)
-
-O fluxo abaixo representa a jornada principal do usuário dentro do **Sistema SOS Dog**, desde a autenticação até as interações com o mapa e o registro de novas ocorrências.
-
-<img width="100%" alt="Diagrama de Fluxo SOS Dog" src="https://github.com/user-attachments/assets/80c2f34e-749c-4ac6-95f0-1753eac79fb6" />
-
-### Entendendo o Fluxo
-
-O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divididos nas seguintes etapas principais:
-
-* **Autenticação e Permissões:** O fluxo inicia validando o acesso do usuário (Login/Cadastro) e verificando a permissão de uso do GPS. Como o sistema é baseado em geolocalização, a concessão do GPS é obrigatória para acessar a Tela Principal (Mapa).
-* **Exploração do Mapa:** Na tela principal, o usuário pode explorar as ocorrências ao redor, aplicar filtros, visualizar detalhes específicos de cada animal e interagir com as publicações (favoritar ou comentar).
-* **Registro de Ocorrências:** Ao optar por registrar um animal (seja de rua ou perdido), o fluxo guia o usuário pelo preenchimento de dados descritivos, upload de foto, captura automática da localização via GPS e informação sobre o estado de saúde, finalizando com o salvamento no sistema.
-* **Menu Secundário:** Acesso às opções de configurações da conta e central de ajuda do aplicativo.
 
