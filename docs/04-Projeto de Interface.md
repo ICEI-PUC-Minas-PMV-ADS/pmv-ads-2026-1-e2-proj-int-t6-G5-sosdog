@@ -68,8 +68,7 @@ TELA MAPA DE CASOS
 Esta tela interativa localiza animais perdidos, encontrados e para adoção. As suas funções incluem filtros rápidos, pins no mapa com popups detalhados e uma lista lateral sincronizada para resgates.
 
 
-<img width="1632" height="917" alt="Tela Mapa de Casos" src="https://github.com/user-attachments/assets/da1d7a82-c55c-4546-b193-d27009c20aa5" />
-
+<img width="1639" height="928" alt="Tela Mapa de Casos" src="https://github.com/user-attachments/assets/d6c1f071-b60d-4cdb-a999-fe6c4d83b758" />
 
 
 > **Links Úteis**:
