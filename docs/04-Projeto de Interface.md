@@ -23,10 +23,6 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
 * **Menu Secundário:** Acesso às opções de configurações da conta e central de ajuda do aplicativo.
 
 
-
-> **Links Úteis**:
-> - [Fluxograma online: seis sites para fazer gráfico sem instalar nada | Produtividade | TechTudo](https://www.techtudo.com.br/listas/2019/03/fluxograma-online-seis-sites-para-fazer-grafico-sem-instalar-nada.ghtml)
-
 ## Wireframes
 
 ![Exemplo de Wireframe](img/wireframe-example.png)
