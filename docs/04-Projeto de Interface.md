@@ -73,14 +73,3 @@ O Feed de Casos é uma grelha interativa onde os utilizadores podem visualizar a
 
 
 <img width="1096" height="614" alt="Tela feed de Casos" src="https://github.com/user-attachments/assets/25315a1d-99a1-4fe6-a425-c0a4d7e2ee72" />
-
-
-
-> **Links Úteis**:
-> - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
-> - [Ferramentas de Wireframes](https://rockcontent.com/blog/wireframes/)
-> - [MarvelApp](https://marvelapp.com/developers/documentation/tutorials/)
-> - [Figma](https://www.figma.com/)
-> - [Adobe XD](https://www.adobe.com/br/products/xd.html#scroll)
-> - [Axure](https://www.axure.com/edu) (Licença Educacional)
-> - [InvisionApp](https://www.invisionapp.com/) (Licença Educacional)
