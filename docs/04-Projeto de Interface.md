@@ -70,6 +70,15 @@ Esta tela interativa localiza animais perdidos, encontrados e para adoção. As 
 
 <img width="1639" height="928" alt="Tela Mapa de Casos" src="https://github.com/user-attachments/assets/d6c1f071-b60d-4cdb-a999-fe6c4d83b758" />
 
+TELA FEED DE CASOS
+
+
+O Feed de Casos é uma grelha interativa onde os utilizadores podem visualizar animais perdidos, encontrados ou para adoção. Permite filtrar casos facilmente e clicar para ajudar, partilhar ou adotar.
+
+
+<img width="1096" height="614" alt="Tela feed de Casos" src="https://github.com/user-attachments/assets/25315a1d-99a1-4fe6-a425-c0a4d7e2ee72" />
+
+
 
 > **Links Úteis**:
 > - [Protótipos vs Wireframes](https://www.nngroup.com/videos/prototypes-vs-wireframes-ux-projects/)
