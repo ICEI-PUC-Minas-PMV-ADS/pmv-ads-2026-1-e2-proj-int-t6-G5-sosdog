@@ -36,6 +36,13 @@ Interface acolhedora, empática e intuitiva, focada em dar destaque visual aos a
 
 **LOGOTIPO:**
 
+<img width="1024" height="1024" alt="ChatGPT Image 28 de mar  de 2026, 20_08_18" src="https://github.com/user-attachments/assets/4d5dfbe3-76f8-4033-a025-63c4c89a2b0b" />
+
+
+<img width="1024" height="1024" alt="ChatGPT Image 28 de mar  de 2026, 20_46_41" src="https://github.com/user-attachments/assets/dd6b292b-2885-4d3f-9192-60a9a001bff5" />
+
+
+
 
 
 
