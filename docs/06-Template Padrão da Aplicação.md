@@ -31,16 +31,20 @@ Interface acolhedora, empática e intuitiva, focada em dar destaque visual aos a
 | OUTROS          | #E47862| CORES DOS BOTÕES  |
 
 **TIPOGRAFIA:**
+|                   |FONTE    |     TAMANHO                  |
+|-----------------|---------|-------------------------------|
+|  TITULOS        |poetsen one|negrito 20 pix                |
+| TEXTO           | poetsen one |seminegrito 16 pix          | 
+
+<img width="366" height="331" alt="image" src="https://github.com/user-attachments/assets/1e434aa4-7c59-449f-8e1e-9015a932f8d9" />
 
 **ICONOGRAFIA:**
 
 **LOGOTIPO:**
 
-<img width="1024" height="1024" alt="ChatGPT Image 28 de mar  de 2026, 20_08_18" src="https://github.com/user-attachments/assets/4d5dfbe3-76f8-4033-a025-63c4c89a2b0b" />
+<img width="1024" height="1024" alt="logolove" src="https://github.com/user-attachments/assets/4a3d676d-5e6b-4740-9be7-cece11a48b2c" />
 
-
-<img width="1024" height="1024" alt="ChatGPT Image 28 de mar  de 2026, 20_46_41" src="https://github.com/user-attachments/assets/dd6b292b-2885-4d3f-9192-60a9a001bff5" />
-
+<img width="1024" height="1024" alt="logo cao e gato" src="https://github.com/user-attachments/assets/7f85e581-279a-4ab3-b84c-e23d61dcca9e" />
 
 
 
