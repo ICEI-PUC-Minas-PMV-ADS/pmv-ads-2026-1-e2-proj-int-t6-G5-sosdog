@@ -38,6 +38,15 @@ Interface acolhedora, empática e intuitiva, focada em dar destaque visual aos a
 
 <img width="366" height="331" alt="image" src="https://github.com/user-attachments/assets/1e434aa4-7c59-449f-8e1e-9015a932f8d9" />
 
+|                   |FONTE    |     TAMANHO                  |
+|-----------------|---------|-------------------------------|
+|TEXTO CARDS SECUDARIOS | ALATSI REGULAR   |   NEGRITO 20 PIX        |
+| TEXTO CARDS TERCIARIOS | ALATSI REGULAR|seminegrito 20 pix        |
+
+
+<img width="491" height="509" alt="fonte Alatsi Regular" src="https://github.com/user-attachments/assets/b2136ebe-a1e6-4a9a-a507-3d2254899b9c" />
+
+
 **ICONOGRAFIA:**
 
 **LOGOTIPO:**
