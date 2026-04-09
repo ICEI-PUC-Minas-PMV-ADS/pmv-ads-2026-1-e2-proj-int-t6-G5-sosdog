@@ -49,6 +49,10 @@ Interface acolhedora, empática e intuitiva, focada em dar destaque visual aos a
 
 **ICONOGRAFIA:**
 
+
+<img width="460" height="198" alt="ICONOGRAFIA" src="https://github.com/user-attachments/assets/9aea8335-bb61-4f61-9f09-06166f1c468c" />
+
+
 **LOGOTIPO:**
 
 <img width="1024" height="1024" alt="logolove" src="https://github.com/user-attachments/assets/4a3d676d-5e6b-4740-9be7-cece11a48b2c" />
