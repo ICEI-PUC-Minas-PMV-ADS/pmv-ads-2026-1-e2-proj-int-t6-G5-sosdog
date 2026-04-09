@@ -1,13 +1,13 @@
 :root {
-    --bg-body: #e8eceb; 
-    --header-bg: #385b54; 
-    --card-border: #385b54; 
-    --light-green: #a2c1a3; 
-    --text-dark: #333333; 
-    --text-muted: #666666; 
-    --btn-orange: #d9826a; 
+    --bg-body: #e8eceb;
+    --header-bg: #385b54;
+    --card-border: #385b54;
+    --light-green: #a2c1a3;
+    --text-dark: #333333;
+    --text-muted: #666666;
+    --btn-orange: #d9826a;
     --btn-red: #f07565;
-    --btn-green: #81cc98; 
+    --btn-green: #81cc98;
     --right-panel-bg: #d8dbdb;
     --grey-box: #e0e0e0;
 
@@ -27,44 +27,56 @@ body {
     margin: 0;
     width: 100%;
     height: 100vh;
-    overflow: hidden; 
+    overflow: hidden;
     color: var(--text-dark);
-    padding: 15px 25px; 
+    padding: 15px 25px;
     display: flex;
-    flex-direction: column; 
-    background-color: var(--bg-body); 
+    flex-direction: column;
+    background-color: var(--bg-body);
     background-image: linear-gradient(rgba(244, 246, 245, 0.85), rgba(244, 246, 245, 0.85)), url('../img/fundoverdepet.jpg');
-    background-size: cover; 
-    background-position: center; 
+    background-size: cover;
+    background-position: center;
     background-attachment: fixed;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--cor-perfil); }
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cor-perfil);
+}
 
 header {
     background-color: var(--header-bg);
-    border-radius: 12px; 
-    padding: 10px 30px; 
+    border-radius: 12px;
+    padding: 10px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
     margin-bottom: 20px;
-    min-height: 85px; 
-    width: 100%; 
+    min-height: 85px;
+    width: 100%;
     flex-shrink: 0;
     gap: 15px;
     position: relative;
 }
 
-.logo-box { 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    flex-shrink: 0; 
+.logo-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .modal-logo {
@@ -73,11 +85,11 @@ header {
     object-fit: contain;
 }
 
-.nav-menu { 
-    display: flex; 
-    gap: 40px; 
-    justify-content: center; 
-    position: absolute; 
+.nav-menu {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    position: absolute;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -139,13 +151,13 @@ header {
     align-items: center;
 }
 
-#loginBtn { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    text-align: center; 
-    cursor: pointer; 
+#loginBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
     text-decoration: none;
     color: white;
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -206,13 +218,13 @@ header {
     color: #ff9e80;
 }
 
-.main-container { 
-    display: grid; 
+.main-container {
+    display: grid;
     grid-template-columns: 20% 1fr 22%;
-    gap: 16px; 
-    flex-grow: 1; 
-    min-height: 0; 
-    width: 100%; 
+    gap: 16px;
+    flex-grow: 1;
+    min-height: 0;
+    width: 100%;
 }
 
 .left-panel,
@@ -220,16 +232,16 @@ header {
 .right-panel {
     display: flex;
     flex-direction: column;
-    height: 100%; 
-    overflow-y: auto; 
+    height: 100%;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
 /* Esconde barra de rolagem (Firefox/IE) */
 .left-panel,
 .right-panel {
-    scrollbar-width: none; 
-    -ms-overflow-style: none; 
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 /* Esconde barra de rolagem (Chrome/Safari) */
@@ -239,25 +251,25 @@ header {
 }
 
 /* Compactando Painel Esquerdo */
-.left-panel { 
-    padding-right: 0px; 
-    gap: 8px; 
+.left-panel {
+    padding-right: 0px;
+    gap: 8px;
 }
 
-.center-panel { 
-    background: transparent; 
-    padding: 0 4px; 
-    border-radius: 15px; 
-    min-width: 0; 
+.center-panel {
+    background: transparent;
+    padding: 0 4px;
+    border-radius: 15px;
+    min-width: 0;
 }
 
 /* Compactando Painel Direito */
-.right-panel { 
-    background-color: var(--right-panel-bg); 
-    border: 1px solid #ccc; 
-    border-radius: 15px; 
-    padding: 12px 15px; 
-    gap: 10px; 
+.right-panel {
+    background-color: var(--right-panel-bg);
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 12px 15px;
+    gap: 10px;
 }
 
 .status-card {
@@ -304,11 +316,11 @@ header {
     gap: 4px;
 }
 
-.status-info { 
-    flex: 1; 
-    font-size: 11px; 
-    line-height: 1.3; 
-    color: var(--text-dark); 
+.status-info {
+    flex: 1;
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--text-dark);
 }
 
 .badge-saudavel {
@@ -350,9 +362,17 @@ header {
     gap: 5px;
 }
 
-.left-buttons button:hover { opacity: 0.9; }
-.btn-urgente { background-color: var(--btn-red); }
-.btn-reportar { background-color: var(--cor-perfil); }
+.left-buttons button:hover {
+    opacity: 0.9;
+}
+
+.btn-urgente {
+    background-color: var(--btn-red);
+}
+
+.btn-reportar {
+    background-color: var(--cor-perfil);
+}
 
 .section-title {
     font-size: 20px;
@@ -382,7 +402,7 @@ header {
 }
 
 .feed-swiper .swiper-slide {
-    height: auto; 
+    height: auto;
     display: flex;
     align-items: stretch;
 }
@@ -394,36 +414,36 @@ header {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    width: 100%; 
-    height: 100%; 
+    width: 100%;
+    height: 100%;
 }
 
 .card-link {
-    text-decoration: none; 
-    color: inherit; 
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
-    flex-grow: 1; 
-    width: 100%; 
+    flex-grow: 1;
+    width: 100%;
     transition: opacity 0.2s ease;
 }
 
 .card-link:hover {
-    opacity: 0.85; 
+    opacity: 0.85;
 }
 
-.card-link h3 { 
-    margin: 12px 0 8px 0; 
-    font-size: 17px; 
-    color: var(--text-dark); 
+.card-link h3 {
+    margin: 12px 0 8px 0;
+    font-size: 17px;
+    color: var(--text-dark);
     flex-shrink: 0;
 }
 
 .feed-img {
     width: 100%;
     flex-grow: 1;
-    height: 0; 
-    min-height: 250px; 
+    height: 0;
+    min-height: 250px;
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -553,7 +573,7 @@ header {
 .hero-img {
     width: 100%;
     height: auto;
-    max-height: 130px; 
+    max-height: 130px;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     border-radius: 12px;
@@ -607,13 +627,21 @@ header {
     font-weight: bold;
     font-size: 11px;
     cursor: pointer;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
     transition: 0.1s;
 }
 
-.circle-btn:active { transform: scale(0.9); }
-.circle-btn.agua { background-color: var(--btn-green); }
-.circle-btn.comida { background-color: var(--cor-perfil); }
+.circle-btn:active {
+    transform: scale(0.9);
+}
+
+.circle-btn.agua {
+    background-color: var(--btn-green);
+}
+
+.circle-btn.comida {
+    background-color: var(--cor-perfil);
+}
 
 .user-info-box {
     background: var(--grey-box);
@@ -740,28 +768,30 @@ header {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(8px);
-    z-index: 2000; 
+    z-index: 2000;
     justify-content: center;
     align-items: center;
 }
 
-.modal-overlay.active { display: flex; }
+.modal-overlay.active {
+    display: flex;
+}
 
-.modal-content { 
+.modal-content {
     background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('../img/fundo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    padding: 40px; 
-    border-radius: 16px; 
-    width: 90%; 
-    max-width: 500px; 
-    position: relative; 
-    text-align: center; 
-    max-height: 95vh; 
-    overflow-y: auto; 
+    padding: 40px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    text-align: center;
+    max-height: 95vh;
+    overflow-y: auto;
     color: var(--text-dark);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .close-btn {
@@ -775,7 +805,9 @@ header {
     border: none;
 }
 
-.close-btn:hover { color: #d94848; }
+.close-btn:hover {
+    color: #d94848;
+}
 
 .modal-content h2 {
     font-size: 24px;
@@ -816,7 +848,9 @@ header {
     background-color: var(--cor-perfil);
 }
 
-.btn-entrar:hover { opacity: 0.9; }
+.btn-entrar:hover {
+    opacity: 0.9;
+}
 
 .btn-cadastrar,
 #btnCadastrar {
@@ -878,17 +912,17 @@ header {
     transform: scale(1.02) !important;
 }
 
-.btn-adotante { 
+.btn-adotante {
     background-color: #ff9f43 !important;
     color: white !important;
 }
 
-.btn-voluntario { 
+.btn-voluntario {
     background-color: #54a0ff !important;
     color: white !important;
 }
 
-.btn-apoiador { 
+.btn-apoiador {
     background-color: #10ac84 !important;
     color: white !important;
 }
@@ -929,15 +963,15 @@ header {
     align-items: center;
 }
 
-.input-ddd { 
+.input-ddd {
     flex: 0 0 75px !important;
-    width: 75px !important; 
+    width: 75px !important;
     text-align: center;
 }
 
-.input-telefone { 
+.input-telefone {
     flex: 1 !important;
-    width: auto !important; 
+    width: auto !important;
 }
 
 .login-btn-link {
@@ -959,7 +993,9 @@ header {
     gap: 20px;
 }
 
-#loggedInContainer { display: none; }
+#loggedInContainer {
+    display: none;
+}
 
 .btn-user-fixed {
     background-color: white;
@@ -1049,7 +1085,9 @@ header {
     margin-bottom: 15px;
 }
 
-.feed-title { margin: 0; }
+.feed-title {
+    margin: 0;
+}
 
 .location-selector-container {
     position: relative;
@@ -1067,7 +1105,7 @@ header {
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: opacity 0.2s ease;
 }
 
@@ -1075,8 +1113,13 @@ header {
     opacity: 0.8;
 }
 
-.feed-card-icon { font-size: 20px; }
-.lost-arrow-large { font-size: 40px; }
+.feed-card-icon {
+    font-size: 20px;
+}
+
+.lost-arrow-large {
+    font-size: 40px;
+}
 
 .right-panel-subtitle {
     font-size: 14px;
@@ -1117,8 +1160,13 @@ header {
     color: #d94848;
 }
 
-#formLoginBox { display: block; }
-#formRegisterBox { display: none; }
+#formLoginBox {
+    display: block;
+}
+
+#formRegisterBox {
+    display: none;
+}
 
 .hidden {
     display: none !important;
@@ -1212,12 +1260,12 @@ header {
         height: auto;
     }
 
-    .nav-menu { 
-        position: relative; 
-        left: auto; 
-        transform: none; 
-        width: 100%; 
-        flex-wrap: wrap; 
+    .nav-menu {
+        position: relative;
+        left: auto;
+        transform: none;
+        width: 100%;
+        flex-wrap: wrap;
     }
 
     .nav-item {
@@ -1312,39 +1360,40 @@ header {
     border-radius: 20px;
     display: inline-block;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 /* =======================================================
    COMPACTAÇÃO MÁXIMA DO PAINEL DIREITO (ASIDE)
    Para caber na tela 100% sem precisar diminuir o zoom
 ======================================================= */
 
-.right-panel { 
-    padding: 10px !important; 
-    gap: 6px !important; 
+.right-panel {
+    padding: 10px !important;
+    gap: 6px !important;
 }
 
 /* Diminui a altura da foto principal do cachorro no painel direito */
 .right-panel .hero-img {
-    max-height: 90px !important; 
+    max-height: 90px !important;
 }
 
 .right-header {
     padding-bottom: 4px !important;
 }
 
-.right-header h2 { 
-    font-size: 16px !important; 
+.right-header h2 {
+    font-size: 16px !important;
 }
 
-.right-panel-subtitle { 
-    font-size: 12px !important; 
+.right-panel-subtitle {
+    font-size: 12px !important;
 }
 
-.right-panel-title, 
-.right-panel-title-sm { 
-    font-size: 13px !important; 
-    margin-top: 2px !important; 
+.right-panel-title,
+.right-panel-title-sm {
+    font-size: 13px !important;
+    margin-top: 2px !important;
 }
 
 .status-grid {
@@ -1353,16 +1402,16 @@ header {
 }
 
 /* Diminui a caixa de observações e bio */
-.right-panel .obs-box-expanded { 
-    min-height: 30px !important; 
-    padding: 6px !important; 
-    font-size: 11px !important; 
-    margin-top: 2px !important; 
+.right-panel .obs-box-expanded {
+    min-height: 30px !important;
+    padding: 6px !important;
+    font-size: 11px !important;
+    margin-top: 2px !important;
     line-height: 1.2 !important;
 }
 
-.action-register { 
-    margin-top: 2px !important; 
+.action-register {
+    margin-top: 2px !important;
 }
 
 /* Diminui os botões redondos de água e comida */
@@ -1402,17 +1451,22 @@ header {
     padding: 6px !important;
     font-size: 10px !important;
 }
+
 /* =======================================================
    AJUSTE: CORES E TAMANHO DOS BOTÕES DE ÁGUA E COMIDA
 ======================================================= */
 
 /* Ajuste o tamanho da "bolinha" e da letra aqui */
 .circle-btn {
-    width: 48px !important;       /* Largura do botão */
-    height: 48px !important;      /* Altura do botão */
-    font-size: 11px !important;   /* Tamanho do texto "Água/Comida" */
-    border: 2px solid white !important; /* Bordinha branca */
-    border-radius: 50% !important; 
+    width: 48px !important;
+    /* Largura do botão */
+    height: 48px !important;
+    /* Altura do botão */
+    font-size: 11px !important;
+    /* Tamanho do texto "Água/Comida" */
+    border: 2px solid white !important;
+    /* Bordinha branca */
+    border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1431,23 +1485,26 @@ header {
 }
 
 /* Efeito de apertar o botão */
-.circle-btn:active { 
-    transform: scale(0.92) !important; 
+.circle-btn:active {
+    transform: scale(0.92) !important;
 }
+
 /* =======================================================
    AJUSTE: MENU DROPDOWN DE ESTADOS
 ======================================================= */
 .dropdown-content {
-    display: none; /* Escondido por padrão */
+    display: none;
+    /* Escondido por padrão */
     position: absolute;
     top: 100%;
     right: 0;
     background-color: white;
     min-width: 220px;
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     margin-top: 8px;
-    max-height: 250px; /* Limita a altura para não cobrir a tela toda */
+    max-height: 250px;
+    /* Limita a altura para não cobrir a tela toda */
     overflow-y: auto;
     border: 1px solid #ccc;
 }
@@ -1455,7 +1512,8 @@ header {
 /* Quando ativado pelo JavaScript, ele aparece como uma grade */
 .dropdown-content.show {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas de estados */
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 colunas de estados */
     gap: 6px;
     padding: 12px;
 }

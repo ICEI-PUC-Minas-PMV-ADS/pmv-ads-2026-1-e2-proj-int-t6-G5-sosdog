@@ -24,7 +24,7 @@
 }
 
 body {
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
     url('../img/fundorosapet.jpg');
 
@@ -256,7 +256,7 @@ body {
   background-color: var(--bg-card);
 }
 
-.toggle-group > label:first-child,
+.toggle-group>label:first-child,
 .toggle-text label {
   margin-bottom: 0;
   font-size: 14px;
@@ -304,11 +304,11 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.switch input:checked + .slider {
+.switch input:checked+.slider {
   background-color: var(--primary);
 }
 
-.switch input:checked + .slider::before {
+.switch input:checked+.slider::before {
   transform: translateX(21px);
 }
 

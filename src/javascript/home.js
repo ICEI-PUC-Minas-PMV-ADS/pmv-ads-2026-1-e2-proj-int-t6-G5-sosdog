@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    
+
     function gerarArroba(nome) {
         if (!nome) return "@usuario";
 
@@ -157,12 +157,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdownEstado = document.getElementById("dropdownEstado");
     const dropdownItems = document.querySelectorAll(".dropdown-item");
     let allFeedSlides = [];
-    
+
     function iniciarCarrosselFeed() {
         if (window.feedSwiperInstance) {
-            window.feedSwiperInstance.destroy(true, true); 
+            window.feedSwiperInstance.destroy(true, true);
         }
-        
+
         const qtdCards = swiperFeedContainer ? swiperFeedContainer.querySelectorAll(".swiper-slide").length : 0;
         const ativarLoop = qtdCards > 2;
 
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let textoCru = searchBar.value.toUpperCase();
             let textoFiltrado = textoCru.replace(/([^A-Z0-9\s!@#$%&.,])/g, "");
             searchBar.value = textoFiltrado;
-            
+
             const query = textoFiltrado.toLowerCase().trim();
 
             swiperFeedContainer.innerHTML = "";
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const filteredSlides = allFeedSlides.filter(slide => {
                     const card = slide.querySelector(".feed-card");
                     if (!card) return false;
-                    
+
                     const dataBusca = card.getAttribute("data-busca");
                     return dataBusca && dataBusca.toLowerCase().includes(query);
                 });
@@ -253,12 +253,12 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Erro Swiper Lost:", e);
     }
     if (btnEstado && dropdownEstado) {
-        btnEstado.addEventListener("click", function(e) {
-            e.stopPropagation(); 
+        btnEstado.addEventListener("click", function (e) {
+            e.stopPropagation();
             dropdownEstado.classList.toggle("show");
         });
 
-        window.addEventListener("click", function(e) {
+        window.addEventListener("click", function (e) {
             if (!btnEstado.contains(e.target) && !dropdownEstado.contains(e.target)) {
                 dropdownEstado.classList.remove("show");
             }
@@ -267,17 +267,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (dropdownItems.length > 0) {
         dropdownItems.forEach(botao => {
-            botao.addEventListener("click", function() {
+            botao.addEventListener("click", function () {
                 const ufEscolhida = this.textContent.trim();
-                
+
                 if (btnEstado) {
                     btnEstado.innerHTML = `<i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span>Estado: ${ufEscolhida}</span> <i class="fas fa-chevron-down" style="margin-left: 5px; font-size: 11px;"></i>`;
                 }
-                
+
                 if (dropdownEstado) {
                     dropdownEstado.classList.remove("show");
                 }
-                
+
                 if (searchBar) {
                     searchBar.value = ufEscolhida;
                     if (window.executarBusca) window.executarBusca();
@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     function atualizarCabecalho() {
         const dados = obterDadosPerfilAtualizados();
-        
+
         if (!loginBtnContainer || !loggedInContainer) return;
 
         if (estaLogado() && dados.nome) {
@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             loginBtnContainer.classList.remove("hidden");
             loggedInContainer.classList.add("hidden");
-            
+
             const etiquetasPerfil = [
                 userProfileTypeDisplay,
                 document.getElementById("badgePerfilUsuario")
@@ -356,24 +356,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const abrirModal = () => loginModal?.classList.add("active");
 
     if (loginBtn) {
-        loginBtn.onclick = (e) => { 
-            e.preventDefault(); 
-            estaLogado() ? window.location.href = "tela_perfil_usuario.html" : abrirModal(); 
+        loginBtn.onclick = (e) => {
+            e.preventDefault();
+            estaLogado() ? window.location.href = "tela_perfil_usuario.html" : abrirModal();
         };
     }
-    
+
     if (btnCloseModal) btnCloseModal.onclick = fecharModal;
-    
+
     if (showRegisterBtn) {
-        showRegisterBtn.onclick = (e) => { 
+        showRegisterBtn.onclick = (e) => {
             e.preventDefault();
             if (formLoginBox) formLoginBox.style.display = "none";
             if (formRegisterBox) formRegisterBox.style.display = "block";
         };
     }
-    
+
     if (showLoginBtn) {
-        showLoginBtn.onclick = (e) => { 
+        showLoginBtn.onclick = (e) => {
             e.preventDefault();
             if (formRegisterBox) formRegisterBox.style.display = "none";
             if (formLoginBox) formLoginBox.style.display = "block";
@@ -389,17 +389,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (perfilBtns.length > 0) {
         perfilBtns.forEach(b => b.style.opacity = "0.6");
-        
+
         perfilBtns.forEach((btn) => {
             btn.addEventListener("click", () => {
                 perfilBtns.forEach((b) => {
                     b.classList.remove("active");
                     b.style.opacity = "0.6";
                 });
-                
+
                 btn.classList.add("active");
                 btn.style.opacity = "1";
-                
+
                 if (cadPerfilInput) {
                     const perfilSelecionado = btn.dataset.profile || btn.textContent.trim();
                     cadPerfilInput.value = perfilSelecionado;
@@ -412,11 +412,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formAcaoLogin) {
         formAcaoLogin.onsubmit = (e) => {
             e.preventDefault();
-            
+
             const emailDigitado = document.getElementById("loginEmail").value.trim();
             const senhaDigitada = document.getElementById("loginSenha").value;
             const salvo = obterUsuarioSalvo();
-            
+
             if (salvo && salvo.email === emailDigitado && salvo.senha === senhaDigitada) {
                 localStorage.setItem("sos_logado", "true");
 
@@ -441,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formAcaoCadastro) {
         formAcaoCadastro.onsubmit = (e) => {
             e.preventDefault();
-            
+
             const nome = document.getElementById("cadNome").value.trim();
             const email = document.getElementById("cadEmail").value.trim();
             const senha = document.getElementById("cadSenha").value;
@@ -457,7 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Selecione seu perfil (Adotante, Voluntário ou Apoiador).");
                 return;
             }
-            
+
             const novoUsuario = {
                 nome: nome,
                 email: email,
@@ -465,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 perfil: perfil,
                 arroba: gerarArroba(nome)
             };
-            
+
             localStorage.setItem("sos_usuario", JSON.stringify(novoUsuario));
             localStorage.setItem("sos_logado", "false");
 
@@ -505,7 +505,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!commentsSection) return;
 
         commentsSection.innerHTML = "";
-        
+
         let comentarios = [];
         try {
             comentarios = JSON.parse(localStorage.getItem("sos_comentarios") || "[]");
@@ -533,7 +533,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>`;
         });
-        
+
         commentsSection.scrollTop = commentsSection.scrollHeight;
     };
 
@@ -566,41 +566,41 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sincronizarHomeAoVoltar();
 
-    document.addEventListener("click", function(e) {
-        
-        
+    document.addEventListener("click", function (e) {
+
+
         if (e.target.classList.contains("fa-heart")) {
-            e.target.classList.toggle("far"); 
-            e.target.classList.toggle("fas"); 
-            
+            e.target.classList.toggle("far");
+            e.target.classList.toggle("fas");
+
             if (e.target.classList.contains("fas")) {
-                e.target.style.color = "#ff4757"; 
+                e.target.style.color = "#ff4757";
                 e.target.style.transform = "scale(1.2)";
-                setTimeout(() => e.target.style.transform = "scale(1)", 200); 
+                setTimeout(() => e.target.style.transform = "scale(1)", 200);
             } else {
-                e.target.style.color = ""; 
+                e.target.style.color = "";
             }
         }
 
-        
+
         if (e.target.classList.contains("fa-bookmark")) {
-            e.target.classList.toggle("far"); 
-            e.target.classList.toggle("fas"); 
-            
+            e.target.classList.toggle("far");
+            e.target.classList.toggle("fas");
+
             if (e.target.classList.contains("fas")) {
-                e.target.style.color = "#ffa502"; 
+                e.target.style.color = "#ffa502";
             } else {
-                e.target.style.color = ""; 
+                e.target.style.color = "";
             }
         }
 
-        
+
         if (e.target.classList.contains("fa-share")) {
             if (navigator.share) {
                 navigator.share({
                     title: 'SOS Dog - Caso Urgente',
                     text: 'Dê uma olhada neste caso no SOS Dog!',
-                    url: window.location.href, 
+                    url: window.location.href,
                 }).catch(console.error);
             } else {
                 alert("Link do caso copiado para a área de transferência!");

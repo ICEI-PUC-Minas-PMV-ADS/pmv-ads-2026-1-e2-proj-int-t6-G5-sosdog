@@ -112,12 +112,12 @@ function preencherPerfil() {
     const usuarioSalvo = obterUsuarioSalvo();
     if (!usuarioSalvo) return;
 
-    
+
     const userNameDisplay = document.getElementById("userNameDisplay") || document.querySelector(".user-info strong");
     const userArrobaDisplay = document.getElementById("userArrobaDisplay") || document.querySelector(".user-info span");
     const userAvatarDisplay = document.getElementById("userAvatarDisplay") || document.querySelector(".user-profile img");
-    
-    
+
+
     const nomeUsuarioTelaPerfil = document.getElementById("nomeUsuario");
     const tipoUsuarioTelaPerfil = document.getElementById("tipoUsuario");
 
@@ -179,7 +179,7 @@ function iniciarSwipers() {
         console.error("Erro ao iniciar o Swiper:", e);
     }
 }
-window.fazerLogoutGeral = function(event) {
+window.fazerLogoutGeral = function (event) {
     if (event) event.preventDefault();
     try { limparSessao(); } catch (error) { console.error("Erro ao limpar sessão:", error); }
     window.location.href = "../html/home.html";
@@ -211,9 +211,9 @@ function sincronizarSessaoAoVoltar() {
         }
     });
 }
-window.enviarComentarioDoPerfil = function() {
+window.enviarComentarioDoPerfil = function () {
     const textarea = document.getElementById("textoComentarioPerfil");
-    
+
     if (!textarea) {
         console.error("Erro: Caixa de texto não encontrada.");
         return;
@@ -225,7 +225,7 @@ window.enviarComentarioDoPerfil = function() {
         return;
     }
 
-    
+
     let nomeUsuario = "Visitante";
     let perfilUsuario = "Visitante";
 
@@ -241,12 +241,12 @@ window.enviarComentarioDoPerfil = function() {
         console.error("Erro ao ler usuário:", e);
     }
 
-    
+
     let comentariosSalvos = [];
     try {
         comentariosSalvos = JSON.parse(localStorage.getItem("sos_comentarios") || "[]");
-    } catch (e) {}
-    
+    } catch (e) { }
+
     comentariosSalvos.push({
         nome: nomeUsuario,
         texto: texto,
@@ -254,10 +254,10 @@ window.enviarComentarioDoPerfil = function() {
         data: new Date().toLocaleDateString("pt-BR")
     });
 
-    
+
     localStorage.setItem("sos_comentarios", JSON.stringify(comentariosSalvos));
 
-    
+
     textarea.value = "";
     alert("Comentário enviado com sucesso! Vá para a página Home para visualizá-lo.");
 };

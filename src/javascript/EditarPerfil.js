@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     contadorBio: document.getElementById('contador-bio'),
     imagensPerfil: document.querySelectorAll('.img-perfil-global'),
     nomesPerfil: document.querySelectorAll('.nome-perfil-global'),
-    
+
     biosPerfil: document.querySelectorAll('.bio-perfil-global'),
-    tiposPerfil: document.querySelectorAll('.tipo-perfil-global'), 
+    tiposPerfil: document.querySelectorAll('.tipo-perfil-global'),
     usernameEdit: document.getElementById('username-edit'),
     fullnameEdit: document.getElementById('fullname-edit')
   };
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  
+
   function aplicarBioNaInterface(bio) {
     if (!bio) return;
     elementos.biosPerfil.forEach((elemento) => {
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  
+
   function aplicarTipoPerfilNaInterface(perfil) {
     if (!perfil) return;
     elementos.tiposPerfil.forEach((elemento) => {
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
       aplicarUsernameNaInterface(nomeSalvo);
     }
 
-    
+
     if (bioSalva) aplicarBioNaInterface(bioSalva);
     if (perfilSalvo) aplicarTipoPerfilNaInterface(perfilSalvo);
 
@@ -271,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       aplicarNomeNaInterface(nome);
       aplicarUsernameNaInterface(nome);
-      
-      
+
+
       aplicarBioNaInterface(bio);
       aplicarTipoPerfilNaInterface(perfil);
 
