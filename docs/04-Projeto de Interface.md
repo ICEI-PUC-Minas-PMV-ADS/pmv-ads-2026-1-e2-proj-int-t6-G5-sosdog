@@ -87,3 +87,7 @@ O Feed de Casos é uma grelha interativa onde os utilizadores podem visualizar a
 
 
 <img width="1096" height="614" alt="Tela feed de Casos" src="https://github.com/user-attachments/assets/25315a1d-99a1-4fe6-a425-c0a4d7e2ee72" />
+
+
+**LINK DO FIGMA**
+https://www.figma.com/design/RfS7AOqTEDUfSA7F4k79R6/Sem-t%C3%ADtulo?node-id=0-1&t=kK8leeqBWRvLvbIE-1
