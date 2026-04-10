@@ -30,13 +30,13 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
 Os wireframes são protótipos utilizados no design de interfaces para representar a estrutura de um site e o relacionamento entre suas páginas. Eles funcionam como ilustrações do layout e da disposição dos elementos essenciais da interface.
 Nesta seção, é FUNDAMENTAL indicar, para cada tela/wireframe proposto, quais requisitos do projeto estão sendo contemplados por aquela tela.
 
-TELA PRINCIPAL
+**TELA PRINCIPAL**
 
 Plataforma de resgate animal: gerencia casos, buscas e adoções com mapas, galeria e suporte.
 <img width="1545" height="874" alt="Tela_Principal" src="https://github.com/user-attachments/assets/25aba538-45bc-45cb-9bf7-09b5899b0814" />
 
 
-TELA DE LOGIN
+**TELA DE LOGIN**
 
 interface com campos de usuário e senha, opções para lembrar login e recuperar acesso, além de um link para cadastro. 
 
@@ -44,12 +44,26 @@ interface com campos de usuário e senha, opções para lembrar login e recupera
 
 TELA DE CADASTRO
 
-![LOGIN](../src/img/)
+
 No registro, o usuário pode fazer o cadastro com e-mail, telefone e selecionar seu perfil entre: adotante, voluntário, apoiador ou representante de instituição.
 
 <img width="1897" height="905" alt="Tela_de_Cadastro" src="https://github.com/user-attachments/assets/f576200b-0ea1-4f15-bb0d-349a6ce776e8" />
 
-TELA DE PERFIL
+**ESQUECI A SENHA**
+
+Interface"Esqueci a Senha" permite a recuperação segura do acesso à conta. O utilizador insere o e-mail registado e recebe imediatamente um link de redefinição, com feedback visual claro de sucesso.
+
+<img width="1406" height="795" alt="Tela de recuperar senha" src="https://github.com/user-attachments/assets/77ec74be-2514-46e6-8746-ab90999f7dba" />
+
+
+**RECUPERAR USUÁRIO**
+
+Interface'Esqueci o Utilizador' permite recuperar facilmente o nome de acesso à conta. Basta inserir o e-mail de registo para receber um lembrete seguro na sua caixa de entrada, com feedback visual.
+
+<img width="1410" height="786" alt="Tela de recuperar usuário" src="https://github.com/user-attachments/assets/6e63ee9e-609e-428f-a1df-06b42961f379" />
+
+
+**TELA DE PERFIL**
 
 Interface intuitiva para resgate animais: une monitoramento, feed de casos e geolocalização. Foca em urgências, adoção e cuidados colaborativos, tela com conta na lateral de .
 
@@ -58,7 +72,7 @@ Interface intuitiva para resgate animais: une monitoramento, feed de casos e geo
 
 
 
-TELA MAPA DE CASOS
+**TELA MAPA DE CASOS**
 
 
 Esta tela interativa localiza animais perdidos, encontrados e para adoção. As suas funções incluem filtros rápidos, pins no mapa com popups detalhados e uma lista lateral sincronizada para resgates.
@@ -66,7 +80,7 @@ Esta tela interativa localiza animais perdidos, encontrados e para adoção. As 
 
 <img width="1639" height="928" alt="Tela Mapa de Casos" src="https://github.com/user-attachments/assets/d6c1f071-b60d-4cdb-a999-fe6c4d83b758" />
 
-TELA FEED DE CASOS
+**TELA FEED DE CASOS**
 
 
 O Feed de Casos é uma grelha interativa onde os utilizadores podem visualizar animais perdidos, encontrados ou para adoção. Permite filtrar casos facilmente e clicar para ajudar, partilhar ou adotar.
