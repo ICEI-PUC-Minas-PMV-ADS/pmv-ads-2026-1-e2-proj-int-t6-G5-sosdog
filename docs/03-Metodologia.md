@@ -86,5 +86,7 @@ Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvi
 # Backlog do Produto
 
 ## Milestones
-![Backlog_Produto_Milestones]<img width="1362" height="688" alt="Captura de tela 2026-04-12 121338" src="https://github.com/user-attachments/assets/354e6f6e-a76b-482e-ad24-5d7a7b0f9521" />
+![Backlog_Produto_Milestones](https://github.com/user-attachments/assets/354e6f6e-a76b-482e-ad24-5d7a7b0f9521)
+
+<img width="1362" height="688" alt="Captura de tela 2026-04-12 121338" src="https://github.com/user-attachments/assets/354e6f6e-a76b-482e-ad24-5d7a7b0f9521" />
 
