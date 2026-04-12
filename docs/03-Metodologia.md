@@ -83,20 +83,20 @@ As ferramentas empregadas no projeto são:
 
 Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvimento e a colaboração entre os membros da equipe. O Visual Studio oferece um ambiente completo para desenvolvimento, enquanto o Git e o GitHub garantem controle eficiente das versões e integração das atividades.
 
-# Backlog do Produto
+## Backlog do Produto
 
-## Milestones
+### Milestones
 ![Backlog_Produto_Milestones](https://github.com/user-attachments/assets/354e6f6e-a76b-482e-ad24-5d7a7b0f9521)
 
-## Inssues
+### Inssues
 
 ![Inssues](https://github.com/user-attachments/assets/cfd2a60a-a07c-4782-b040-1220111b22da)
 
-## Kambam
+### Kambam
 
 ![Kambam](https://github.com/user-attachments/assets/e97c48ae-8273-469a-b1c4-e9c377934011)
 
-## Projects
+### Projects
 
 ![Projects](https://github.com/user-attachments/assets/06f2aa58-05b0-4798-adae-d89b27bdd0fd)
 
