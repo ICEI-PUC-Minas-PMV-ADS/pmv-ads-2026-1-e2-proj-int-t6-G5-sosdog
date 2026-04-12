@@ -82,3 +82,9 @@ As ferramentas empregadas no projeto são:
 - `Microsoft Teams`: utilizado para reuniões, alinhamentos e discussões mais detalhadas sobre o projeto.
 
 Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvimento e a colaboração entre os membros da equipe. O Visual Studio oferece um ambiente completo para desenvolvimento, enquanto o Git e o GitHub garantem controle eficiente das versões e integração das atividades.
+
+# Backlog do Produto
+
+##Milestones
+![Backlog_Produto_Milestones]<img width="1362" height="688" alt="Captura de tela 2026-04-12 121338" src="https://github.com/user-attachments/assets/354e6f6e-a76b-482e-ad24-5d7a7b0f9521" />
+
