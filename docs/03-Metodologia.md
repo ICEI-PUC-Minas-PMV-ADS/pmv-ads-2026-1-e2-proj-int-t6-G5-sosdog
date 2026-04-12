@@ -83,7 +83,7 @@ As ferramentas empregadas no projeto são:
 
 Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvimento e a colaboração entre os membros da equipe. O Visual Studio oferece um ambiente completo para desenvolvimento, enquanto o Git e o GitHub garantem controle eficiente das versões e integração das atividades.
 
-### Backlog do Produto
+## Backlog do Produto
 
 ### Milestones
 
