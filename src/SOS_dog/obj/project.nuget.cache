@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "76OTfj05+7Q=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\vitor\\OneDrive\\Área de Trabalho\\Faculdade Puc 2°\\src\\SOS_dog\\SOS_dog.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\vitor\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512"
+  ],
+  "logs": []
+}
