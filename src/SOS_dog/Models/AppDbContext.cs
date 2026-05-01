@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace SosDog.Models
 {
@@ -21,39 +20,39 @@ namespace SosDog.Models
             modelBuilder.Entity<Comentario>()
                 .HasOne(c => c.Ocorrencia)
                 .WithMany(o => o.Comentarios)
-                .HasForeignKey(c => c.ID_Ocorrencia)
+                .HasForeignKey(c => c.IdOcorrencia) // ALTERAÇÃO
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Favorito>()
                 .HasOne(f => f.Ocorrencia)
                 .WithMany(o => o.FavoritadosPor)
-                .HasForeignKey(f => f.ID_Ocorrencia)
+                .HasForeignKey(f => f.IdOcorrencia) // ALTERAÇÃO
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Definindo que uma ocorrência pertence a um usuário e um usuário pode registrar várias ocorrências
             modelBuilder.Entity<Ocorrencia>()
                 .HasOne(o => o.Usuario)
                 .WithMany(u => u.OcorrenciasRegistradas)
-                .HasForeignKey(o => o.ID_Usuario)
+                .HasForeignKey(o => o.IdUsuario) // ALTERAÇÃO
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Definindo que um comentário pertence a um usuário e um usuário pode fazer vários comentários
             modelBuilder.Entity<Comentario>()
                 .HasOne(c => c.Usuario)
                 .WithMany(u => u.Comentarios)
-                .HasForeignKey(c => c.ID_Usuario)
+                .HasForeignKey(c => c.IdUsuario) // ALTERAÇÃO
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Definindo que um favorito pertence a um usuário e um usuário pode ter vários favoritos
             modelBuilder.Entity<Favorito>()
                 .HasOne(f => f.Usuario)
                 .WithMany(u => u.Favoritos)
-                .HasForeignKey(f => f.ID_Usuario)
+                .HasForeignKey(f => f.IdUsuario) // ALTERAÇÃO
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Garantindo que um usuário não possa favoritar a mesma ocorrência mais de uma vez
             modelBuilder.Entity<Favorito>()
-                .HasIndex(f => new { f.ID_Usuario, f.ID_Ocorrencia })
+                .HasIndex(f => new { f.IdUsuario, f.IdOcorrencia }) // ALTERAÇÃO
                 .IsUnique();
 
             // Garantindo que o e-mail do usuário seja único no sistema
@@ -61,7 +60,6 @@ namespace SosDog.Models
             modelBuilder.Entity<Usuario>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
-
         }
     }
 }
