@@ -20,7 +20,7 @@
                          data-sexo="@item.Sexo"
                          data-cor="@item.CorPelagem"
                          data-porte="@item.Porte"
-                         data-situacao="@item.Situacao"
+                         data-situacao="@item.EstadoSaude"
                          data-idade="@item.FaixaEtaria"
                          data-usuario="@item.IdUsuario"
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
@@ -35,10 +35,10 @@
                                 <span class="badge badge-green">@item.EstadoSaude</span>
                             </div>
 
-                            <p><strong>Tipo:</strong> @item.Tipo</p>
+                            <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
 
                             <p class="text-truncate" title="@item.Descricao">
-                                <strong>Status:</strong> @item.Situacao - @item.Porte - @item.Sexo
+                                <strong>Status:</strong> @item.EstadoSaude - @item.Porte - @item.Sexo
                             </p>
                         </div>
                     </div>

@@ -36,7 +36,6 @@ namespace SosDog.Controllers
                 {
                     IdUsuario = idUsuario,
                     IdOcorrencia = idOcorrencia,
-                    DataFavorito = DateTime.UtcNow
                 };
 
                 _context.Favoritos.Add(favorito);
