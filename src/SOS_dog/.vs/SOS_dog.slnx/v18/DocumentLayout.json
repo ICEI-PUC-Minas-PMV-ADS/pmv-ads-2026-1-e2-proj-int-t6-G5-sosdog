@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\usuarios\\cadastrar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\usuarios\\cadastrar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\usuarios\\_registromodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\usuarios\\_registromodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\usuarios\\_redefinirsenhamodais.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\usuarios\\_redefinirsenhamodais.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\usuarios\\_loginmodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\usuarios\\_loginmodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\usuarios\\_esquecisenhamodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\usuarios\\_esquecisenhamodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,24 +50,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "_RedefinirSenhaModais.cshtml",
+              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_RedefinirSenhaModais.cshtml",
+              "RelativeDocumentMoniker": "Views\\Usuarios\\_RedefinirSenhaModais.cshtml",
+              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_RedefinirSenhaModais.cshtml",
+              "RelativeToolTip": "Views\\Usuarios\\_RedefinirSenhaModais.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-01T18:59:04.877Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "_LoginModal.cshtml",
+              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_LoginModal.cshtml",
+              "RelativeDocumentMoniker": "Views\\Usuarios\\_LoginModal.cshtml",
+              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_LoginModal.cshtml",
+              "RelativeToolTip": "Views\\Usuarios\\_LoginModal.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-01T18:58:52.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "_RegistroModal.cshtml",
+              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_RegistroModal.cshtml",
+              "RelativeDocumentMoniker": "Views\\Usuarios\\_RegistroModal.cshtml",
+              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_RegistroModal.cshtml",
+              "RelativeToolTip": "Views\\Usuarios\\_RegistroModal.cshtml",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAMwDAAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-01T18:58:33.027Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_EsqueciSenhaModal.cshtml",
+              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_EsqueciSenhaModal.cshtml",
+              "RelativeDocumentMoniker": "Views\\Usuarios\\_EsqueciSenhaModal.cshtml",
+              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\_EsqueciSenhaModal.cshtml",
+              "RelativeToolTip": "Views\\Usuarios\\_EsqueciSenhaModal.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-01T18:58:49.043Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Models\\AppDbContext.cs",
               "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\AppDbContext.cs",
               "RelativeToolTip": "Models\\AppDbContext.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAMwCQAAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAMwCIAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-01T15:49:18.454Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "UsuariosController.cs",
               "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\UsuariosController.cs",
               "RelativeDocumentMoniker": "Controllers\\UsuariosController.cs",
@@ -68,33 +140,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Cadastrar.cshtml",
-              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\Cadastrar.cshtml",
-              "RelativeDocumentMoniker": "Views\\Usuarios\\Cadastrar.cshtml",
-              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Usuarios\\Cadastrar.cshtml",
-              "RelativeToolTip": "Views\\Usuarios\\Cadastrar.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-01T18:22:27.281Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Usuario.cs",
               "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\Usuario.cs",
               "RelativeDocumentMoniker": "Models\\Usuario.cs",
               "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\Usuario.cs",
               "RelativeToolTip": "Models\\Usuario.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABgAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAYwBgAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-01T18:24:07.503Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "FavoritosController.cs",
               "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\FavoritosController.cs",
               "RelativeDocumentMoniker": "Controllers\\FavoritosController.cs",
@@ -107,7 +166,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
@@ -120,7 +179,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "Ocorrencia.cs",
               "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\Ocorrencia.cs",
               "RelativeDocumentMoniker": "Models\\Ocorrencia.cs",
