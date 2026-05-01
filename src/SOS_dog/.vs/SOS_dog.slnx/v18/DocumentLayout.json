@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\ocorrencias\\_editarocorrenciamodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\ocorrencias\\_editarocorrenciamodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\controllers\\ocorrenciascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:controllers\\ocorrenciascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\sos_dog.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:sos_dog.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,21 +18,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_EditarOcorrenciaModal.cshtml",
-              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Ocorrencias\\_EditarOcorrenciaModal.cshtml",
-              "RelativeDocumentMoniker": "Views\\Ocorrencias\\_EditarOcorrenciaModal.cshtml",
-              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Ocorrencias\\_EditarOcorrenciaModal.cshtml",
-              "RelativeToolTip": "Views\\Ocorrencias\\_EditarOcorrenciaModal.cshtml",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAUwHIAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-01T15:32:39.796Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -47,15 +34,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OcorrenciasController.cs",
-              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\OcorrenciasController.cs",
-              "RelativeDocumentMoniker": "Controllers\\OcorrenciasController.cs",
-              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\OcorrenciasController.cs",
-              "RelativeToolTip": "Controllers\\OcorrenciasController.cs",
-              "ViewState": "AgIAABABAAAAAAAAAAAUwCsBAAABAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Models\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Models\\AppDbContext.cs*",
+              "RelativeToolTip": "Models\\AppDbContext.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-01T14:06:22.042Z",
+              "WhenOpened": "2026-05-01T15:49:18.454Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SOS_dog",
+              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
+              "RelativeDocumentMoniker": "SOS_dog.csproj",
+              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
+              "RelativeToolTip": "SOS_dog.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-01T15:49:17.661Z",
               "EditorCaption": ""
             }
           ]

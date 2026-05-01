@@ -1,16 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\ocorrencias\\_criarocorrenciamodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\ocorrencias\\_criarocorrenciamodal.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\controllers\\ocorrenciascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:controllers\\ocorrenciascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -18,21 +9,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_CriarOcorrenciaModal.cshtml",
-              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Ocorrencias\\_CriarOcorrenciaModal.cshtml",
-              "RelativeDocumentMoniker": "Views\\Ocorrencias\\_CriarOcorrenciaModal.cshtml",
-              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Ocorrencias\\_CriarOcorrenciaModal.cshtml",
-              "RelativeToolTip": "Views\\Ocorrencias\\_CriarOcorrenciaModal.cshtml",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAUwGcAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-01T14:44:38.743Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -44,19 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "OcorrenciasController.cs",
-              "DocumentMoniker": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\OcorrenciasController.cs",
-              "RelativeDocumentMoniker": "Controllers\\OcorrenciasController.cs",
-              "ToolTip": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\OcorrenciasController.cs",
-              "RelativeToolTip": "Controllers\\OcorrenciasController.cs",
-              "ViewState": "AgIAABABAAAAAAAAAAAUwCsBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-01T14:06:22.042Z",
-              "EditorCaption": ""
             }
           ]
         }
