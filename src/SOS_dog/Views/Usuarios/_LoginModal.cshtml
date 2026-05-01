@@ -1,0 +1,40 @@
+﻿<div class="modal fade" id="loginModal" tabindex="-1" data-has-error="@(TempData["ErroLogin"] != null ? "true" : "false")">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4 custom-modal-radius">
+            <div class="modal-header border-0 pb-0 justify-content-end">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <i class="fa-solid fa-paw fa-3x mb-3 modal-icon-color"></i>
+                <h4 class="mb-4 modal-title-custom">Bem-vindo!</h4>
+
+                @if (TempData["ErroLogin"] != null)
+                {
+                    <div class="alert alert-danger p-2 text-sm">@TempData["ErroLogin"]</div>
+                }
+
+                <form asp-controller="Usuarios" asp-action="Login" method="post">
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control bg-light text-center rounded-pill py-2" placeholder="Seu E-mail" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="password" name="senha" class="form-control bg-light text-center rounded-pill py-2" placeholder="Sua Senha" required>
+                    </div>
+                    <button type="submit" class="btn w-100 mb-3 text-white fw-bold rounded-pill py-2 btn-login-submit">
+                        Entrar
+                    </button>
+                </form>
+
+                <p class="text-muted text-sm mb-4">
+                    Não tem uma conta?
+                    <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#cadastroModal" class="modal-link-cadastro">Cadastre-se</a>
+                </p>
+
+                <div class="d-flex justify-content-center">
+
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#esqueciSenhaModal">Esqueci a Senha</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

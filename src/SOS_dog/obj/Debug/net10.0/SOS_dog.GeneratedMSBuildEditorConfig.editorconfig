@@ -54,16 +54,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/Cadastrar.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcQ2FkYXN0cmFyLmNzaHRtbA==
+[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/_EsqueciSenhaModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcX0VzcXVlY2lTZW5oYU1vZGFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/Login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcTG9naW4uY3NodG1s
+[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/_LoginModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcX0xvZ2luTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/RecuperarSenha.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcUmVjdXBlcmFyU2VuaGEuY3NodG1s
+[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/_RedefinirSenhaModais.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcX1JlZGVmaW5pclNlbmhhTW9kYWlzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/Usuarios/_RegistroModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcX1JlZ2lzdHJvTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/vitor/source/repos/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/src/SOS_dog/Views/_ViewImports.cshtml]

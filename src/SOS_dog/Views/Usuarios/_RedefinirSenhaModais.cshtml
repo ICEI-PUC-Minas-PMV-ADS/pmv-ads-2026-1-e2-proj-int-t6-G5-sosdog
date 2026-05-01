@@ -1,0 +1,58 @@
+﻿<form asp-controller="Usuarios" asp-action="ConfirmarReset" method="post">
+    
+    <input type="hidden" name="email" value="@TempData["EmailRecuperacao"]" />
+
+    <div class="modal fade" id="modalToken" tabindex="-1" data-abrir-token="@(TempData["AbrirModalToken"] != null ? "true" : "false")">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4 custom-modal-radius">
+                <div class="modal-header border-0 pb-0 justify-content-end">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <i class="fa-solid fa-key fa-3x mb-3" style="color: var(--primary-orange);"></i>
+                    <h4 class="mb-3 modal-title-custom">Código de Verificação</h4>
+                    <p class="text-muted text-sm mb-4">Digite o código de 6 dígitos que acabamos de enviar para o seu e-mail.</p>
+                    
+                    <div class="mb-4">
+                        <input type="text" name="token" class="form-control bg-light text-center fs-4 letter-spacing-2 py-2 rounded-pill" maxlength="6" required placeholder="000000">
+                    </div>
+                    
+                    <button type="button" class="btn w-100 text-white fw-bold rounded-pill py-2" style="background-color: var(--primary-orange);" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalNovaSenha">
+                        Próximo <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNovaSenha" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-4 custom-modal-radius">
+                <div class="modal-header border-0 pb-0 justify-content-end">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <i class="fa-solid fa-unlock-keyhole fa-3x mb-3" style="color: var(--primary-green);"></i>
+                    <h4 class="mb-4 modal-title-custom">Criar Nova Senha</h4>
+                    
+                    <div class="mb-3">
+                        <input type="password" name="novaSenha" class="form-control bg-light text-center rounded-pill py-2" required placeholder="Digite a nova senha">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input type="password" name="confirmarNovaSenha" class="form-control bg-light text-center rounded-pill py-2" required placeholder="Confirme a nova senha">
+                    </div>
+                    
+                    <button type="submit" class="btn w-100 text-white fw-bold rounded-pill py-2" style="background-color: var(--primary-green);">
+                        Salvar Nova Senha <i class="fa-solid fa-check ms-2"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-link text-muted mt-3 text-decoration-none text-sm" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalToken">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Voltar para o Código
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

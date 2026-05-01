@@ -1,31 +1,1101 @@
-html {
-  font-size: 14px;
+
+
+:root {
+    --bg-main: #eff2f1;
+    --bg-sidebar-right: #d5dcd9;
+    --bg-lost-section: #cdd4d1;
+    --primary-green: #385b54;
+    --light-green: #a2c1a3;
+    --primary-orange: #e07a5f;
+    --white: #ffffff;
+    --text-dark: #333333;
+    --text-muted: #666666;
+    --border-radius-md: 10px;
+    --border-radius-lg: 15px;
+    --border-main: 2px solid var(--primary-green);
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+
+
+/* ==================== RESET E TIPOGRAFIA ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+    *::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    height: 100vh; /* Força a tela a ter exatamente 100% da altura da janela */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Bloqueia a rolagem na página inteira, a rolagem ocorrerá apenas no 'main' */
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ==================== CORREÇÃO DE ALTURA DOS CONTAINERS PADRÕES DO ASP.NET ==================== */
+
+
+/* Faz a tag <main> crescer para empurrar o footer para baixo */
+main[role="main"] {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto; /* ADICIONADO: Se a tela for pequena, a barra de rolagem aparece apenas aqui dentro */
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-green);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ==================== HEADER ==================== */
+.top-header {
+    background-color: var(--primary-green);
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    border-bottom-left-radius: var(--border-radius-lg);
+    border-bottom-right-radius: var(--border-radius-lg);
+    margin-bottom: 20px;
+    width: 100%;
+    flex-shrink: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Garante que o header nunca diminua de tamanho */
+
+}
+
+.logo i {
+    color: #cc4444;
+}
+
+.main-nav {
+    display: flex;
+    gap: 30px;
+}
+
+    .main-nav button {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .main-nav a {
+        color: var(--white);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 13px;
+        font-weight: 600;
+        gap: 5px;
+    }
+
+    .main-nav i {
+        font-size: 22px;
+    }
+
+/* Lado Direito (Alinhamento Horizontal e Vertical) */
+.header-right {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente todos os itens */
+    gap: 25px; /* Espaço entre a busca e o login */
+}
+
+/* Barra de Pesquisa (Arredondada e Branca) */
+.search-bar {
+    background: white;
+    border-radius: 25px; /* Deixa as pontas totalmente arredondadas como na imagem */
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    width: 280px; /* Ajuste para o tamanho desejado */
+    height: 40px;
+}
+
+    .search-bar i {
+        color: #888; /* Cor cinza suave para o ícone de lupa */
+        font-size: 16px;
+    }
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        margin-left: 10px;
+        background: transparent;
+        width: 100%;
+        font-size: 15px;
+        color: #333;
+    }
+
+        .search-bar input::placeholder {
+            color: #888;
+        }
+
+/* Botão de Login (Limpo e Transparente) */
+.btnLogin {
+    background: transparent; /* Remove o fundo laranja */
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Alinha ícone em cima e texto embaixo */
+    align-items: center;
+    justify-content: center;
+}
+
+.login-block {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column; /* Garante o empilhamento vertical */
+    align-items: center;
+    gap: 4px; /* Espaço entre ícone e texto */
+}
+
+    .login-block i {
+        font-size: 24px; /* Tamanho do ícone circular */
+    }
+
+    .login-block span {
+        font-size: 13px;
+        font-weight: 700; /* Negrito como na imagem */
+        text-transform: lowercase; /* Força letras minúsculas */
+    }
+
+    /* Hover simples para feedback */
+    .login-block:hover {
+        opacity: 0.8;
+    }
+
+/* Esconde o botão de usuário por padrão */
+.btn-usuario {
+    display: none;
+}
+
+
+/*"""""""""""""*/
+
+
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 300px 1fr 320px;
+    gap: 15px;
+    padding: 15px;
+    height: 80vh;
+    background-color: var(--bg-main);
+}
+
+/* ==================== ESTRUTURA DA SIDEBAR ESQUERDA ==================== */
+
+.left-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+/* ==================== LISTA E CARDS ==================== */
+.cases-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 8px; /* Espaçamento da barra de rolagem */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+}
+
+    /* Scrollbar Customizada */
+    .cases-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .cases-list::-webkit-scrollbar-thumb {
+        background: var(--light-green);
+        border-radius: 10px;
+    }
+
+/* ==================== DETALHES DO CARD E TEXTOS ==================== */
+.case-card {
+    display: flex;
+    background-color: var(--white);
+    border: var(--border-main); /* Borda verde escura vinda do :root */
+    border-radius: var(--border-radius-lg);
+    padding: 10px 15px;
+    gap: 15px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .case-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        border-color: var(--light-green);
+    }
+
+    .case-card img {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--light-green);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        flex-shrink: 0; /* Impede que a foto esmague se o texto for muito grande */
+    }
+
+.case-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden; /* Importante para o text-truncate funcionar */
+}
+
+.case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-green);
+    margin-bottom: 2px;
+}
+
+.case-details p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.3;
+    margin: 0;
+}
+
+.case-details strong {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge-green {
+    background-color: rgba(162, 193, 163, 0.3); /* Fundo verdinho transparente */
+    padding: 4px 10px;
+    border-radius: 12px;
+    color: var(--primary-green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+/* ==================== BOTÕES INFERIORES ==================== */
+.sidebar-buttons {
+    flex-shrink: 0;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.btn-orange {
+    background-color: var(--primary-orange);
+    color: var(--white);
+    border: none;
+    padding: 12px 10px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    flex: 1; /* Faz os botões dividirem o espaço igualmente */
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+    .btn-orange:hover {
+        filter: brightness(0.9);
+        transform: scale(1.02);
+    }
+/* Área do Mapa */
+.main-map-area {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    border: var(--border-main);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    z-index: 1; /* Garante que fique abaixo de modais se houver */
+}
+
+/* Sidebar Direita (Espaço reservado) */
+.dog-profile-sidebar {
+    background-color: var(--bg-sidebar-right);
+    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+/* Estilos internos da Sidebar Direita conforme solicitado */
+.profile-img-wrap img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+    border: 3px solid var(--white);
+    margin-bottom: 15px;
+}
+
+/* ==================== CLASSES DO MODAL E HEADER ==================== */
+
+/* Remove fundo e borda dos botões de navegação */
+.nav-btn-transparent {
+    background-color: transparent;
+    border: none;
+}
+
+/* Container do usuário logado no header */
+.user-menu-logged {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--white);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .user-info span {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+/* Estilos específicos do Modal de Login */
+.custom-modal-radius {
+    border-radius: var(--border-radius-lg);
+}
+
+.modal-icon-color {
+    color: var(--primary-green);
+}
+
+.modal-title-custom {
+    color: var(--primary-green);
+    font-weight: bold;
+}
+
+.btn-login-submit {
+    background-color: var(--primary-orange);
+    border: none;
+}
+
+    .btn-login-submit:hover {
+        background-color: #d16b50; /* Um tom ligeiramente mais escuro para o hover */
+        color: var(--white);
+    }
+
+.modal-link-cadastro {
+    color: var(--primary-orange);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+    .modal-link-cadastro:hover {
+        color: var(--primary-green);
+        text-decoration: underline;
+    }
+
+/* ==================== ESTRUTURA BASE DA SIDEBAR ==================== */
+.right-sidebar {
+    background: #d3dbd8;
+    padding: 15px;
+    position: relative;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border-radius: 15px;
+}
+
+    .right-sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .right-sidebar::-webkit-scrollbar-thumb {
+        background: var(--border-color); /* Caso não tenha definido na raiz, substitua por uma cor fixa como #ccc */
+        border-radius: 10px;
+    }
+
+.dog-profile-sidebar {
+    background-color: var(--bg-sidebar-right);
+    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    gap: 12px;
+}
+
+/* ==================== FOTO DE PERFIL E CABEÇALHO ==================== */
+.profile-img-wrap img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+    border: 3px solid var(--white);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .profile-header h2 {
+        font-size: 20px;
+        color: var(--primary-green);
+        font-weight: 800;
+    }
+
+.edit-icon {
+    font-size: 18px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.profile-divider {
+    border: none;
+    border-top: 1px solid #a3b0ac;
+    margin: 2px 0;
+}
+/* ==================== SEÇÕES (STATUS E AÇÕES) ==================== */
+.section-title {
+    font-size: 13px;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.status-box {
+    background-color: #e4e9e7;
+    border-radius: var(--border-radius-md);
+    padding: 12px;
+    display: flex;
+    flex-direction: column; /* Mudança para lista para melhor leitura em sidebars estreitas */
+    gap: 8px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between; /* Alinha label na esquerda e dado na direita */
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 4px;
+}
+
+    .status-item:last-child {
+        border-bottom: none;
+    }
+
+.status-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-data {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.status-col p {
+    font-size: 11px;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.actions-labels {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+}
+
+.actions-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+.dog-profile-sidebar {
+    scrollbar-gutter: stable; /* Evita que o layout pule quando o scroll aparece */
+}
+
+/* ==================== BOTÕES CIRCULARES ==================== */
+.action-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+/* Botões Modernos */
+.action-buttons-modern {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+}
+
+.btn-modern {
+    border: none;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .btn-modern i {
+        font-size: 24px;
+        margin-bottom: 4px;
+    }
+
+    .btn-modern span {
+        font-size: 12px;
+    }
+
+.btn-agua-modern {
+    background-color: var(--light-green);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+}
+
+.btn-comida-modern {
+    background-color: var(--primary-orange);
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.4);
+}
+
+.btn-modern:hover {
+    transform: scale(1.05);
+}
+
+/* Atualização das cores para bater com seu :root */
+.btn-agua-modern {
+    background-color: #7ab583; /* Cor aproximada da sua --light-green */
+    box-shadow: 0 4px 15px rgba(122, 181, 131, 0.4);
+}
+
+.btn-comida-modern {
+    background-color: var(--primary-orange);
+    box-shadow: 0 4px 15px rgba(224, 122, 95, 0.4);
+}
+
+/* Ajuste no card para não ficar largo demais na sua sidebar de 320px */
+.user-status-card {
+    background: var(--white);
+    border-radius: var(--border-radius-lg);
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05); /* Suave borda para definição */
+}
+
+.animal-name {
+    font-weight: bold;
+    color: var(--primary-green);
+    font-size: 13px; /* Ajustado para caber na sidebar */
+}
+
+/* Feedback visual de sucesso: ÁGUA */
+.btn-animacao-agua {
+    background-color: #3498db !important; /* Azul água */
+    color: white !important;
+    border-color: #2980b9 !important;
+    box-shadow: 0 0 12px rgba(52, 152, 219, 0.7);
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.05); /* Dá uma leve "crescida" no botão */
+}
+
+/* Feedback visual de sucesso: COMIDA */
+.btn-animacao-comida {
+    background-color: #e67e22 !important; /* Laranja ração */
+    color: white !important;
+    border-color: #d35400 !important;
+    box-shadow: 0 0 12px rgba(230, 126, 34, 0.7);
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.05);
+}
+/* ==================== LOG DE USUÁRIO ==================== */
+.user-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.user-card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.animal-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #444;
+}
+
+.icon-agua {
+    color: #2ecc71;
+}
+
+.icon-comida {
+    color: #f39c12;
+}
+
+.avatar-md {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #e0e0e0;
+}
+
+/* ==================== SEÇÃO DE COMENTÁRIOS ==================== */
+.comments-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-sm {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment-input {
+    flex-grow: 1;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 12px;
+    font-size: 11px;
+    outline: none;
+}
+
+.btn-send-comment {
+    background-color: var(--light-green);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+    .btn-send-comment i {
+        font-size: 14px;
+        margin-left: -2px;
+    }
+
+    .btn-send-comment:hover {
+        background-color: var(--primary-green);
+        transform: scale(1.1);
+    }
+
+    .btn-send-comment:active {
+        transform: scale(0.95);
+    }
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comment-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .comment-item p {
+        font-size: 11px;
+        color: var(--text-dark);
+        line-height: 1.3;
+    }
+
+/* ==================== FOOTER ==================== */
+
+footer.footer {
+    background-color: var(--primary-green);
+    color: var(--white);
+    padding: 2px 0;
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    border-top: none !important;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    /* === ADICIONADO PARA FIXAR O FOOTER === */
+    flex-shrink: 0; /* Impede que o conteúdo do main esmague o footer */
+    margin-top: 1px; /* Empurra o footer pro fundo caso a página tenha pouco conteúdo */
+    position: relative; /* Sobrescreve o estilo absoluto do _Layout padrão do ASP.NET */
+    width: 100%;
+}
+
+    footer.footer.text-muted {
+        color: var(--white) !important;
+    }
+
+    footer.footer a {
+        color: var(--primary-orange);
+        text-decoration: none;
+        font-weight: 700;
+        margin-left: 5px;
+        transition: color 0.3s ease;
+    }
+
+        footer.footer a:hover {
+            color: var(--light-green);
+            text-decoration: underline;
+        }
+
+        /*""""""""""""""""""""""""""""""""""""""""""""""*/
+/* ==================== CARD DE REGISTRO DE AÇÕES (SIDEBAR DIREITA) ==================== */
+.user-status-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius-md);
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.user-card-header {
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 10px;
+}
+
+.user-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .user-label strong {
+        color: var(--primary-green); /* Usando o verde principal do seu tema */
+        font-size: 14px;
+    }
+
+.user-card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Coloca a água e a comida lado a lado */
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--bg-main); /* Fundo cinza clarinho */
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+    .status-row span {
+        display: flex;
+        flex-direction: column;
+        font-size: 11px;
+        color: var(--text-muted);
+        line-height: 1.3;
+    }
+
+    .status-row strong {
+        font-size: 13px;
+        color: var(--text-dark);
+    }
+
+/* Cores dos Ícones */
+.icon-agua {
+    color: #3498db; /* Azul para a gota de água */
+    font-size: 18px;
+}
+
+.icon-comida {
+    color: #e67e22; /* Laranja para a tigela de comida */
+    font-size: 18px;
+}
+#sidebar-last-agua, #sidebar-last-comida {
+    font-variant-numeric: tabular-nums; /* Mantém os números alinhados */
+    white-space: nowrap; /* Impede que a data pule de linha */
+}
+/* ==================== AJUSTES FINAIS: SEÇÃO DE COMENTÁRIOS ==================== */
+
+/* Container da lista para permitir rolagem interna se houver muitos comentários */
+.comments-list {
+    max-height: 250px; /* Limita a altura para não quebrar a sidebar */
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Item de comentário individual */
+.comment-item {
+    display: flex;
+    align-items: flex-start; /* Alinha o avatar no topo do texto */
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.4); /* Fundo sutil */
+    padding: 8px;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+    .comment-item:hover {
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+/* Conteúdo do comentário (Nome + Texto) */
+.comment-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+    .comment-content p {
+        font-size: 12px;
+        margin: 0;
+        color: var(--text-dark);
+        line-height: 1.4;
+    }
+
+    .comment-content strong {
+        color: var(--primary-green);
+        font-weight: 700;
+        margin-right: 4px;
+    }
+
+    /* Estilo da data/hora do comentário */
+    .comment-content .text-muted {
+        font-size: 10px;
+        margin-top: 2px;
+        opacity: 0.8;
+    }
+
+/* Customização do Input de Comentário */
+.comment-input {
+    background-color: var(--white);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+    .comment-input:focus {
+        border-color: var(--light-green);
+        box-shadow: 0 0 0 3px rgba(162, 193, 163, 0.2);
+    }
+
+/* Estilo para o estado de carregamento (Spinner) */
+.fa-spinner {
+    color: var(--primary-green);
+    font-size: 18px;
+}
+
+/* Scrollbar fina para a lista de comentários */
+.comments-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background: var(--light-green);
+    border-radius: 10px;
+}
+
+
+
+/*""""""""""""""""""""""""""MAP"""""""""""""""""""""""""""""""""""""""*/
+
+/* Destaque para o card selecionado via Mapa ou Clique */
+.case-card.active-card {
+    border: 2px solid var(--primary-orange) !important;
+    background-color: rgba(224, 122, 95, 0.05); /* Um fundo levemente alaranjado */
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Indicador visual de que o card é clicável */
+.case-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+    .case-card:hover {
+        transform: translateY(-2px);
+        background-color: var(--white);
+    }
+
+/* Customização do Balão do Mapa (Leaflet) */
+.leaflet-popup-content-wrapper {
+    border-radius: var(--border-radius-md);
+    padding: 5px;
+}
+
+.leaflet-popup-content b {
+    color: var(--primary-green);
+    font-size: 1.1em;
+}
+
+.leaflet-popup-content button {
+    margin-top: 8px;
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    width: 100%;
+    cursor: pointer;
+}
+
+    .leaflet-popup-content button:hover {
+        background: var(--primary-orange);
+    }
+
+/* Estado inicial da sidebar de detalhes */
+.right-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+    /* Se a sidebar estiver vazia ou sem animal selecionado */
+    .right-sidebar:empty::before {
+        content: "Selecione um animal no mapa para ver os detalhes";
+        display: block;
+        text-align: center;
+        margin-top: 50%;
+        color: var(--text-muted);
+        font-style: italic;
+        padding: 20px;
+    }
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.marker-bounce {
+    animation: bounce 0.5s ease infinite;
+}
+/* Botão flutuante para reportar ocorrência no mapa */
+.btn-reportar-flutuante {
+    position: absolute;
+    bottom: 30px; /* Distância do fundo */
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza perfeitamente */
+    z-index: 1000; /* Garante que fica por cima do mapa Leaflet */
+    background-color: var(--primary-orange);
+    color: var(--white);
+    border: none;
+    border-radius: 30px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .btn-reportar-flutuante:hover {
+        background-color: #d35400;
+        transform: translateX(-50%) translateY(-3px) scale(1.05);
+    } 

@@ -1,0 +1,75 @@
+﻿@model SosDog.Models.Usuario
+
+<div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true" data-has-error="@(TempData["AbrirModalCadastro"] != null ? "true" : "false")">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content custom-modal-radius">
+            <div class="modal-header border-0">
+                <h5 class="modal-title modal-title-custom" id="cadastroModalLabel">
+                    <i class="fa-solid fa-user-plus modal-icon-color me-2"></i>Cadastre-se
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                
+                @if (TempData["ErroCadastro"] != null)
+                {
+                    <div class="alert alert-danger p-2 text-center" role="alert">
+                        @TempData["ErroCadastro"]
+                    </div>
+                }
+
+                <form asp-controller="Usuarios" asp-action="Create" method="post" enctype="multipart/form-data">
+                    
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label text-muted fw-bold">Nome</label>
+                        <input asp-for="Nome" class="form-control" required placeholder="Seu nome completo">
+                        <span asp-validation-for="Nome" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label text-muted fw-bold">E-mail</label>
+                        <input asp-for="Email" class="form-control" required placeholder="seu@email.com">
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Telefone" class="form-label text-muted fw-bold">Telefone</label>
+                        <input asp-for="Telefone" class="form-control" required placeholder="(XX) 9XXXX-XXXX">
+                        <span asp-validation-for="Telefone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="FotoUpload" class="form-label text-muted fw-bold">Foto de Perfil</label>
+                        <input type="file" class="form-control" id="FotoUpload" name="FotoUpload" accept="image/*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SenhaHash" class="form-label text-muted fw-bold">Senha</label>
+                        <input asp-for="SenhaHash" class="form-control" required placeholder="Crie uma senha forte">
+                        <span asp-validation-for="SenhaHash" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="ConfirmarSenha" class="form-label text-muted fw-bold">Confirmar Senha</label>
+                        <input type="password" class="form-control" id="ConfirmarSenha" name="ConfirmarSenha" required placeholder="Repita a senha">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-orange w-100 btn-login-submit py-2 fw-bold">
+                        Criar Conta
+                    </button>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <span class="text-muted text-sm">Já tem uma conta?</span>
+                    <a href="#" class="modal-link-cadastro text-sm" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Faça Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
