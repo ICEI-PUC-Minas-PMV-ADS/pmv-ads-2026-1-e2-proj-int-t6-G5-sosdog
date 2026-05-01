@@ -1,8 +1,205 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<SosDog.Models.Ocorrencia>
+@{
+    ViewData["Title"] = "Dashboard de Ocorrências";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<main class="dashboard-container">
+    <aside class="left-sidebar">
+        <div class="cases-list">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="case-card"
+                         data-id="@item.IdOcorrencia"
+                         data-lat="@item.Latitude"
+                         data-lng="@item.Longitude"
+                         data-codigo="@item.CodigoCachorro"
+                         data-sexo="@item.Sexo"
+                         data-cor="@item.CorPelagem"
+                         data-porte="@item.Porte"
+                         data-situacao="@item.Situacao"
+                         data-idade="@item.FaixaEtaria"
+                         data-usuario="@item.IdUsuario"
+                         data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
+                         data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
+                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
+
+                        <img src="@item.FotoAnimal" class="dog-api-img" alt="Foto do Animal">
+
+                        <div class="case-details">
+                            <div class="case-header">
+                                <span>Id: @item.CodigoCachorro</span>
+                                <span class="badge badge-green">@item.EstadoSaude</span>
+                            </div>
+
+                            <p><strong>Tipo:</strong> @item.Tipo</p>
+
+                            <p class="text-truncate" title="@item.Descricao">
+                                <strong>Status:</strong> @item.Situacao - @item.Porte - @item.Sexo
+                            </p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="p-4 text-center text-muted">
+                    <i class="fa-solid fa-dog fa-2x mb-2"></i>
+                    <p>Nenhuma ocorrência encontrada no sistema.</p>
+                </div>
+            }
+        </div>
+
+        <div class="sidebar-buttons">
+            <button class="btn-orange @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
+                    onclick="@(User.Identity != null && User.Identity.IsAuthenticated ? "alert('Em desenvolvimento!')" : "")">
+                Urgente <i class="fa-solid fa-user-clock"></i>
+            </button>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <button type="button" class="btn-orange" data-bs-toggle="modal" data-bs-target="#modalOcorrencia">
+                    Reportar Animal <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn-orange" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    Reportar Animal <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+            }
+        </div>
+    </aside>
+
+    <section class="main-map-area">
+        <div id="map"></div>
+    </section>
+
+    <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
+        <div class="profile-img-wrap">
+            <img id="sidebar-foto" src="/img/placeholder-dog.png" alt="Cachorro">
+        </div>
+
+        <div class="profile-header">
+            <h2 id="sidebar-titulo-id">ID do Cachorro</h2>
+            <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
+               id="btn-editar-ocorrencia"
+               style="cursor: pointer;"
+               title="Editar Ocorrência"></i>
+        </div>
+
+        <hr class="profile-divider">
+
+        <div class="profile-section">
+            <h3 class="section-title">Status do Animal</h3>
+
+            <div class="status-box">
+                <div class="status-item">
+                    <span class="status-label">Sexo:</span>
+                    <span class="status-data" id="sidebar-sexo">---</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Cor:</span>
+                    <span class="status-data" id="sidebar-cor">---</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Porte:</span>
+                    <span class="status-data" id="sidebar-porte">---</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Situação:</span>
+                    <span class="status-data" id="sidebar-situacao">---</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Faixa Etária:</span>
+                    <span class="status-data" id="sidebar-idade">---</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section action-card-container">
+            <h3 class="section-title">Registro de Ações</h3>
+
+            <div class="action-layout">
+                <div class="action-buttons-modern">
+                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)">
+                        <i class="fa-solid fa-droplet"></i>
+                        <span>Água</span>
+                    </button>
+
+                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)">
+                        <i class="fa-solid fa-bowl-food"></i>
+                        <span>Comida</span>
+                    </button>
+                </div>
+
+                <div class="user-status-card">
+                    <div class="user-card-header">
+                        <div class="user-card-info">
+                            <span class="user-label">
+                                Último cuidador:
+                                <strong id="sidebar-user-id" class="text-primary">Nenhum</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="user-card-body">
+                        <div class="status-row">
+                            <i class="fa-solid fa-droplet icon-agua"></i>
+                            <span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span>
+                        </div>
+
+                        <div class="status-row">
+                            <i class="fa-solid fa-bowl-food icon-comida"></i>
+                            <span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="profile-divider">
+
+        <div class="profile-section comments-section">
+            <h3 class="section-title">Comentários:</h3>
+
+            <form asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
+
+                <img src="/img/placeholder-user.png" alt="Seu Avatar" class="avatar-sm">
+
+                <input type="text"
+                       name="texto"
+                       class="comment-input"
+                       placeholder="Adicionar comentário..."
+                       required>
+
+                <button type="submit" class="btn-send-comment" title="Enviar">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <div class="comments-list" id="comments-list">
+                <p class="text-muted">Selecione uma ocorrência para visualizar os comentários.</p>
+            </div>
+        </div>
+    </aside>
+
+    <div id="editModalContainer"></div>
+</main>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="~/js/map-handler.js" asp-append-version="true"></script>
+    <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
+    <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
+}

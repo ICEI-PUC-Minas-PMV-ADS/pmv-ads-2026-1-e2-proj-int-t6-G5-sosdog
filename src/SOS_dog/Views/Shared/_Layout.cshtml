@@ -1,50 +1,98 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+    <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SOS_dog</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SOS_dog.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SOS_dog</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - SOS Dog</title>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - SOS_dog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    @* ALTERAÇÃO: Leaflet pode ficar só na página que usa o mapa, para evitar carregar em todas as telas *@
+    @* <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /> *@
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+    <header class="top-header">
+        <div class="logo">
+            <a asp-controller="Home" asp-action="Index" class="logo-link">
+                <i class="fa-solid fa-paw fa-3x"></i>
+            </a>
+        </div>
+
+        <nav class="main-nav">
+            @* ALTERAÇÃO: removido button envolvendo a, pois o ideal é usar apenas link estilizado *@
+            <a id="btn-mapa" class="nav-btn-transparent" href="#mapa">
+                <i class="fa-solid fa-location-dot"></i> Mapa dos Casos
+            </a>
+
+            <a id="btn-feed" class="nav-btn-transparent" href="#feed">
+                <i class="fa-solid fa-folder-open"></i> Feed de Casos
+            </a>
+        </nav>
+
+        <div class="header-right">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Busca...">
+            </div>
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="user-menu-logged">
+                    <div class="user-info">
+                        <i class="fa-solid fa-user-check fs-5"></i>
+                        <span>@User.Identity.Name</span>
+                    </div>
+
+                    <form asp-controller="Usuarios" asp-action="Logout" method="post" class="m-0">
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit" class="btn btn-sm btn-outline-light rounded-pill">
+                            Sair <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <button type="button" class="btnLogin" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <div class="login-block">
+                        <i class="far fa-user-circle"></i>
+                        <span>login/cadastrar</span>
+                    </div>
+                </button>
+            }
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container text-center">
+            &copy; 2026 - SOS Dog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <partial name="~/Views/Usuarios/_LoginModal.cshtml" />
+    <partial name="~/Views/Usuarios/_RegistroModal.cshtml" model="new SosDog.Models.Usuario()" />
+    <partial name="~/Views/Usuarios/_EsqueciSenhaModal.cshtml" />
+    <partial name="~/Views/Usuarios/_RedefinirSenhaModais.cshtml" />
+    <partial name="~/Views/Ocorrencias/_CriarOcorrenciaModal.cshtml" model="new SosDog.Models.Ocorrencia()" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    @* ALTERAÇÃO: Leaflet pode ficar só na Home/Index, porque é onde o mapa aparece *@
+    @* <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> *@
+
+    <script src="~/js/usuario.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
