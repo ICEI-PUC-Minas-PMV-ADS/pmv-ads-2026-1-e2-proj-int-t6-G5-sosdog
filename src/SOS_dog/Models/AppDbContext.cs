@@ -30,11 +30,11 @@ namespace SosDog.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Definindo que uma ocorrência pertence a um usuário e um usuário pode registrar várias ocorrências
-            //modelBuilder.Entity<Ocorrencia>()
-            //    .HasOne(o => o.Usuario)
-            //    .WithMany(u => u.OcorrenciasRegistradas)
-            //    .HasForeignKey(o => o.IdUsuario) // ALTERAÇÃO
-            //    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Ocorrencia>()
+                .HasOne(o => o.Usuario)
+                .WithMany(u => u.OcorrenciasRegistradas)
+                .HasForeignKey(o => o.IdUsuario) // ALTERAÇÃO
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Definindo que um comentário pertence a um usuário e um usuário pode fazer vários comentários
             modelBuilder.Entity<Comentario>()

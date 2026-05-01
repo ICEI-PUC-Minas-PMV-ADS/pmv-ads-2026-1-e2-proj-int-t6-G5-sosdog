@@ -38,8 +38,7 @@ namespace SosDog.Models
         public int TentativasLoginInvalidas { get; set; } = 0;
         public DateTime? BloqueadoAte { get; set; }
 
-        // ALTERAÇÃO: OcorrenciasRegistradas → Ocorrencias (nome simplificado)
-        public virtual ICollection<Ocorrencia> Ocorrencias { get; set; } = new List<Ocorrencia>();
+        public virtual ICollection<Ocorrencia> OcorrenciasRegistradas { get; set; } = new List<Ocorrencia>();
 
         public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
         public virtual ICollection<Favorito> Favoritos { get; set; } = new List<Favorito>();
