@@ -1,10 +1,20 @@
 {
   "version": 2,
-  "dgSpecHash": "76OTfj05+7Q=",
+  "dgSpecHash": "vO7tKv4x52c=",
   "success": true,
-  "projectFilePath": "C:\\Users\\vitor\\OneDrive\\Área de Trabalho\\Faculdade Puc 2°\\src\\SOS_dog\\SOS_dog.csproj",
+  "projectFilePath": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\vitor\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Ocorreu um erro ao obter os dados de vulnerabilidade do pacote: Não é possível carregar o índice de serviço para a origem https://api.nuget.org/v3/index.json.",
+      "projectPath": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\vitor\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

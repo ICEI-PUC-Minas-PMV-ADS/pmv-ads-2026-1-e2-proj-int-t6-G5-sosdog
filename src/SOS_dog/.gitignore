@@ -1,0 +1,8 @@
+﻿# Visual Studio arquivos de cache e configuração
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.shell_navigation_cache
+*.sln.docstates
