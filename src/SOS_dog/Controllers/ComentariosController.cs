@@ -1,8 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SosDog.Models;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SosDog.Controllers
 {
@@ -30,7 +31,9 @@ namespace SosDog.Controllers
 
             // ALTERAÇÃO: usuário fixo apenas para protótipo.
             // Depois deve ser substituído pelo ID do usuário logado.
-            int idUsuario = 1;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+            int idUsuario = int.Parse(userId);
 
             var comentario = new Comentario
             {

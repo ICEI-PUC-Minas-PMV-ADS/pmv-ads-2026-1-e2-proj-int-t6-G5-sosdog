@@ -21,7 +21,7 @@ namespace SosDog.Models
                 .HasOne(c => c.Ocorrencia)
                 .WithMany(o => o.Comentarios)
                 .HasForeignKey(c => c.IdOcorrencia) // ALTERAÇÃO
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Favorito>()
                 .HasOne(f => f.Ocorrencia)
@@ -48,7 +48,7 @@ namespace SosDog.Models
                 .HasOne(f => f.Usuario)
                 .WithMany(u => u.Favoritos)
                 .HasForeignKey(f => f.IdUsuario) // ALTERAÇÃO
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Garantindo que um usuário não possa favoritar a mesma ocorrência mais de uma vez
             modelBuilder.Entity<Favorito>()

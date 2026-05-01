@@ -107,15 +107,6 @@
             </div>
         `).openPopup();
 
-
-        this.creationMarker.on('dragend', (e) => {
-            const position = e.target.getLatLng();
-            this.atualizarCamposCoordenadas(position.lat, position.lng);
-            this.creationMarker.openPopup();
-        });
-
-        this.atualizarCamposCoordenadas(center.lat, center.lng);
-
         setTimeout(() => {
             this.creationMarker.openPopup();
         }, 100);
@@ -162,6 +153,11 @@
 
 
 }
+
+// ==========================================
+// FUNÇÕES GLOBAIS
+// ==========================================
+
 function abrirModalCriacao() {
     const modalEl = document.getElementById('modalOcorrencia');
     if (modalEl) {
@@ -169,11 +165,6 @@ function abrirModalCriacao() {
         modal.show();
     }
 }
-
-// Iniciar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-    window.sosDogMap = new SosDogMap();
-});
 
 // Função para destacar o card ao clicar no mapa
 function focusCard(id) {
@@ -195,7 +186,7 @@ function focusCard(id) {
         document.getElementById('sidebar-sexo').innerText = card.dataset.sexo;
         document.getElementById('sidebar-cor').innerText = card.dataset.cor;
         document.getElementById('sidebar-porte').innerText = card.dataset.porte;
-        document.getElementById('sidebar-sociabilidade').innerText = card.dataset.sociabilidade;
+        document.getElementById('sidebar-EstadoSaude').innerText = card.dataset.estadoSaude;
         document.getElementById('sidebar-idade').innerText = card.dataset.idade;
 
         // Dados de cuidados
@@ -236,3 +227,10 @@ function focusCard(id) {
         }
     }
 }
+
+// ==========================================
+// INICIALIZAÇÃO DO MAPA AO CARREGAR A PÁGINA
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    window.sosDogMap = new SosDogMap();
+});

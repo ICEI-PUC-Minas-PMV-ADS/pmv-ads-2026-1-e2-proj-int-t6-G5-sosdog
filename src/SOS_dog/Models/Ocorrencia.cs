@@ -68,10 +68,10 @@ namespace SosDog.Models
         public string Descricao { get; set; }
 
         [Required(ErrorMessage = "A latitude é obrigatória")]
-        public float Latitude { get; set; }
+        public double Latitude { get; set; }
 
         [Required(ErrorMessage = "A longitude é obrigatória")]
-        public float Longitude { get; set; }
+        public double Longitude { get; set; }
 
         // ALTERAÇÃO: Data_Registro → DataRegistro
         [Required]

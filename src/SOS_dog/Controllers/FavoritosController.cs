@@ -3,9 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SosDog.Models;
+using System.Security.Claims; // Necessário para usar Claims
+using Microsoft.AspNetCore.Authorization; // Necessário para [Authorize]
 
 namespace SosDog.Controllers
 {
+    [Authorize] // Garante que o usuário esteja logado para qualquer ação neste Controller
     public class FavoritosController : Controller
     {
         private readonly AppDbContext _context;
@@ -15,18 +18,17 @@ namespace SosDog.Controllers
             _context = context;
         }
 
-        // ALTERAÇÃO: Controller simplificado
-        // Motivo: favorito é uma ação (toggle), não um CRUD completo
-
         // POST: Favoritar
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int idOcorrencia)
         {
-            // ALTERAÇÃO: usuário fixo (protótipo)
-            // Depois deve vir do login
-            int idUsuario = 1;
+            // RECUPERANDO O ID DO USUÁRIO LOGADO
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+            int idUsuario = int.Parse(userId);
 
-            // Verifica se já existe (evita duplicado)
+            // Verifica se já existe para evitar duplicados no banco
             var existe = _context.Favoritos
                 .Any(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);
 
@@ -47,9 +49,13 @@ namespace SosDog.Controllers
 
         // POST: Remover favorito
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int idOcorrencia)
         {
-            int idUsuario = 1;
+            // RECUPERANDO O ID DO USUÁRIO LOGADO
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+            int idUsuario = int.Parse(userId);
 
             var favorito = _context.Favoritos
                 .FirstOrDefault(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);

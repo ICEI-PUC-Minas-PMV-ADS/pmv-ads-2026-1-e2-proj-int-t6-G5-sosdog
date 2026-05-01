@@ -12,6 +12,7 @@ function executarAcao(tipo, btnElement) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'RequestVerificationToken': token 
         },
         body: `id=${ocorrenciaSelecionadaId}&tipoAcao=${tipo}`
     })

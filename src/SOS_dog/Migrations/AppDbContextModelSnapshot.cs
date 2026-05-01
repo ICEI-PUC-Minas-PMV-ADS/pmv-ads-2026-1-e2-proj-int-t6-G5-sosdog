@@ -121,11 +121,11 @@ namespace SOS_dog.Migrations
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<float>("Latitude")
-                        .HasColumnType("real");
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
 
-                    b.Property<float>("Longitude")
-                        .HasColumnType("real");
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("NomeUsuarioUltimaAcao")
                         .HasColumnType("nvarchar(max)");
@@ -206,7 +206,7 @@ namespace SOS_dog.Migrations
                     b.HasOne("SosDog.Models.Ocorrencia", "Ocorrencia")
                         .WithMany("Comentarios")
                         .HasForeignKey("IdOcorrencia")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SosDog.Models.Usuario", "Usuario")
@@ -231,7 +231,7 @@ namespace SOS_dog.Migrations
                     b.HasOne("SosDog.Models.Usuario", "Usuario")
                         .WithMany("Favoritos")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ocorrencia");

@@ -13,15 +13,19 @@ using System.Security.Claims;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Dev_PUC_SoSDog.Controllers
+
+namespace SosDog.Controllers
 {
     public class OcorrenciasController : Controller
     {
         private readonly AppDbContext _context;
-
-        public OcorrenciasController(AppDbContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpClientFactory _httpClientFactory;
+        public OcorrenciasController(AppDbContext context, IWebHostEnvironment webHostEnvironment, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            _httpClientFactory = httpClientFactory;
         }
 
         // GET: Ocorrencias
@@ -54,46 +58,61 @@ namespace Dev_PUC_SoSDog.Controllers
         // GET: Ocorrencias/Create
         public IActionResult Create()
         {
-            // Ajustado para IdUsuario e Email
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "Email");
             return View();
         }
 
-        // POST: Ocorrencias/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Create([Bind("TipoOcorrencia,EstadoSaude,Descricao,Latitude,Longitude,Sexo,CorPelagem,Porte,FaixaEtaria,Endereco,RecebeuAgua,RecebeuComida")] Ocorrencia ocorrencia, IFormFile FotoAnimal)
         {
-            // Removendo validações de campos preenchidos automaticamente ou via Upload
+            // 1. VALIDAÇÃO DA IMAGEM
+            if (FotoAnimal != null && FotoAnimal.Length > 0)
+            {
+                var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
+                var extensao = Path.GetExtension(FotoAnimal.FileName).ToLower();
+
+                if (!extensoesPermitidas.Contains(extensao))
+                {
+                    TempData["Erro"] = "Formato de imagem inválido.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (FotoAnimal.Length > 5 * 1024 * 1024)
+                {
+                    TempData["Erro"] = "A imagem é muito grande (máximo 5MB).";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            // 2. LIMPEZA DO MODELSTATE
             ModelState.Remove("Usuario");
             ModelState.Remove("FotoAnimal");
             ModelState.Remove("CodigoCachorro");
 
             if (ModelState.IsValid)
             {
-                // 1. Vincular o usuário logado
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (userId == null) return Unauthorized();
-                ocorrencia.IdUsuario = int.Parse(userId);
+                // 3. VINCULAR USUÁRIO LOGADO
+                if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int idUsuario))
+                    return Unauthorized();
+                ocorrencia.IdUsuario = idUsuario;
 
-                // --- LÓGICA DE GEOCODIFICAÇÃO ---
+                // 4. GEOCODIFICAÇÃO — usa factory injetado, não new HttpClient()
                 if (!string.IsNullOrEmpty(ocorrencia.Endereco))
                 {
                     try
                     {
-                        using (var client = new HttpClient())
-                        {
-                            client.DefaultRequestHeaders.Add("User-Agent", "SoSDogApp_PUC_Minas");
-                            var url = $"https://nominatim.openstreetmap.org/search?format=json&q={Uri.EscapeDataString(ocorrencia.Endereco)}";
-                            var response = await client.GetStringAsync(url);
-                            var data = JsonConvert.DeserializeObject<dynamic>(response);
+                        var client = _httpClientFactory.CreateClient();
+                        client.DefaultRequestHeaders.Add("User-Agent", "SoSDogApp_PUC_Minas");
+                        var url = $"https://nominatim.openstreetmap.org/search?format=json&q={Uri.EscapeDataString(ocorrencia.Endereco)}";
+                        var response = await client.GetStringAsync(url);
+                        var data = JsonConvert.DeserializeObject<dynamic>(response);
 
-                            if (data != null && data.Count > 0)
-                            {
-                                ocorrencia.Latitude = (float)data[0].lat;
-                                ocorrencia.Longitude = (float)data[0].lon;
-                            }
+                        if (data != null && data.Count > 0)
+                        {
+                            ocorrencia.Latitude = (double)data[0].lat;
+                            ocorrencia.Longitude = (double)data[0].lon;
                         }
                     }
                     catch (Exception ex)
@@ -102,17 +121,19 @@ namespace Dev_PUC_SoSDog.Controllers
                     }
                 }
 
-                // 2. Configurações automáticas
+                // 5. CONFIGURAÇÕES AUTOMÁTICAS
                 ocorrencia.DataRegistro = DateTime.UtcNow;
-                ocorrencia.CodigoCachorro = "DOG-" + new Random().Next(1000, 9999).ToString();
+                ocorrencia.CodigoCachorro = "DOG-" + Guid.NewGuid().ToString("N")[..6].ToUpper();
 
-                // 3. Processar Upload da Foto
+                // 6. UPLOAD DA FOTO
                 if (FotoAnimal != null && FotoAnimal.Length > 0)
                 {
-                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ocorrencias");
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(FotoAnimal.FileName).ToLower();
+                    string folder = Path.Combine(wwwRootPath, "images", "ocorrencias");
+
                     if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-                    string fileName = Guid.NewGuid().ToString() + "_" + FotoAnimal.FileName;
                     string filePath = Path.Combine(folder, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -149,50 +170,109 @@ namespace Dev_PUC_SoSDog.Controllers
             return PartialView("_EditarOcorrenciaModal", ocorrencia);
         }
 
-        // POST: Ocorrencias/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Edit(int id, Ocorrencia ocorrencia, IFormFile NovaFoto)
         {
-            if (id != ocorrencia.IdOcorrencia)
+            if (id != ocorrencia.IdOcorrencia) return NotFound();
+
+            // 1. Busca a ocorrência original no banco
+            var ocorrenciaDb = await _context.Ocorrencias.FindAsync(id);
+            if (ocorrenciaDb == null) return NotFound();
+
+            // 2. Segurança: Verifica se o usuário logado é o dono da postagem
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (ocorrenciaDb.IdUsuario.ToString() != userIdString)
             {
-                return NotFound();
+                TempData["Erro"] = "Você não tem permissão para editar esta ocorrência.";
+                return RedirectToAction("Index", "Home");
             }
 
+            // 3. Validação da nova imagem (se enviada)
+            if (NovaFoto != null && NovaFoto.Length > 0)
+            {
+                var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
+                var extensao = Path.GetExtension(NovaFoto.FileName).ToLower();
+
+                if (!extensoesPermitidas.Contains(extensao))
+                {
+                    TempData["Erro"] = "Formato de imagem inválido. Use .jpg ou .png.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (NovaFoto.Length > 5 * 1024 * 1024)
+                {
+                    TempData["Erro"] = "A imagem deve ter no máximo 5MB.";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            // Removemos da validação campos que não vêm do formulário ou são automáticos
             ModelState.Remove("Usuario");
-            ModelState.Remove("Comentarios");
-            ModelState.Remove("FavoritadosPor");
             ModelState.Remove("FotoAnimal");
+            ModelState.Remove("IdUsuario");
+            ModelState.Remove("NovaFoto"); // Caso o IFormFile esteja na Model
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // 4. Atualiza apenas os campos permitidos
+                    ocorrenciaDb.TipoOcorrencia = ocorrencia.TipoOcorrencia;
+                    ocorrenciaDb.EstadoSaude = ocorrencia.EstadoSaude;
+                    ocorrenciaDb.Descricao = ocorrencia.Descricao;
+                    ocorrenciaDb.Sexo = ocorrencia.Sexo;
+                    ocorrenciaDb.CorPelagem = ocorrencia.CorPelagem;
+                    ocorrenciaDb.Porte = ocorrencia.Porte;
+                    ocorrenciaDb.FaixaEtaria = ocorrencia.FaixaEtaria;
+                    ocorrenciaDb.Endereco = ocorrencia.Endereco;
+
+                    // 5. Processamento da Foto
                     if (NovaFoto != null && NovaFoto.Length > 0)
                     {
-                        string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ocorrencias");
-                        if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+                        string wwwRootPath = _webHostEnvironment.WebRootPath;
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(NovaFoto.FileName).ToLower();
 
-                        string fileName = Guid.NewGuid().ToString() + "_" + NovaFoto.FileName;
-                        string filePath = Path.Combine(folder, fileName);
+                        // Caminho da PASTA onde as fotos ficam
+                        string uploadsFolder = Path.Combine(wwwRootPath, "images", "ocorrencias");
+
+                        // Garante que a pasta existe (cria se não existir)
+                        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                        // Caminho completo do ARQUIVO
+                        string filePath = Path.Combine(uploadsFolder, fileName);
 
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             await NovaFoto.CopyToAsync(stream);
                         }
 
-                        ocorrencia.FotoAnimal = "/images/ocorrencias/" + fileName;
+                        // Deleta a foto antiga do servidor para evitar acúmulo de arquivos
+                        if (!string.IsNullOrEmpty(ocorrenciaDb.FotoAnimal))
+                        {
+                            var oldPath = Path.Combine(wwwRootPath, ocorrenciaDb.FotoAnimal.TrimStart('/'));
+                            if (System.IO.File.Exists(oldPath))
+                            {
+                                System.IO.File.Delete(oldPath);
+                            }
+                        }
+
+                        // Atualiza o caminho no banco de dados
+                        ocorrenciaDb.FotoAnimal = "/images/ocorrencias/" + fileName;
                     }
 
-                    _context.Update(ocorrencia);
+                    // 6. Salva as alterações
+                    _context.Update(ocorrenciaDb);
                     await _context.SaveChangesAsync();
 
                     TempData["Sucesso"] = "Ocorrência atualizada com sucesso!";
+                    return RedirectToAction("Index", "Home");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OcorrenciaExists(ocorrencia.IdOcorrencia))
+                    // CORREÇÃO: Verificação manual se a ocorrência existe, já que o método auxiliar sumiu
+                    if (!_context.Ocorrencias.Any(e => e.IdOcorrencia == id))
                     {
                         return NotFound();
                     }
@@ -201,15 +281,18 @@ namespace Dev_PUC_SoSDog.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", "Home");
             }
 
-            TempData["Erro"] = "Não foi possível salvar as alterações.";
+            TempData["Erro"] = "Erro ao validar os dados. Verifique os campos.";
             return RedirectToAction("Index", "Home");
         }
 
+
+
+
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegistrarAcao(int id, string tipoAcao)
         {
             var ocorrencia = await _context.Ocorrencias.FindAsync(id);
@@ -269,26 +352,31 @@ namespace Dev_PUC_SoSDog.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ocorrencia = await _context.Ocorrencias
-                .Include(o => o.Comentarios)
-                .Include(o => o.FavoritadosPor)
-                .FirstOrDefaultAsync(m => m.IdOcorrencia == id);
-
+            var ocorrencia = await _context.Ocorrencias.FindAsync(id);
             if (ocorrencia == null) return NotFound();
 
+            // 1. Verificar permissão PRIMEIRO
             var usuarioLogadoId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (ocorrencia.IdUsuario.ToString() != usuarioLogadoId) return Forbid();
+            if (ocorrencia.IdUsuario.ToString() != usuarioLogadoId)
+                return Forbid();
 
-            // Limpar dependências
-            if (ocorrencia.Comentarios != null && ocorrencia.Comentarios.Any())
-                _context.Comentarios.RemoveRange(ocorrencia.Comentarios);
+            // 2. Deletar foto do servidor
+            if (!string.IsNullOrEmpty(ocorrencia.FotoAnimal))
+            {
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath,
+                                             ocorrencia.FotoAnimal.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    try { System.IO.File.Delete(imagePath); }
+                    catch (Exception ex) { Console.WriteLine("Erro ao deletar arquivo: " + ex.Message); }
+                }
+            }
 
-            if (ocorrencia.FavoritadosPor != null && ocorrencia.FavoritadosPor.Any())
-                _context.Favoritos.RemoveRange(ocorrencia.FavoritadosPor);
-
+            // 3. Só então deletar do banco (uma única vez)
             _context.Ocorrencias.Remove(ocorrencia);
             await _context.SaveChangesAsync();
 
+            TempData["Sucesso"] = "Ocorrência removida com sucesso!";
             return RedirectToAction("Index", "Home");
         }
 

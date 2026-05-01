@@ -53,8 +53,8 @@ namespace SOS_dog.Migrations
                     EstadoSaude = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FotoAnimal = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Latitude = table.Column<float>(type: "real", nullable: false),
-                    Longitude = table.Column<float>(type: "real", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
                     DataRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
                 },
@@ -88,7 +88,7 @@ namespace SOS_dog.Migrations
                         column: x => x.IdOcorrencia,
                         principalTable: "Ocorrencias",
                         principalColumn: "IdOcorrencia",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comentarios_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
@@ -120,7 +120,7 @@ namespace SOS_dog.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

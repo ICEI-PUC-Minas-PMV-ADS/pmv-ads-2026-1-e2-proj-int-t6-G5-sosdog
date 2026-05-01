@@ -1,30 +1,34 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SosDog.Models;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace Dev_PUC_SoSDog.Controllers
+namespace SosDog.Controllers
 {
     public class UsuariosController : Controller
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConfiguration _configuration;
 
-        public UsuariosController(AppDbContext context, IWebHostEnvironment webHostEnvironment)
+        public UsuariosController(AppDbContext context, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
 
         // GET: Usuarios
@@ -95,22 +99,47 @@ namespace Dev_PUC_SoSDog.Controllers
             return View();
         }
 
-        // POST: Usuarios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nome,Email,SenhaHash,Telefone")] Usuario usuario, string ConfirmarSenha, IFormFile FotoUpload)
         {
-            // Removemos a validação de FotoPerfil pois ela será preenchida manualmente após o upload
-            ModelState.Remove("FotoPerfil");
-
-            if (!ModelState.IsValid)
+            // 1. Validação de Foto (Tamanho e Formato)
+            if (FotoUpload != null && FotoUpload.Length > 0)
             {
-                TempData["ErroCadastro"] = "Preencha todos os campos obrigatórios corretamente.";
+                var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
+                var extensao = Path.GetExtension(FotoUpload.FileName).ToLower();
+
+                if (!extensoesPermitidas.Contains(extensao))
+                {
+                    TempData["ErroCadastro"] = "Formato de imagem inválido. Use .jpg ou .png.";
+                    TempData["AbrirModalCadastro"] = true;
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (FotoUpload.Length > 5 * 1024 * 1024) // 5MB
+                {
+                    TempData["ErroCadastro"] = "A foto de perfil deve ter no máximo 5MB.";
+                    TempData["AbrirModalCadastro"] = true;
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                TempData["ErroCadastro"] = "A foto de perfil é obrigatória.";
                 TempData["AbrirModalCadastro"] = true;
                 return RedirectToAction("Index", "Home");
             }
 
-            // Validação de Senha (usando SenhaHash temporariamente para receber o texto puro do form)
+            // 2. Validações de Modelo e Negócio
+            ModelState.Remove("FotoPerfil"); // Removido pois preencheremos após o upload bem-sucedido
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErroCadastro"] = "Preencha todos os campos corretamente.";
+                TempData["AbrirModalCadastro"] = true;
+                return RedirectToAction("Index", "Home");
+            }
+
             if (usuario.SenhaHash != ConfirmarSenha)
             {
                 TempData["ErroCadastro"] = "As senhas não coincidem.";
@@ -121,18 +150,19 @@ namespace Dev_PUC_SoSDog.Controllers
             var emailExiste = await _context.Usuarios.AnyAsync(u => u.Email == usuario.Email);
             if (emailExiste)
             {
-                TempData["ErroCadastro"] = "Este e-mail já está em uso.";
+                TempData["ErroCadastro"] = "Este e-mail já está cadastrado.";
                 TempData["AbrirModalCadastro"] = true;
                 return RedirectToAction("Index", "Home");
             }
 
-            // LÓGICA DE UPLOAD
-            if (FotoUpload != null && FotoUpload.Length > 0)
+            // 3. Processamento do Upload
+            try
             {
                 string pastaDestino = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "usuarios");
                 if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
 
-                string nomeArquivo = Guid.NewGuid().ToString() + "_" + FotoUpload.FileName;
+                // Uso do Guid para evitar conflito de nomes de arquivos
+                string nomeArquivo = Guid.NewGuid().ToString() + Path.GetExtension(FotoUpload.FileName);
                 string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
 
                 using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
@@ -141,27 +171,19 @@ namespace Dev_PUC_SoSDog.Controllers
                 }
 
                 usuario.FotoPerfil = nomeArquivo;
-            }
-            else
-            {
-                TempData["ErroCadastro"] = "Por favor, selecione uma foto de perfil.";
-                TempData["AbrirModalCadastro"] = true;
-                return RedirectToAction("Index", "Home");
-            }
 
-            // Gera o Hash da senha antes de salvar
-            usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaHash);
+                // 4. Hash da Senha e Salvamento
+                usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaHash);
 
-            try
-            {
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
+
                 TempData["Sucesso"] = "Conta criada com sucesso! Faça seu login.";
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception)
             {
-                TempData["ErroCadastro"] = "Erro ao salvar os dados.";
+                TempData["ErroCadastro"] = "Ocorreu um erro interno ao processar seu cadastro.";
                 TempData["AbrirModalCadastro"] = true;
                 return RedirectToAction("Index", "Home");
             }
@@ -188,16 +210,18 @@ namespace Dev_PUC_SoSDog.Controllers
 
             try
             {
-                var smtpClient = new SmtpClient("smtp.gmail.com")
+                var emailSettings = _configuration.GetSection("EmailSettings");
+
+                var smtpClient = new SmtpClient(emailSettings["SmtpServer"])
                 {
-                    Port = 587,
-                    Credentials = new NetworkCredential("SEU_EMAIL@gmail.com", "SUA_SENHA_DE_APP"),
+                    Port = int.Parse(emailSettings["Port"]),
+                    Credentials = new NetworkCredential(emailSettings["SenderEmail"], emailSettings["SenderPassword"]),
                     EnableSsl = true,
                 };
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress("SEU_EMAIL@gmail.com"),
+                    From = new MailAddress(emailSettings["SenderEmail"]), // Usa o e-mail do config
                     Subject = "SoSDog - Recuperação de Senha",
                     Body = $"Seu código de recuperação é: <b>{token}</b>. Ele expira em 15 minutos.",
                     IsBodyHtml = true,
@@ -246,6 +270,7 @@ namespace Dev_PUC_SoSDog.Controllers
         }
 
         // GET: Usuarios/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -256,12 +281,65 @@ namespace Dev_PUC_SoSDog.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Edit/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,Nome,Email,SenhaHash,FotoPerfil,Telefone,TentativasLoginInvalidas,BloqueadoAte")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,Nome,Email,Telefone")] Usuario usuario, IFormFile NovaFoto)
         {
             if (id != usuario.IdUsuario) return NotFound();
+
+            // 1. Buscar o usuário atual do banco (sem rastreamento para não conflitar com o Update depois)
+            var usuarioNoBanco = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.IdUsuario == id);
+            if (usuarioNoBanco == null) return NotFound();
+
+            // 2. Validação de Imagem (Tamanho e Formato)
+            if (NovaFoto != null && NovaFoto.Length > 0)
+            {
+                var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
+                var extensao = Path.GetExtension(NovaFoto.FileName).ToLower();
+
+                if (!extensoesPermitidas.Contains(extensao))
+                {
+                    ModelState.AddModelError("FotoPerfil", "Apenas imagens .jpg, .jpeg ou .png são permitidas.");
+                }
+                else if (NovaFoto.Length > 5 * 1024 * 1024) // 5MB
+                {
+                    ModelState.AddModelError("FotoPerfil", "A imagem deve ter no máximo 5MB.");
+                }
+                else
+                {
+                    // Se válida, salvar o arquivo
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string nomeArquivo = Guid.NewGuid().ToString() + extensao;
+                    string pastaDestino = Path.Combine(wwwRootPath, "uploads/usuarios");
+
+                    if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
+
+                    string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
+
+                    using (var fileStream = new FileStream(caminhoCompleto, FileMode.Create))
+                    {
+                        await NovaFoto.CopyToAsync(fileStream);
+                    }
+
+                    // Atualiza o caminho da foto no objeto
+                    usuario.FotoPerfil = nomeArquivo;
+                }
+            }
+            else
+            {
+                // Se não enviou foto nova, mantém a que já estava no banco
+                usuario.FotoPerfil = usuarioNoBanco.FotoPerfil;
+            }
+
+            // 3. Preservar dados que não estão no formulário de edição simples
+            usuario.SenhaHash = usuarioNoBanco.SenhaHash;
+            usuario.TentativasLoginInvalidas = usuarioNoBanco.TentativasLoginInvalidas;
+            usuario.BloqueadoAte = usuarioNoBanco.BloqueadoAte;
+
+            // Remover validação de campos que não vêm do formulário (como Senha)
+            ModelState.Remove("SenhaHash");
+            ModelState.Remove("NovaFoto");
 
             if (ModelState.IsValid)
             {
@@ -269,18 +347,21 @@ namespace Dev_PUC_SoSDog.Controllers
                 {
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
+                    TempData["Sucesso"] = "Perfil atualizado com sucesso!";
+                    return RedirectToAction("Details", new { id = usuario.IdUsuario });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!UsuarioExists(usuario.IdUsuario)) return NotFound();
                     else throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             return View(usuario);
         }
 
         // GET: Usuarios/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -294,6 +375,7 @@ namespace Dev_PUC_SoSDog.Controllers
         }
 
         // POST: Usuarios/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
