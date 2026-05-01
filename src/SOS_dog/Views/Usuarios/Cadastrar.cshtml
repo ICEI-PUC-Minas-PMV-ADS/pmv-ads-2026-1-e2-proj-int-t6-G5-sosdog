@@ -1,0 +1,54 @@
+@model SosDog.Models.Usuario
+
+@{
+    ViewData["Title"] = "Criar Conta";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-success">🐾 Criar Conta</h2>
+                        <p class="text-muted">Junte-se ao SOS DOG e ajude a salvar vidas!</p>
+                    </div>
+
+                    <form asp-controller="Usuarios" asp-action="Cadastrar" method="post">
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Nome" class="form-label fw-bold">Nome Completo</label>
+                            <input asp-for="Nome" class="form-control form-control-lg rounded-pill" placeholder="Digite seu nome" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Seu E-mail</label>
+                            <input asp-for="Email" type="email" class="form-control form-control-lg rounded-pill" placeholder="exemplo@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Senha" class="form-label fw-bold">Crie uma Senha</label>
+                            <input asp-for="Senha" type="password" class="form-control form-control-lg rounded-pill" placeholder="Mínimo de 6 caracteres" />
+                            <span asp-validation-for="Senha" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold">
+                                Finalizar Cadastro
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <span class="text-muted">Já tem uma conta?</span>
+                            <a href="#" class="text-success fw-bold text-decoration-none">Faça Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
