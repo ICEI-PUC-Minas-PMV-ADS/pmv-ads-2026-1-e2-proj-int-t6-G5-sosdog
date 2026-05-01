@@ -1,11 +1,11 @@
-using Dev_PUC_SoSDog.Models; // Importante para achar o AppDbContext
+
 using Microsoft.EntityFrameworkCore;
 using SosDog.Models; // Importante para o UseSqlServer
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 
-namespace Dev_PUC_SoSDog
+namespace SOS_dog
 {
     public class Program
     {
