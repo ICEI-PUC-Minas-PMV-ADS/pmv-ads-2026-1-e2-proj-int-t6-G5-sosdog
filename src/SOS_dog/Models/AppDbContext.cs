@@ -18,6 +18,7 @@ namespace SosDog.Models
 
             // Evitando problemas de "Multiple Cascade Paths" (múltiplos caminhos de exclusão em cascata)
             // As exclusões automáticas foram restringidas para evitar perda de dados e conflitos entre relacionamentos.
+            modelBuilder.Entity<Comentario>()
                 .HasOne(c => c.Ocorrencia)
                 .WithMany(o => o.Comentarios)
                 .HasForeignKey(c => c.ID_Ocorrencia)
