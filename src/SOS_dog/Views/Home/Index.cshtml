@@ -170,7 +170,7 @@
         <div class="profile-section comments-section">
             <h3 class="section-title">Comentários:</h3>
 
-            <form asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
+            <form id="form-comentario-sidebar" asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
                 @Html.AntiForgeryToken()
 
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />

@@ -167,6 +167,7 @@ function abrirModalCriacao() {
 }
 
 // Função para destacar o card ao clicar no mapa
+// Função para destacar o card ao clicar no mapa ou interagir com ele
 function focusCard(id) {
     const card = document.querySelector(`.case-card[data-id="${id}"]`);
     const painel = document.getElementById('painel-detalhes');
@@ -177,7 +178,7 @@ function focusCard(id) {
         card.classList.add('active-card');
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // 2. EXIBIR o painel (estava com display: none)
+        // 2. EXIBIR o painel
         painel.style.display = 'flex';
 
         // 3. PREENCHER os dados na sidebar direita usando os data-attributes do card
@@ -186,37 +187,45 @@ function focusCard(id) {
         document.getElementById('sidebar-sexo').innerText = card.dataset.sexo;
         document.getElementById('sidebar-cor').innerText = card.dataset.cor;
         document.getElementById('sidebar-porte').innerText = card.dataset.porte;
-        document.getElementById('sidebar-EstadoSaude').innerText = card.dataset.estadoSaude;
+
+        // Verifica se o campo existe antes de injetar
+        const stateEl = document.getElementById('sidebar-EstadoSaude');
+        if (stateEl) stateEl.innerText = card.dataset.estadoSaude;
+
         document.getElementById('sidebar-idade').innerText = card.dataset.idade;
 
         // Dados de cuidados
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser;
-        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua;
-        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida;
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum';
+        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || '--:--';
+        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || '--:--';
 
         const dashboardContainer = document.querySelector('.dashboard-container');
         const formDeletar = document.getElementById('form-deletar-sidebar');
 
-        // Confirma se os elementos existem antes de tentar manipulá-los
         if (dashboardContainer && formDeletar) {
             const currentUserId = dashboardContainer.dataset.userId;
             const donoOcorrenciaId = card.dataset.usuario;
 
-            // Se o usuário logado for o dono da ocorrência (e estiver logado)
             if (currentUserId && currentUserId === donoOcorrenciaId) {
                 formDeletar.style.display = 'block';
-                // Atualiza a URL do formulário com o ID da ocorrência clicada
                 formDeletar.action = `/Ocorrencias/Delete/${id}`;
             } else {
                 formDeletar.style.display = 'none';
             }
         }
 
-        // 4. Atualizar a variável global para o sistema de comentários (ocorrencias.js)
+        // 4. ATUALIZAR VARIÁVEIS DE CONTROLE DO JS DE OCORRÊNCIAS
         if (typeof ocorrenciaSelecionadaId !== 'undefined') {
             ocorrenciaSelecionadaId = id;
-            // Opcional: carregar comentários do banco aqui
-            if (typeof carregarComentarios === 'function') carregarComentarios(id);
+
+            // ESSENCIAL: Atualizar o input escondido do form de comentários!
+            const hiddenId = document.getElementById('comentario-id-ocorrencia');
+            if (hiddenId) hiddenId.value = id;
+
+            // Carregar os comentários no HTML
+            if (typeof window.carregarComentarios === 'function') {
+                window.carregarComentarios(id);
+            }
         }
 
         // 5. Centralizar no mapa (se o mapa existir)
