@@ -74,9 +74,14 @@
         </div>
     </aside>
 
-    <section class="main-map-area">
-        <div id="map"></div>
-    </section>
+<section class="main-map-area">
+    <div id="map">
+        <button onclick="window.sosDogMap.ativarModoCriacao()"
+                class="btn-reportar-flutuante shadow-lg @(User.Identity.IsAuthenticated ? "" : "auth-required")">
+            <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
+        </button>
+    </div>
+</section>
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap">
