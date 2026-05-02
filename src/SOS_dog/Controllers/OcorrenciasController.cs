@@ -61,7 +61,6 @@ namespace SosDog.Controllers
             return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -98,7 +97,7 @@ namespace SosDog.Controllers
                     return Unauthorized();
                 ocorrencia.IdUsuario = idUsuario;
 
-                // 4. GEOCODIFICAÇÃO — usa factory injetado, não new HttpClient()
+                // 4. GEOCODIFICAÇÃO
                 if (!string.IsNullOrEmpty(ocorrencia.Endereco))
                 {
                     try
@@ -125,23 +124,16 @@ namespace SosDog.Controllers
                 ocorrencia.DataRegistro = DateTime.UtcNow;
                 ocorrencia.CodigoCachorro = "DOG-" + Guid.NewGuid().ToString("N")[..6].ToUpper();
 
-                // 6. UPLOAD DA FOTO
+                // 6. UPLOAD DA FOTO (Convertendo para Base64)
                 if (FotoAnimal != null && FotoAnimal.Length > 0)
                 {
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(FotoAnimal.FileName).ToLower();
-                    string folder = Path.Combine(wwwRootPath, "images", "ocorrencias");
-
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    string filePath = Path.Combine(folder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    using (var ms = new MemoryStream())
                     {
-                        await FotoAnimal.CopyToAsync(stream);
+                        await FotoAnimal.CopyToAsync(ms);
+                        byte[] fileBytes = ms.ToArray();
+                        // Formata a string Base64 para ser lida diretamente na tag <img> do HTML
+                        ocorrencia.FotoAnimal = $"data:{FotoAnimal.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
                     }
-
-                    ocorrencia.FotoAnimal = "/images/ocorrencias/" + fileName;
                 }
 
                 _context.Add(ocorrencia);
@@ -208,11 +200,10 @@ namespace SosDog.Controllers
                 }
             }
 
-            // Removemos da validação campos que não vêm do formulário ou são automáticos
             ModelState.Remove("Usuario");
             ModelState.Remove("FotoAnimal");
             ModelState.Remove("IdUsuario");
-            ModelState.Remove("NovaFoto"); // Caso o IFormFile esteja na Model
+            ModelState.Remove("NovaFoto");
 
             if (ModelState.IsValid)
             {
@@ -228,38 +219,16 @@ namespace SosDog.Controllers
                     ocorrenciaDb.FaixaEtaria = ocorrencia.FaixaEtaria;
                     ocorrenciaDb.Endereco = ocorrencia.Endereco;
 
-                    // 5. Processamento da Foto
+                    // 5. Processamento da Foto (Convertendo para Base64)
                     if (NovaFoto != null && NovaFoto.Length > 0)
                     {
-                        string wwwRootPath = _webHostEnvironment.WebRootPath;
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(NovaFoto.FileName).ToLower();
-
-                        // Caminho da PASTA onde as fotos ficam
-                        string uploadsFolder = Path.Combine(wwwRootPath, "images", "ocorrencias");
-
-                        // Garante que a pasta existe (cria se não existir)
-                        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
-                        // Caminho completo do ARQUIVO
-                        string filePath = Path.Combine(uploadsFolder, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var ms = new MemoryStream())
                         {
-                            await NovaFoto.CopyToAsync(stream);
+                            await NovaFoto.CopyToAsync(ms);
+                            byte[] fileBytes = ms.ToArray();
+                            // Substitui o valor da string antiga pela nova imagem em Base64
+                            ocorrenciaDb.FotoAnimal = $"data:{NovaFoto.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
                         }
-
-                        // Deleta a foto antiga do servidor para evitar acúmulo de arquivos
-                        if (!string.IsNullOrEmpty(ocorrenciaDb.FotoAnimal))
-                        {
-                            var oldPath = Path.Combine(wwwRootPath, ocorrenciaDb.FotoAnimal.TrimStart('/'));
-                            if (System.IO.File.Exists(oldPath))
-                            {
-                                System.IO.File.Delete(oldPath);
-                            }
-                        }
-
-                        // Atualiza o caminho no banco de dados
-                        ocorrenciaDb.FotoAnimal = "/images/ocorrencias/" + fileName;
                     }
 
                     // 6. Salva as alterações
@@ -271,7 +240,6 @@ namespace SosDog.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    // CORREÇÃO: Verificação manual se a ocorrência existe, já que o método auxiliar sumiu
                     if (!_context.Ocorrencias.Any(e => e.IdOcorrencia == id))
                     {
                         return NotFound();
@@ -286,9 +254,6 @@ namespace SosDog.Controllers
             TempData["Erro"] = "Erro ao validar os dados. Verifique os campos.";
             return RedirectToAction("Index", "Home");
         }
-
-
-
 
         [HttpPost]
         [Authorize]

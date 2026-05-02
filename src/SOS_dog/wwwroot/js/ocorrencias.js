@@ -188,17 +188,30 @@ document.addEventListener("DOMContentLoaded", function () {
             const sexo = this.dataset.sexo || 'Não informado';
             const cor = this.dataset.cor || 'Não informada';
             const porte = this.dataset.porte || 'Não informado';
-            const sociabilidade = this.dataset.sociabilidade || 'Não informada';
+            const sociabilidade = this.dataset.estadoSaude || 'Não informada';
             const idade = this.dataset.idade || 'Não informada';
 
-            const imgElement = this.querySelector('img');
-            const imgSrc = imgElement ? imgElement.src : '/images/placeholder-dog.png';
+            // NOVA LÓGICA DE IMAGEM PARA A SIDEBAR
+            const fotoString = this.dataset.foto; // Pega exatamente a string do banco de dados (URL ou Base64)
+            const sidebarFoto = document.getElementById('sidebar-foto');
+            const avisoSemFoto = document.querySelector('.aviso-sem-foto');
+
+            if (sidebarFoto && avisoSemFoto) {
+                if (fotoString && fotoString.trim() !== '') {
+                    // Se o animal TIVER foto: joga o src, mostra a imagem e esconde o aviso
+                    sidebarFoto.src = fotoString;
+                    sidebarFoto.style.display = 'block';
+                    avisoSemFoto.style.display = 'none';
+                } else {
+                    // Se o animal NÃO TIVER foto: limpa o src, esconde a imagem e mostra o aviso
+                    sidebarFoto.src = '';
+                    sidebarFoto.style.display = 'none';
+                    avisoSemFoto.style.display = 'flex';
+                }
+            }
 
             const sidebarTituloId = document.getElementById('sidebar-titulo-id');
             if (sidebarTituloId) sidebarTituloId.innerText = idCodigo;
-
-            const sidebarFoto = document.getElementById('sidebar-foto');
-            if (sidebarFoto) sidebarFoto.src = imgSrc;
 
             const sidebarSexo = document.getElementById('sidebar-sexo');
             if (sidebarSexo) sidebarSexo.innerText = sexo;

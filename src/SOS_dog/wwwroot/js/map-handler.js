@@ -112,8 +112,6 @@
         }, 100);
     }
 
-    // No seu map-handler.js, dentro da classe SosDogMap:
-
     async atualizarCamposCoordenadas(lat, lng) {
         const inputLat = document.getElementById('lat');
         const inputLng = document.getElementById('lng');
@@ -150,8 +148,6 @@
             }
         }
     }
-
-
 }
 
 // ==========================================
@@ -166,85 +162,72 @@ function abrirModalCriacao() {
     }
 }
 
-// Função para destacar o card ao clicar no mapa
 // Função para destacar o card ao clicar no mapa ou interagir com ele
 function focusCard(id) {
     const card = document.querySelector(`.case-card[data-id="${id}"]`);
     const painel = document.getElementById('painel-detalhes');
 
     if (card && painel) {
-        // 1. Destacar o card na lista esquerda
+        // 1. Destaque Visual
         document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active-card'));
         card.classList.add('active-card');
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // 2. EXIBIR o painel
+        // 2. Exibir Painel
         painel.style.display = 'flex';
 
-        // 3. PREENCHER os dados na sidebar direita usando os data-attributes do card
-        document.getElementById('sidebar-titulo-id').innerText = `Cão: ${card.dataset.codigo}`;
-        document.getElementById('sidebar-sexo').innerText = card.dataset.sexo;
-        document.getElementById('sidebar-cor').innerText = card.dataset.cor;
-        document.getElementById('sidebar-porte').innerText = card.dataset.porte;
+        // 3. Preencher Dados de Texto
+        document.getElementById('sidebar-titulo-id').innerText = `Cão: ${card.dataset.codigo || '---'}`;
+        document.getElementById('sidebar-sexo').innerText = card.dataset.sexo || '---';
+        document.getElementById('sidebar-cor').innerText = card.dataset.cor || '---';
+        document.getElementById('sidebar-porte').innerText = card.dataset.porte || '---';
+        document.getElementById('sidebar-idade').innerText = card.dataset.idade || '---';
 
-        const sidebarFoto = document.getElementById('sidebar-foto');
-        const fotoCard = card.querySelector('img').src;
+        // Correção Sociabilidade / EstadoSaude
+        const elSociabilidade = document.getElementById('sidebar-situacao'); // Ajustado para o ID do seu HTML
+        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---';
 
-        if (fotoCard.includes("placeholder") || !fotoCard) {
-            sidebarFoto.parentElement.innerHTML = `
-        <div class="d-flex flex-column align-items-center justify-content-center bg-light w-100 h-100 border" style="min-height: 200px;">
-            <i class="fa-solid fa-camera fa-2x text-muted mb-2"></i>
-            <span class="text-muted">Sem foto disponível</span>
-        </div>`;
+        // 4. Lógica de Imagem (O PONTO CRÍTICO - ATUALIZADO)
+        const imgElement = document.getElementById('sidebar-foto');
+        const avisoSemFoto = document.querySelector('.aviso-sem-foto');
+
+        // Procura a tag <img> que está dentro do card que o utilizador clicou
+        const imgNoCard = card.querySelector('img');
+
+        // Se o card tiver uma imagem, copia o "src" dela para a sidebar direita
+        if (imgNoCard && imgNoCard.src) {
+            imgElement.src = imgNoCard.src;
+            imgElement.style.display = 'block';
+            avisoSemFoto.style.display = 'none';
         } else {
-            sidebarFoto.src = fotoCard;
+            imgElement.src = "";
+            imgElement.style.display = 'none';
+            avisoSemFoto.style.display = 'flex';
         }
 
-        // Verifica se o campo existe antes de injetar
-        const stateEl = document.getElementById('sidebar-EstadoSaude');
-        if (stateEl) stateEl.innerText = card.dataset.estadoSaude;
-
-        document.getElementById('sidebar-idade').innerText = card.dataset.idade;
-
-        // Dados de cuidados
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum';
+        // 5. Ações e Registros
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum registro';
         document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || '--:--';
         document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || '--:--';
 
-        const dashboardContainer = document.querySelector('.dashboard-container');
-        const formDeletar = document.getElementById('form-deletar-sidebar');
+        // 6. Lógica do Formulário de Comentários
+        const hiddenId = document.getElementById('comentario-id-ocorrencia');
+        if (hiddenId) hiddenId.value = id;
 
-        if (dashboardContainer && formDeletar) {
-            const currentUserId = dashboardContainer.dataset.userId;
-            const donoOcorrenciaId = card.dataset.usuario;
-
-            if (currentUserId && currentUserId === donoOcorrenciaId) {
-                formDeletar.style.display = 'block';
-                formDeletar.action = `/Ocorrencias/Delete/${id}`;
-            } else {
-                formDeletar.style.display = 'none';
-            }
+        if (typeof window.carregarComentarios === 'function') {
+            window.carregarComentarios(id);
         }
 
-        // 4. ATUALIZAR VARIÁVEIS DE CONTROLE DO JS DE OCORRÊNCIAS
-        if (typeof ocorrenciaSelecionadaId !== 'undefined') {
-            ocorrenciaSelecionadaId = id;
-
-            // ESSENCIAL: Atualizar o input escondido do form de comentários!
-            const hiddenId = document.getElementById('comentario-id-ocorrencia');
-            if (hiddenId) hiddenId.value = id;
-
-            // Carregar os comentários no HTML
-            if (typeof window.carregarComentarios === 'function') {
-                window.carregarComentarios(id);
-            }
-        }
-
-        // 5. Centralizar no mapa (se o mapa existir)
+        // 7. Mapa (Ajuste de coordenadas para o padrão Leaflet)
         if (window.sosDogMap && window.sosDogMap.map) {
-            const lat = parseFloat(card.dataset.lat.replace(',', '.'));
-            const lng = parseFloat(card.dataset.lng.replace(',', '.'));
-            window.sosDogMap.map.setView([lat, lng], 15);
+            const latStr = card.dataset.lat ? card.dataset.lat.toString().replace(',', '.') : "";
+            const lngStr = card.dataset.lng ? card.dataset.lng.toString().replace(',', '.') : "";
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lngStr);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                window.sosDogMap.map.setView([lat, lng], 16);
+            }
         }
     }
 }

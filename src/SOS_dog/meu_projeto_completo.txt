@@ -4,6 +4,7 @@
 
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SosDog.Models;
 using System;
 using System.Linq;
@@ -51,7 +52,13 @@ namespace SosDog.Controllers
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("json"))
+            {
+                return Ok();
+            }
+
             return RedirectToAction("Details", "Ocorrencias", new { id = idOcorrencia });
+
         }
 
         // POST: Comentarios/Delete/5
@@ -72,6 +79,24 @@ namespace SosDog.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Ocorrencias", new { id = idOcorrencia });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListarPorOcorrencia(int ocorrenciaId)
+        {
+            var comentarios = await _context.Comentarios
+                .Include(c => c.Usuario)
+                .Where(c => c.IdOcorrencia == ocorrenciaId) // Nome corrigido para Projeto 2
+                .OrderByDescending(c => c.DataHora)        // Nome corrigido para Projeto 2
+                .Select(c => new {
+                    usuarioNome = c.Usuario.Nome,
+                    usuarioFoto = c.Usuario.FotoPerfil ?? "/images/default-avatar.png", // Fallback para foto
+                    texto = c.Texto,
+                    data = c.DataHora.ToString("dd/MM HH:mm")
+                })
+                .ToListAsync();
+
+            return Json(comentarios);
         }
 
         private bool ComentarioExists(int id)
@@ -269,7 +294,6 @@ namespace SosDog.Controllers
             return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -306,7 +330,7 @@ namespace SosDog.Controllers
                     return Unauthorized();
                 ocorrencia.IdUsuario = idUsuario;
 
-                // 4. GEOCODIFICAÇÃO — usa factory injetado, não new HttpClient()
+                // 4. GEOCODIFICAÇÃO
                 if (!string.IsNullOrEmpty(ocorrencia.Endereco))
                 {
                     try
@@ -333,23 +357,16 @@ namespace SosDog.Controllers
                 ocorrencia.DataRegistro = DateTime.UtcNow;
                 ocorrencia.CodigoCachorro = "DOG-" + Guid.NewGuid().ToString("N")[..6].ToUpper();
 
-                // 6. UPLOAD DA FOTO
+                // 6. UPLOAD DA FOTO (Convertendo para Base64)
                 if (FotoAnimal != null && FotoAnimal.Length > 0)
                 {
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(FotoAnimal.FileName).ToLower();
-                    string folder = Path.Combine(wwwRootPath, "images", "ocorrencias");
-
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    string filePath = Path.Combine(folder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    using (var ms = new MemoryStream())
                     {
-                        await FotoAnimal.CopyToAsync(stream);
+                        await FotoAnimal.CopyToAsync(ms);
+                        byte[] fileBytes = ms.ToArray();
+                        // Formata a string Base64 para ser lida diretamente na tag <img> do HTML
+                        ocorrencia.FotoAnimal = $"data:{FotoAnimal.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
                     }
-
-                    ocorrencia.FotoAnimal = "/images/ocorrencias/" + fileName;
                 }
 
                 _context.Add(ocorrencia);
@@ -416,11 +433,10 @@ namespace SosDog.Controllers
                 }
             }
 
-            // Removemos da validação campos que não vêm do formulário ou são automáticos
             ModelState.Remove("Usuario");
             ModelState.Remove("FotoAnimal");
             ModelState.Remove("IdUsuario");
-            ModelState.Remove("NovaFoto"); // Caso o IFormFile esteja na Model
+            ModelState.Remove("NovaFoto");
 
             if (ModelState.IsValid)
             {
@@ -436,38 +452,16 @@ namespace SosDog.Controllers
                     ocorrenciaDb.FaixaEtaria = ocorrencia.FaixaEtaria;
                     ocorrenciaDb.Endereco = ocorrencia.Endereco;
 
-                    // 5. Processamento da Foto
+                    // 5. Processamento da Foto (Convertendo para Base64)
                     if (NovaFoto != null && NovaFoto.Length > 0)
                     {
-                        string wwwRootPath = _webHostEnvironment.WebRootPath;
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(NovaFoto.FileName).ToLower();
-
-                        // Caminho da PASTA onde as fotos ficam
-                        string uploadsFolder = Path.Combine(wwwRootPath, "images", "ocorrencias");
-
-                        // Garante que a pasta existe (cria se não existir)
-                        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
-                        // Caminho completo do ARQUIVO
-                        string filePath = Path.Combine(uploadsFolder, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var ms = new MemoryStream())
                         {
-                            await NovaFoto.CopyToAsync(stream);
+                            await NovaFoto.CopyToAsync(ms);
+                            byte[] fileBytes = ms.ToArray();
+                            // Substitui o valor da string antiga pela nova imagem em Base64
+                            ocorrenciaDb.FotoAnimal = $"data:{NovaFoto.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
                         }
-
-                        // Deleta a foto antiga do servidor para evitar acúmulo de arquivos
-                        if (!string.IsNullOrEmpty(ocorrenciaDb.FotoAnimal))
-                        {
-                            var oldPath = Path.Combine(wwwRootPath, ocorrenciaDb.FotoAnimal.TrimStart('/'));
-                            if (System.IO.File.Exists(oldPath))
-                            {
-                                System.IO.File.Delete(oldPath);
-                            }
-                        }
-
-                        // Atualiza o caminho no banco de dados
-                        ocorrenciaDb.FotoAnimal = "/images/ocorrencias/" + fileName;
                     }
 
                     // 6. Salva as alterações
@@ -479,7 +473,6 @@ namespace SosDog.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    // CORREÇÃO: Verificação manual se a ocorrência existe, já que o método auxiliar sumiu
                     if (!_context.Ocorrencias.Any(e => e.IdOcorrencia == id))
                     {
                         return NotFound();
@@ -494,9 +487,6 @@ namespace SosDog.Controllers
             TempData["Erro"] = "Erro ao validar os dados. Verifique os campos.";
             return RedirectToAction("Index", "Home");
         }
-
-
-
 
         [HttpPost]
         [Authorize]
@@ -717,9 +707,11 @@ namespace SosDog.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                if (FotoUpload.Length > 5 * 1024 * 1024) // 5MB
+                // Importante: Base64 aumenta o tamanho do dado em cerca de 33%. 
+                // 5MB em arquivo fÃ­sico Ã© aceitÃ¡vel, mas em banco de dados pode ser pesado.
+                if (FotoUpload.Length > 2 * 1024 * 1024) // SugestÃ£o: Limitar a 2MB para Base64
                 {
-                    TempData["ErroCadastro"] = "A foto de perfil deve ter no mÃ¡ximo 5MB.";
+                    TempData["ErroCadastro"] = "A foto de perfil deve ter no mÃ¡ximo 2MB para armazenamento em banco.";
                     TempData["AbrirModalCadastro"] = true;
                     return RedirectToAction("Index", "Home");
                 }
@@ -732,7 +724,7 @@ namespace SosDog.Controllers
             }
 
             // 2. ValidaÃ§Ãµes de Modelo e NegÃ³cio
-            ModelState.Remove("FotoPerfil"); // Removido pois preencheremos apÃ³s o upload bem-sucedido
+            ModelState.Remove("FotoPerfil");
 
             if (!ModelState.IsValid)
             {
@@ -756,22 +748,19 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 3. Processamento do Upload
+            // 3. Processamento do Upload (ConversÃ£o para Base64)
             try
             {
-                string pastaDestino = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "usuarios");
-                if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
-
-                // Uso do Guid para evitar conflito de nomes de arquivos
-                string nomeArquivo = Guid.NewGuid().ToString() + Path.GetExtension(FotoUpload.FileName);
-                string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
-
-                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                using (var ms = new MemoryStream())
                 {
-                    await FotoUpload.CopyToAsync(stream);
-                }
+                    await FotoUpload.CopyToAsync(ms);
+                    byte[] fileBytes = ms.ToArray();
 
-                usuario.FotoPerfil = nomeArquivo;
+                    // Converte para Base64 incluindo o prefixo MIME (data:image/png;base64,...)
+                    // Isso facilita a exibiÃ§Ã£o direta na tag <img> da View
+                    string base64String = Convert.ToBase64String(fileBytes);
+                    usuario.FotoPerfil = $"data:{FotoUpload.ContentType};base64,{base64String}";
+                }
 
                 // 4. Hash da Senha e Salvamento
                 usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaHash);
@@ -999,7 +988,7 @@ namespace SosDog.Controllers
 }
 
 
---- ARQUIVO: C:\Users\vitor\source\repos\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\src\SOS_dog\Migrations\20260501235632_InitialDatabase.cs ---
+--- ARQUIVO: C:\Users\vitor\source\repos\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\src\SOS_dog\Migrations\20260502222121_1m.cs ---
 
 
 using System;
@@ -1010,7 +999,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SOS_dog.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDatabase : Migration
+    public partial class _1m : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -1179,7 +1168,7 @@ namespace SOS_dog.Migrations
 }
 
 
---- ARQUIVO: C:\Users\vitor\source\repos\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\src\SOS_dog\Migrations\20260501235632_InitialDatabase.Designer.cs ---
+--- ARQUIVO: C:\Users\vitor\source\repos\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\src\SOS_dog\Migrations\20260502222121_1m.Designer.cs ---
 
 
 // <auto-generated />
@@ -1196,8 +1185,8 @@ using SosDog.Models;
 namespace SOS_dog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501235632_InitialDatabase")]
-    partial class InitialDatabase
+    [Migration("20260502222121_1m")]
+    partial class _1m
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1966,6 +1955,7 @@ namespace SosDog.Models
 
         // ALTERAÇÃO: Foto_Animal → FotoAnimal
         [Required(ErrorMessage = "A foto do animal é obrigatória")]
+        [Column(TypeName = "nvarchar(max)")]
         public string FotoAnimal { get; set; }
 
         [Required(ErrorMessage = "A descrição é obrigatória")]
@@ -2003,6 +1993,7 @@ namespace SosDog.Models
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SosDog.Models
 {
@@ -2027,6 +2018,7 @@ namespace SosDog.Models
         public string SenhaHash { get; set; } = string.Empty;
 
         // ALTERAÃ‡ÃƒO: Foto_Perfil â†’ FotoPerfil (padrÃ£o PascalCase)
+        [Column(TypeName = "nvarchar(max)")]
         public string? FotoPerfil { get; set; }
 
         [Required(ErrorMessage = "O telefone Ã© obrigatÃ³rio.")]
@@ -2238,7 +2230,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91b1e45547914a3c7787c1fe06cc394e269eefd2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2f3257f072aecb26943429a122ddd0b9833252d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2336,6 +2328,7 @@ using System.Reflection;
                 {
                     <div class="case-card"
                          data-id="@item.IdOcorrencia"
+                         data-foto="@item.FotoAnimal" 
                          data-lat="@item.Latitude"
                          data-lng="@item.Longitude"
                          data-codigo="@item.CodigoCachorro"
@@ -2349,7 +2342,17 @@ using System.Reflection;
                          data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
                          data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
 
-                        <img src="@item.FotoAnimal" class="dog-api-img" alt="Foto do Animal">
+                        @if (!string.IsNullOrEmpty(item.FotoAnimal))
+                        {
+                            // Se a string Base64 já vier do banco com "data:image...", não precisa do prefixo.
+                            // Mas se vier pura (que é o mais comum), o prefixo abaixo é obrigatório:
+                            <img src="@item.FotoAnimal" class="dog-api-img" alt="Foto do Animal">
+                        }
+                        else
+                        {
+                            // Uma imagem padrão caso a ocorrência não tenha foto
+                            <img src="~/images/sem-foto.jpg" class="dog-api-img" alt="Sem foto cadastrada">
+                        }
 
                         <div class="case-details">
                             <div class="case-header">
@@ -2397,12 +2400,22 @@ using System.Reflection;
     </aside>
 
     <section class="main-map-area">
-        <div id="map"></div>
+        <div id="map">
+            <button onclick="window.sosDogMap.ativarModoCriacao()"
+                    class="btn-reportar-flutuante shadow-lg @(User.Identity.IsAuthenticated ? "" : "auth-required")">
+                <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
+            </button>
+        </div>
     </section>
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
-        <div class="profile-img-wrap">
-            <img id="sidebar-foto" src="/img/placeholder-dog.png" alt="Cachorro">
+        <div class="profile-img-wrap" id="container-foto-sidebar">
+            <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    
+            <div class="aviso-sem-foto" style="display:none; flex-direction:column; align-items:center; justify-content:center; background:#eee; height:200px;">
+                <i class="fa-solid fa-dog fa-3x text-secondary"></i>
+                <p class="text-secondary mt-2">Imagem não encontrada</p>
+            </div>
         </div>
 
         <div class="profile-header">
@@ -2497,7 +2510,7 @@ using System.Reflection;
 
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
 
-                <img src="/img/placeholder-user.png" alt="Seu Avatar" class="avatar-sm">
+                <img src="/images/placeholder-user.png" alt="Seu Avatar" class="avatar-sm">
 
                 <input type="text"
                        name="texto"
@@ -2510,8 +2523,8 @@ using System.Reflection;
                 </button>
             </form>
 
-            <div class="comments-list" id="comments-list">
-                <p class="text-muted">Selecione uma ocorrência para visualizar os comentários.</p>
+            <div class="comments-list" id="comentarios-container">
+                <p class="text-muted">Ainda não há nenhum comentário.</p>
             </div>
         </div>
     </aside>
@@ -4354,8 +4367,6 @@ class SosDogMap {
         }, 100);
     }
 
-    // No seu map-handler.js, dentro da classe SosDogMap:
-
     async atualizarCamposCoordenadas(lat, lng) {
         const inputLat = document.getElementById('lat');
         const inputLng = document.getElementById('lng');
@@ -4392,8 +4403,6 @@ class SosDogMap {
             }
         }
     }
-
-
 }
 
 // ==========================================
@@ -4408,73 +4417,72 @@ function abrirModalCriacao() {
     }
 }
 
-// Função para destacar o card ao clicar no mapa
 // Função para destacar o card ao clicar no mapa ou interagir com ele
 function focusCard(id) {
     const card = document.querySelector(`.case-card[data-id="${id}"]`);
     const painel = document.getElementById('painel-detalhes');
 
     if (card && painel) {
-        // 1. Destacar o card na lista esquerda
+        // 1. Destaque Visual
         document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active-card'));
         card.classList.add('active-card');
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-        // 2. EXIBIR o painel
+        // 2. Exibir Painel
         painel.style.display = 'flex';
 
-        // 3. PREENCHER os dados na sidebar direita usando os data-attributes do card
-        document.getElementById('sidebar-titulo-id').innerText = `Cão: ${card.dataset.codigo}`;
-        document.getElementById('sidebar-foto').src = card.querySelector('img').src;
-        document.getElementById('sidebar-sexo').innerText = card.dataset.sexo;
-        document.getElementById('sidebar-cor').innerText = card.dataset.cor;
-        document.getElementById('sidebar-porte').innerText = card.dataset.porte;
+        // 3. Preencher Dados de Texto
+        document.getElementById('sidebar-titulo-id').innerText = `Cão: ${card.dataset.codigo || '---'}`;
+        document.getElementById('sidebar-sexo').innerText = card.dataset.sexo || '---';
+        document.getElementById('sidebar-cor').innerText = card.dataset.cor || '---';
+        document.getElementById('sidebar-porte').innerText = card.dataset.porte || '---';
+        document.getElementById('sidebar-idade').innerText = card.dataset.idade || '---';
 
-        // Verifica se o campo existe antes de injetar
-        const stateEl = document.getElementById('sidebar-EstadoSaude');
-        if (stateEl) stateEl.innerText = card.dataset.estadoSaude;
+        // Correção Sociabilidade / EstadoSaude
+        const elSociabilidade = document.getElementById('sidebar-situacao'); // Ajustado para o ID do seu HTML
+        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---';
 
-        document.getElementById('sidebar-idade').innerText = card.dataset.idade;
+        // 4. Lógica de Imagem (O PONTO CRÍTICO - ATUALIZADO)
+        const imgElement = document.getElementById('sidebar-foto');
+        const avisoSemFoto = document.querySelector('.aviso-sem-foto');
 
-        // Dados de cuidados
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum';
+        // Procura a tag <img> que está dentro do card que o utilizador clicou
+        const imgNoCard = card.querySelector('img');
+
+        // Se o card tiver uma imagem, copia o "src" dela para a sidebar direita
+        if (imgNoCard && imgNoCard.src) {
+            imgElement.src = imgNoCard.src;
+            imgElement.style.display = 'block';
+            avisoSemFoto.style.display = 'none';
+        } else {
+            imgElement.src = "";
+            imgElement.style.display = 'none';
+            avisoSemFoto.style.display = 'flex';
+        }
+
+        // 5. Ações e Registros
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum registro';
         document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || '--:--';
         document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || '--:--';
 
-        const dashboardContainer = document.querySelector('.dashboard-container');
-        const formDeletar = document.getElementById('form-deletar-sidebar');
+        // 6. Lógica do Formulário de Comentários
+        const hiddenId = document.getElementById('comentario-id-ocorrencia');
+        if (hiddenId) hiddenId.value = id;
 
-        if (dashboardContainer && formDeletar) {
-            const currentUserId = dashboardContainer.dataset.userId;
-            const donoOcorrenciaId = card.dataset.usuario;
-
-            if (currentUserId && currentUserId === donoOcorrenciaId) {
-                formDeletar.style.display = 'block';
-                formDeletar.action = `/Ocorrencias/Delete/${id}`;
-            } else {
-                formDeletar.style.display = 'none';
-            }
+        if (typeof window.carregarComentarios === 'function') {
+            window.carregarComentarios(id);
         }
 
-        // 4. ATUALIZAR VARIÁVEIS DE CONTROLE DO JS DE OCORRÊNCIAS
-        if (typeof ocorrenciaSelecionadaId !== 'undefined') {
-            ocorrenciaSelecionadaId = id;
-
-            // ESSENCIAL: Atualizar o input escondido do form de comentários!
-            const hiddenId = document.getElementById('comentario-id-ocorrencia');
-            if (hiddenId) hiddenId.value = id;
-
-            // Carregar os comentários no HTML
-            if (typeof window.carregarComentarios === 'function') {
-                window.carregarComentarios(id);
-            }
-        }
-
-        // 5. Centralizar no mapa (se o mapa existir)
+        // 7. Mapa (Ajuste de coordenadas para o padrão Leaflet)
         if (window.sosDogMap && window.sosDogMap.map) {
-            const lat = parseFloat(card.dataset.lat.replace(',', '.'));
-            const lng = parseFloat(card.dataset.lng.replace(',', '.'));
-            window.sosDogMap.map.setView([lat, lng], 15);
+            const latStr = card.dataset.lat ? card.dataset.lat.toString().replace(',', '.') : "";
+            const lngStr = card.dataset.lng ? card.dataset.lng.toString().replace(',', '.') : "";
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lngStr);
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                window.sosDogMap.map.setView([lat, lng], 16);
+            }
         }
     }
 }
@@ -4570,38 +4578,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const formComentario = document.getElementById('form-comentario-sidebar');
     if (formComentario) {
         formComentario.addEventListener('submit', async function (e) {
-            e.preventDefault(); // Previne que a página recarregue
+            e.preventDefault();
 
             if (!ocorrenciaSelecionadaId) {
                 alert('Selecione uma ocorrência antes de comentar.');
                 return;
             }
 
-            // Garante que o input hidden tem o ID atualizado antes de enviar
-            const hiddenId = document.getElementById('comentario-id-ocorrencia');
-            if (hiddenId) hiddenId.value = ocorrenciaSelecionadaId;
-
-            const formData = new FormData(this);
             const inputTexto = this.querySelector('.comment-input');
             const btnSubmit = this.querySelector('button[type="submit"]');
+            const formData = new FormData(this);
+
+            // Garante que o ID da ocorrência está no FormData
+            formData.set('idOcorrencia', ocorrenciaSelecionadaId);
 
             try {
                 if (btnSubmit) btnSubmit.disabled = true;
 
                 const response = await fetch(this.action, {
                     method: this.method,
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest' // Identifica para o C# que é AJAX
+                    }
                 });
 
                 if (response.ok) {
-                    inputTexto.value = ''; // Limpa o campo
-                    carregarComentarios(ocorrenciaSelecionadaId); // Recarrega os comentários via AJAX
+                    inputTexto.value = ''; // Limpa o campo instantaneamente
+                    carregarComentarios(ocorrenciaSelecionadaId); // Recarrega a lista
                 } else if (response.status === 401) {
                     alert("Você precisa estar logado para comentar.");
-                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                    if (loginModal) loginModal.show();
                 } else {
-                    alert('Erro ao enviar o comentário. Verifique se você está logado.');
+                    // Aqui é onde o alert aparecia indevidamente
+                    console.error("Erro no servidor:", response.status);
                 }
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
@@ -4682,14 +4691,27 @@ document.addEventListener("DOMContentLoaded", function () {
             const sociabilidade = this.dataset.sociabilidade || 'Não informada';
             const idade = this.dataset.idade || 'Não informada';
 
-            const imgElement = this.querySelector('img');
-            const imgSrc = imgElement ? imgElement.src : '/img/placeholder-dog.png';
+            // NOVA LÓGICA DE IMAGEM PARA A SIDEBAR
+            const fotoString = this.dataset.foto; // Pega exatamente a string do banco de dados (URL ou Base64)
+            const sidebarFoto = document.getElementById('sidebar-foto');
+            const avisoSemFoto = document.querySelector('.aviso-sem-foto');
+
+            if (sidebarFoto && avisoSemFoto) {
+                if (fotoString && fotoString.trim() !== '') {
+                    // Se o animal TIVER foto: joga o src, mostra a imagem e esconde o aviso
+                    sidebarFoto.src = fotoString;
+                    sidebarFoto.style.display = 'block';
+                    avisoSemFoto.style.display = 'none';
+                } else {
+                    // Se o animal NÃO TIVER foto: limpa o src, esconde a imagem e mostra o aviso
+                    sidebarFoto.src = '';
+                    sidebarFoto.style.display = 'none';
+                    avisoSemFoto.style.display = 'flex';
+                }
+            }
 
             const sidebarTituloId = document.getElementById('sidebar-titulo-id');
             if (sidebarTituloId) sidebarTituloId.innerText = idCodigo;
-
-            const sidebarFoto = document.getElementById('sidebar-foto');
-            if (sidebarFoto) sidebarFoto.src = imgSrc;
 
             const sidebarSexo = document.getElementById('sidebar-sexo');
             if (sidebarSexo) sidebarSexo.innerText = sexo;
@@ -4764,37 +4786,25 @@ document.addEventListener("DOMContentLoaded", function () {
 // ==========================================
 // FUNÇÃO GLOBAL DE CARREGAR COMENTÁRIOS
 // ==========================================
-window.carregarComentarios = function (ocorrenciaId) {
-    // Corrigido para buscar o ID correto da Div de Comentários ('comments-list')
-    const lista = document.getElementById('comments-list');
-    if (!lista) return;
-
-    lista.innerHTML = '<p class="text-center mt-3"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</p>';
-
-    fetch(`/Comentarios/ListarPorOcorrencia?ocorrenciaId=${ocorrenciaId}`)
+function carregarComentarios(idOcorrencia) {
+    fetch(`/Comentarios/ListarPorOcorrencia?ocorrenciaId=${idOcorrencia}`)
         .then(response => response.json())
         .then(comentarios => {
-            lista.innerHTML = '';
-
-            if (comentarios.length === 0) {
-                lista.innerHTML = '<p class="text-muted small text-center mt-3">Nenhum comentário ainda. Seja o primeiro!</p>';
-                return;
-            }
+            const container = document.getElementById('comentarios-container');
+            container.innerHTML = ''; // Limpa os comentários antigos
 
             comentarios.forEach(c => {
-                lista.innerHTML += `
-                <div class="comment-item mt-2 d-flex gap-2">
-                    <img src="${c.usuarioFoto || '/img/placeholder-user.png'}" alt="${c.usuarioNome}" class="avatar-sm">
-                    <div class="comment-content bg-light p-2 rounded w-100">
-                        <p class="mb-0" style="font-size:14px;"><strong>${c.usuarioNome}:</strong> ${c.texto}</p>
-                        <small class="text-muted" style="font-size: 10px;">${c.data}</small>
+                container.innerHTML += `
+                    <div class="comentario-item mb-3">
+                        <div class="d-flex align-items-center mb-1">
+                            <img src="${c.usuarioFoto}" class="rounded-circle me-2" width="30" height="30">
+                            <strong>${c.usuarioNome}</strong>
+                            <small class="text-muted ms-auto">${c.data}</small>
+                        </div>
+                        <p class="mb-0 text-break">${c.texto}</p>
                     </div>
-                </div>`;
+                `;
             });
-        })
-        .catch(error => {
-            console.error('Erro ao carregar comentários:', error);
-            lista.innerHTML = '<p class="text-danger small text-center mt-3">Erro ao carregar comentários.</p>';
         });
 }
 
@@ -87637,6 +87647,8 @@ namespace SOS_dog
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthentication();

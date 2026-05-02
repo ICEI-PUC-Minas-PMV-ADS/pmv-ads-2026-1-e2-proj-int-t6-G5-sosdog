@@ -116,9 +116,11 @@ namespace SosDog.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                if (FotoUpload.Length > 5 * 1024 * 1024) // 5MB
+                // Importante: Base64 aumenta o tamanho do dado em cerca de 33%. 
+                // 5MB em arquivo físico é aceitável, mas em banco de dados pode ser pesado.
+                if (FotoUpload.Length > 2 * 1024 * 1024) // Sugestão: Limitar a 2MB para Base64
                 {
-                    TempData["ErroCadastro"] = "A foto de perfil deve ter no máximo 5MB.";
+                    TempData["ErroCadastro"] = "A foto de perfil deve ter no máximo 2MB para armazenamento em banco.";
                     TempData["AbrirModalCadastro"] = true;
                     return RedirectToAction("Index", "Home");
                 }
@@ -131,7 +133,7 @@ namespace SosDog.Controllers
             }
 
             // 2. Validações de Modelo e Negócio
-            ModelState.Remove("FotoPerfil"); // Removido pois preencheremos após o upload bem-sucedido
+            ModelState.Remove("FotoPerfil");
 
             if (!ModelState.IsValid)
             {
@@ -155,22 +157,19 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 3. Processamento do Upload
+            // 3. Processamento do Upload (Conversão para Base64)
             try
             {
-                string pastaDestino = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "usuarios");
-                if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
-
-                // Uso do Guid para evitar conflito de nomes de arquivos
-                string nomeArquivo = Guid.NewGuid().ToString() + Path.GetExtension(FotoUpload.FileName);
-                string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
-
-                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                using (var ms = new MemoryStream())
                 {
-                    await FotoUpload.CopyToAsync(stream);
-                }
+                    await FotoUpload.CopyToAsync(ms);
+                    byte[] fileBytes = ms.ToArray();
 
-                usuario.FotoPerfil = nomeArquivo;
+                    // Converte para Base64 incluindo o prefixo MIME (data:image/png;base64,...)
+                    // Isso facilita a exibição direta na tag <img> da View
+                    string base64String = Convert.ToBase64String(fileBytes);
+                    usuario.FotoPerfil = $"data:{FotoUpload.ContentType};base64,{base64String}";
+                }
 
                 // 4. Hash da Senha e Salvamento
                 usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaHash);
@@ -308,22 +307,13 @@ namespace SosDog.Controllers
                 }
                 else
                 {
-                    // Se válida, salvar o arquivo
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                    string nomeArquivo = Guid.NewGuid().ToString() + extensao;
-                    string pastaDestino = Path.Combine(wwwRootPath, "uploads/usuarios");
-
-                    if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
-
-                    string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
-
-                    using (var fileStream = new FileStream(caminhoCompleto, FileMode.Create))
+                    // Se válida, converte para Base64 e salva no banco (IGUAL AO CREATE)
+                    using (var ms = new MemoryStream())
                     {
-                        await NovaFoto.CopyToAsync(fileStream);
+                        await NovaFoto.CopyToAsync(ms);
+                        byte[] fileBytes = ms.ToArray();
+                        usuario.FotoPerfil = $"data:{NovaFoto.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
                     }
-
-                    // Atualiza o caminho da foto no objeto
-                    usuario.FotoPerfil = nomeArquivo;
                 }
             }
             else

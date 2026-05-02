@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SosDog.Models
 {
@@ -25,6 +26,7 @@ namespace SosDog.Models
         public string SenhaHash { get; set; } = string.Empty;
 
         // ALTERAÇÃO: Foto_Perfil → FotoPerfil (padrão PascalCase)
+        [Column(TypeName = "nvarchar(max)")]
         public string? FotoPerfil { get; set; }
 
         [Required(ErrorMessage = "O telefone é obrigatório.")]

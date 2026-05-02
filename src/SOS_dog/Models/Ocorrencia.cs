@@ -62,6 +62,7 @@ namespace SosDog.Models
 
         // ALTERAÇÃO: Foto_Animal → FotoAnimal
         [Required(ErrorMessage = "A foto do animal é obrigatória")]
+        [Column(TypeName = "nvarchar(max)")]
         public string FotoAnimal { get; set; }
 
         [Required(ErrorMessage = "A descrição é obrigatória")]
