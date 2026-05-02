@@ -74,18 +74,22 @@
         </div>
     </aside>
 
-<section class="main-map-area">
-    <div id="map">
-        <button onclick="window.sosDogMap.ativarModoCriacao()"
-                class="btn-reportar-flutuante shadow-lg @(User.Identity.IsAuthenticated ? "" : "auth-required")">
-            <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
-        </button>
-    </div>
-</section>
+    <section class="main-map-area">
+        <div id="map">
+            <button onclick="window.sosDogMap.ativarModoCriacao()"
+                    class="btn-reportar-flutuante shadow-lg @(User.Identity.IsAuthenticated ? "" : "auth-required")">
+                <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
+            </button>
+        </div>
+    </section>
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
-        <div class="profile-img-wrap">
-            <img id="sidebar-foto" src="/img/placeholder-dog.png" alt="Cachorro">
+        <div class="profile-img-wrap" id="container-foto-sidebar">
+            <img id="sidebar-foto" src="" alt="Cachorro" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="aviso-sem-foto" style="display:none; flex-direction:column; align-items:center; justify-content:center; background:#eee; height:200px;">
+                <i class="fa-solid fa-dog fa-3x text-secondary"></i>
+                <p class="text-secondary mt-2">Imagem não encontrada</p>
+            </div>
         </div>
 
         <div class="profile-header">
@@ -180,7 +184,7 @@
 
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
 
-                <img src="/img/placeholder-user.png" alt="Seu Avatar" class="avatar-sm">
+                <img src="/images/placeholder-user.png" alt="Seu Avatar" class="avatar-sm">
 
                 <input type="text"
                        name="texto"
@@ -193,8 +197,8 @@
                 </button>
             </form>
 
-            <div class="comments-list" id="comments-list">
-                <p class="text-muted">Selecione uma ocorrência para visualizar os comentários.</p>
+            <div class="comments-list" id="comentarios-container">
+                <p class="text-muted">Ainda não há nenhum comentário.</p>
             </div>
         </div>
     </aside>

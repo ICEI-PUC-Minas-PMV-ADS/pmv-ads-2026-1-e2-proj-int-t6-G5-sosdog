@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SosDog.Models;
 using System;
 using System.Linq;
@@ -46,7 +47,13 @@ namespace SosDog.Controllers
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("json"))
+            {
+                return Ok();
+            }
+
             return RedirectToAction("Details", "Ocorrencias", new { id = idOcorrencia });
+
         }
 
         // POST: Comentarios/Delete/5
@@ -67,6 +74,24 @@ namespace SosDog.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", "Ocorrencias", new { id = idOcorrencia });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListarPorOcorrencia(int ocorrenciaId)
+        {
+            var comentarios = await _context.Comentarios
+                .Include(c => c.Usuario)
+                .Where(c => c.IdOcorrencia == ocorrenciaId) // Nome corrigido para Projeto 2
+                .OrderByDescending(c => c.DataHora)        // Nome corrigido para Projeto 2
+                .Select(c => new {
+                    usuarioNome = c.Usuario.Nome,
+                    usuarioFoto = c.Usuario.FotoPerfil ?? "/images/default-avatar.png", // Fallback para foto
+                    texto = c.Texto,
+                    data = c.DataHora.ToString("dd/MM HH:mm")
+                })
+                .ToListAsync();
+
+            return Json(comentarios);
         }
 
         private bool ComentarioExists(int id)

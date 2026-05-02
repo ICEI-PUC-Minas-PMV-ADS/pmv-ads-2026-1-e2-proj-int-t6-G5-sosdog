@@ -78,38 +78,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const formComentario = document.getElementById('form-comentario-sidebar');
     if (formComentario) {
         formComentario.addEventListener('submit', async function (e) {
-            e.preventDefault(); // Previne que a página recarregue
+            e.preventDefault();
 
             if (!ocorrenciaSelecionadaId) {
                 alert('Selecione uma ocorrência antes de comentar.');
                 return;
             }
 
-            // Garante que o input hidden tem o ID atualizado antes de enviar
-            const hiddenId = document.getElementById('comentario-id-ocorrencia');
-            if (hiddenId) hiddenId.value = ocorrenciaSelecionadaId;
-
-            const formData = new FormData(this);
             const inputTexto = this.querySelector('.comment-input');
             const btnSubmit = this.querySelector('button[type="submit"]');
+            const formData = new FormData(this);
+
+            // Garante que o ID da ocorrência está no FormData
+            formData.set('idOcorrencia', ocorrenciaSelecionadaId);
 
             try {
                 if (btnSubmit) btnSubmit.disabled = true;
 
                 const response = await fetch(this.action, {
                     method: this.method,
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest' // Identifica para o C# que é AJAX
+                    }
                 });
 
                 if (response.ok) {
-                    inputTexto.value = ''; // Limpa o campo
-                    carregarComentarios(ocorrenciaSelecionadaId); // Recarrega os comentários via AJAX
+                    inputTexto.value = ''; // Limpa o campo instantaneamente
+                    carregarComentarios(ocorrenciaSelecionadaId); // Recarrega a lista
                 } else if (response.status === 401) {
                     alert("Você precisa estar logado para comentar.");
-                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                    if (loginModal) loginModal.show();
                 } else {
-                    alert('Erro ao enviar o comentário. Verifique se você está logado.');
+                    // Aqui é onde o alert aparecia indevidamente
+                    console.error("Erro no servidor:", response.status);
                 }
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
@@ -191,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const idade = this.dataset.idade || 'Não informada';
 
             const imgElement = this.querySelector('img');
-            const imgSrc = imgElement ? imgElement.src : '/img/placeholder-dog.png';
+            const imgSrc = imgElement ? imgElement.src : '/images/placeholder-dog.png';
 
             const sidebarTituloId = document.getElementById('sidebar-titulo-id');
             if (sidebarTituloId) sidebarTituloId.innerText = idCodigo;
@@ -272,36 +273,24 @@ document.addEventListener("DOMContentLoaded", function () {
 // ==========================================
 // FUNÇÃO GLOBAL DE CARREGAR COMENTÁRIOS
 // ==========================================
-window.carregarComentarios = function (ocorrenciaId) {
-    // Corrigido para buscar o ID correto da Div de Comentários ('comments-list')
-    const lista = document.getElementById('comments-list');
-    if (!lista) return;
-
-    lista.innerHTML = '<p class="text-center mt-3"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</p>';
-
-    fetch(`/Comentarios/ListarPorOcorrencia?ocorrenciaId=${ocorrenciaId}`)
+function carregarComentarios(idOcorrencia) {
+    fetch(`/Comentarios/ListarPorOcorrencia?ocorrenciaId=${idOcorrencia}`)
         .then(response => response.json())
         .then(comentarios => {
-            lista.innerHTML = '';
-
-            if (comentarios.length === 0) {
-                lista.innerHTML = '<p class="text-muted small text-center mt-3">Nenhum comentário ainda. Seja o primeiro!</p>';
-                return;
-            }
+            const container = document.getElementById('comentarios-container');
+            container.innerHTML = ''; // Limpa os comentários antigos
 
             comentarios.forEach(c => {
-                lista.innerHTML += `
-                <div class="comment-item mt-2 d-flex gap-2">
-                    <img src="${c.usuarioFoto || '/img/placeholder-user.png'}" alt="${c.usuarioNome}" class="avatar-sm">
-                    <div class="comment-content bg-light p-2 rounded w-100">
-                        <p class="mb-0" style="font-size:14px;"><strong>${c.usuarioNome}:</strong> ${c.texto}</p>
-                        <small class="text-muted" style="font-size: 10px;">${c.data}</small>
+                container.innerHTML += `
+                    <div class="comentario-item mb-3">
+                        <div class="d-flex align-items-center mb-1">
+                            <img src="${c.usuarioFoto}" class="rounded-circle me-2" width="30" height="30">
+                            <strong>${c.usuarioNome}</strong>
+                            <small class="text-muted ms-auto">${c.data}</small>
+                        </div>
+                        <p class="mb-0 text-break">${c.texto}</p>
                     </div>
-                </div>`;
+                `;
             });
-        })
-        .catch(error => {
-            console.error('Erro ao carregar comentários:', error);
-            lista.innerHTML = '<p class="text-danger small text-center mt-3">Erro ao carregar comentários.</p>';
         });
 }

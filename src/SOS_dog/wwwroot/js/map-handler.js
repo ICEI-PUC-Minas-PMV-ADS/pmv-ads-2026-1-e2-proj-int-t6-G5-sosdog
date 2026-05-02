@@ -183,10 +183,22 @@ function focusCard(id) {
 
         // 3. PREENCHER os dados na sidebar direita usando os data-attributes do card
         document.getElementById('sidebar-titulo-id').innerText = `Cão: ${card.dataset.codigo}`;
-        document.getElementById('sidebar-foto').src = card.querySelector('img').src;
         document.getElementById('sidebar-sexo').innerText = card.dataset.sexo;
         document.getElementById('sidebar-cor').innerText = card.dataset.cor;
         document.getElementById('sidebar-porte').innerText = card.dataset.porte;
+
+        const sidebarFoto = document.getElementById('sidebar-foto');
+        const fotoCard = card.querySelector('img').src;
+
+        if (fotoCard.includes("placeholder") || !fotoCard) {
+            sidebarFoto.parentElement.innerHTML = `
+        <div class="d-flex flex-column align-items-center justify-content-center bg-light w-100 h-100 border" style="min-height: 200px;">
+            <i class="fa-solid fa-camera fa-2x text-muted mb-2"></i>
+            <span class="text-muted">Sem foto disponível</span>
+        </div>`;
+        } else {
+            sidebarFoto.src = fotoCard;
+        }
 
         // Verifica se o campo existe antes de injetar
         const stateEl = document.getElementById('sidebar-EstadoSaude');
