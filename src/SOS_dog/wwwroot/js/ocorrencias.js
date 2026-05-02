@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const sexo = this.dataset.sexo || 'Não informado';
             const cor = this.dataset.cor || 'Não informada';
             const porte = this.dataset.porte || 'Não informado';
-            const sociabilidade = this.dataset.estadoSaude || 'Não informada';
+            const estadoSaude = this.dataset.estadosaude || 'Não informado';
             const idade = this.dataset.idade || 'Não informada';
 
             // NOVA LÓGICA DE IMAGEM PARA A SIDEBAR
@@ -222,8 +222,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const sidebarPorte = document.getElementById('sidebar-porte');
             if (sidebarPorte) sidebarPorte.innerText = porte;
 
-            const sidebarSociabilidade = document.getElementById('sidebar-sociabilidade');
-            if (sidebarSociabilidade) sidebarSociabilidade.innerText = sociabilidade;
+            const sidebarEstadoSaude = document.getElementById('sidebar-estadosaude');
+            if (sidebarEstadoSaude) sidebarEstadoSaude.innerText = estadoSaude;
 
             const sidebarIdade = document.getElementById('sidebar-idade');
             if (sidebarIdade) sidebarIdade.innerText = idade;

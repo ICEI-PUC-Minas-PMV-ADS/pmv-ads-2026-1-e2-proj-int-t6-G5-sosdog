@@ -898,22 +898,13 @@ namespace SosDog.Controllers
                 }
                 else
                 {
-                    // Se vÃ¡lida, salvar o arquivo
-                    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                    string nomeArquivo = Guid.NewGuid().ToString() + extensao;
-                    string pastaDestino = Path.Combine(wwwRootPath, "uploads/usuarios");
-
-                    if (!Directory.Exists(pastaDestino)) Directory.CreateDirectory(pastaDestino);
-
-                    string caminhoCompleto = Path.Combine(pastaDestino, nomeArquivo);
-
-                    using (var fileStream = new FileStream(caminhoCompleto, FileMode.Create))
+                    // Se vÃ¡lida, converte para Base64 e salva no banco (IGUAL AO CREATE)
+                    using (var ms = new MemoryStream())
                     {
-                        await NovaFoto.CopyToAsync(fileStream);
+                        await NovaFoto.CopyToAsync(ms);
+                        byte[] fileBytes = ms.ToArray();
+                        usuario.FotoPerfil = $"data:{NovaFoto.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
                     }
-
-                    // Atualiza o caminho da foto no objeto
-                    usuario.FotoPerfil = nomeArquivo;
                 }
             }
             else
@@ -2230,7 +2221,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2f3257f072aecb26943429a122ddd0b9833252d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+beaad0d81fb6b51150aec7a996f15417b0ed2753")]
 [assembly: System.Reflection.AssemblyProductAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2335,7 +2326,7 @@ using System.Reflection;
                          data-sexo="@item.Sexo"
                          data-cor="@item.CorPelagem"
                          data-porte="@item.Porte"
-                         data-EstadoSaude="@item.EstadoSaude"
+                         data-estadoSaude="@item.EstadoSaude"
                          data-idade="@item.FaixaEtaria"
                          data-usuario="@item.IdUsuario"
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
@@ -2509,8 +2500,6 @@ using System.Reflection;
                 @Html.AntiForgeryToken()
 
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
-
-                <img src="/images/placeholder-user.png" alt="Seu Avatar" class="avatar-sm">
 
                 <input type="text"
                        name="texto"
@@ -4688,7 +4677,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const sexo = this.dataset.sexo || 'Não informado';
             const cor = this.dataset.cor || 'Não informada';
             const porte = this.dataset.porte || 'Não informado';
-            const sociabilidade = this.dataset.sociabilidade || 'Não informada';
+            const sociabilidade = this.dataset.estadoSaude || 'Não informada';
             const idade = this.dataset.idade || 'Não informada';
 
             // NOVA LÓGICA DE IMAGEM PARA A SIDEBAR

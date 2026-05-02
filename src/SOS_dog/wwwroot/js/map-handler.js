@@ -184,8 +184,8 @@ function focusCard(id) {
         document.getElementById('sidebar-idade').innerText = card.dataset.idade || '---';
 
         // Correção Sociabilidade / EstadoSaude
-        const elSociabilidade = document.getElementById('sidebar-situacao'); // Ajustado para o ID do seu HTML
-        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---';
+        const elSociabilidade = document.getElementById('sidebar-estadosaude'); // Ajustado para o ID do seu HTML
+        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---..';
 
         // 4. Lógica de Imagem (O PONTO CRÍTICO - ATUALIZADO)
         const imgElement = document.getElementById('sidebar-foto');
