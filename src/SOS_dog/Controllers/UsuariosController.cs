@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SosDog.Models;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,22 +29,18 @@ namespace SosDog.Controllers
             _configuration = configuration;
         }
 
-        // GET: Usuarios
         public async Task<IActionResult> Index()
         {
             return View(await _context.Usuarios.ToListAsync());
         }
 
-        // POST: Usuarios/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string senha)
         {
-            // 1. Busca o usuário pelo E-mail
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Email == email);
 
-            // 2. Verifica se o usuário existe e se a senha (pure) bate com o SenhaHash
             if (usuario == null || !BCrypt.Net.BCrypt.Verify(senha, usuario.SenhaHash))
             {
                 TempData["ErroLogin"] = "E-mail ou senha inválidos.";
@@ -54,7 +48,13 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 3. Cria as "Claims" usando os novos nomes de propriedades
+            if (!usuario.EmailConfirmado)
+            {
+                TempData["ErroLogin"] = "Confirme seu e-mail antes de fazer login.";
+                TempData["AbrirModalLogin"] = true;
+                return RedirectToAction("Index", "Home");
+            }
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
@@ -65,13 +65,11 @@ namespace SosDog.Controllers
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
-            // 4. Autentica
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             return RedirectToAction("Index", "Home");
         }
 
-        // POST: Usuarios/Logout
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -80,7 +78,6 @@ namespace SosDog.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: Usuarios/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -93,7 +90,6 @@ namespace SosDog.Controllers
             return View(usuario);
         }
 
-        // GET: Usuarios/Create
         public IActionResult Create()
         {
             return View();
@@ -103,7 +99,6 @@ namespace SosDog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nome,Email,SenhaHash,Telefone")] Usuario usuario, string ConfirmarSenha, IFormFile FotoUpload)
         {
-            // 1. Validação de Foto (Tamanho e Formato)
             if (FotoUpload != null && FotoUpload.Length > 0)
             {
                 var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
@@ -116,9 +111,7 @@ namespace SosDog.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                // Importante: Base64 aumenta o tamanho do dado em cerca de 33%. 
-                // 5MB em arquivo físico é aceitável, mas em banco de dados pode ser pesado.
-                if (FotoUpload.Length > 2 * 1024 * 1024) // Sugestão: Limitar a 2MB para Base64
+                if (FotoUpload.Length > 2 * 1024 * 1024)
                 {
                     TempData["ErroCadastro"] = "A foto de perfil deve ter no máximo 2MB para armazenamento em banco.";
                     TempData["AbrirModalCadastro"] = true;
@@ -132,7 +125,6 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 2. Validações de Modelo e Negócio
             ModelState.Remove("FotoPerfil");
 
             if (!ModelState.IsValid)
@@ -149,7 +141,13 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var emailExiste = await _context.Usuarios.AnyAsync(u => u.Email == usuario.Email);
+            var emailNormalizado = usuario.Email.Trim().ToLower();
+
+            var emailExiste = await _context.Usuarios
+                .AnyAsync(u => u.Email.ToLower() == emailNormalizado);
+
+            usuario.Email = emailNormalizado;
+
             if (emailExiste)
             {
                 TempData["ErroCadastro"] = "Este e-mail já está cadastrado.";
@@ -157,7 +155,6 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // 3. Processamento do Upload (Conversão para Base64)
             try
             {
                 using (var ms = new MemoryStream())
@@ -165,19 +162,65 @@ namespace SosDog.Controllers
                     await FotoUpload.CopyToAsync(ms);
                     byte[] fileBytes = ms.ToArray();
 
-                    // Converte para Base64 incluindo o prefixo MIME (data:image/png;base64,...)
-                    // Isso facilita a exibição direta na tag <img> da View
                     string base64String = Convert.ToBase64String(fileBytes);
                     usuario.FotoPerfil = $"data:{FotoUpload.ContentType};base64,{base64String}";
                 }
 
-                // 4. Hash da Senha e Salvamento
                 usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaHash);
+
+                usuario.EmailConfirmado = false;
+                usuario.TokenConfirmacaoEmail = Guid.NewGuid().ToString();
+                usuario.TokenConfirmacaoEmailExpiracao = DateTime.Now.AddHours(24);
 
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
 
-                TempData["Sucesso"] = "Conta criada com sucesso! Faça seu login.";
+                var linkConfirmacao = Url.Action(
+                    "ConfirmarEmail",
+                    "Usuarios",
+                    new { token = usuario.TokenConfirmacaoEmail },
+                    Request.Scheme
+                );
+
+                try
+                {
+                    var emailSettings = _configuration.GetSection("EmailSettings");
+
+                    var smtpClient = new SmtpClient(emailSettings["SmtpServer"])
+                    {
+                        Port = int.Parse(emailSettings["Port"]),
+                        Credentials = new NetworkCredential(
+                            emailSettings["SenderEmail"],
+                            emailSettings["SenderPassword"]
+                        ),
+                        EnableSsl = true,
+                    };
+
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(emailSettings["SenderEmail"]),
+                        Subject = "SoSDog - Confirmação de E-mail",
+                        Body = $@"
+                            <h2>Bem-vindo ao SoSDog!</h2>
+                            <p>Olá, {usuario.Nome}.</p>
+                            <p>Para ativar sua conta, clique no link abaixo:</p>
+                            <p><a href='{linkConfirmacao}'>Confirmar meu e-mail</a></p>
+                            <p>Este link expira em 24 horas.</p>
+                        ",
+                        IsBodyHtml = true,
+                    };
+
+                    mailMessage.To.Add(usuario.Email);
+
+                    await smtpClient.SendMailAsync(mailMessage);
+
+                    TempData["Sucesso"] = "Conta criada com sucesso! Enviamos um link de confirmação para seu e-mail.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErroCadastro"] = "Conta criada, mas erro ao enviar e-mail: " + ex.Message;
+                }
+
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception)
@@ -188,12 +231,41 @@ namespace SosDog.Controllers
             }
         }
 
-        // POST: Usuarios/SolicitarReset
+        public async Task<IActionResult> ConfirmarEmail(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                TempData["ErroLogin"] = "Token de confirmação inválido.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.TokenConfirmacaoEmail == token);
+
+            if (usuario == null || usuario.TokenConfirmacaoEmailExpiracao < DateTime.Now)
+            {
+                TempData["ErroLogin"] = "Token de confirmação inválido ou expirado.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            usuario.EmailConfirmado = true;
+            usuario.TokenConfirmacaoEmail = null;
+            usuario.TokenConfirmacaoEmailExpiracao = null;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Sucesso"] = "E-mail confirmado com sucesso! Agora você pode fazer login.";
+            TempData["AbrirModalLogin"] = true;
+
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SolicitarReset(string emailRecuperacao)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailRecuperacao);
+
             if (usuario == null)
             {
                 TempData["SucessoReset"] = "Se o e-mail existir, um token foi enviado para ele.";
@@ -220,11 +292,12 @@ namespace SosDog.Controllers
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(emailSettings["SenderEmail"]), // Usa o e-mail do config
+                    From = new MailAddress(emailSettings["SenderEmail"]),
                     Subject = "SoSDog - Recuperação de Senha",
                     Body = $"Seu código de recuperação é: <b>{token}</b>. Ele expira em 15 minutos.",
                     IsBodyHtml = true,
                 };
+
                 mailMessage.To.Add(emailRecuperacao);
                 await smtpClient.SendMailAsync(mailMessage);
             }
@@ -239,7 +312,6 @@ namespace SosDog.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // POST: Usuarios/ConfirmarReset
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmarReset(string email, string token, string novaSenha, string confirmarNovaSenha)
@@ -250,7 +322,8 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email && u.ResetToken == token);
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == email && u.ResetToken == token);
 
             if (usuario == null || usuario.ResetTokenExpiracao < DateTime.Now)
             {
@@ -268,13 +341,13 @@ namespace SosDog.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: Usuarios/Edit/5
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
             var usuario = await _context.Usuarios.FindAsync(id);
+
             if (usuario == null) return NotFound();
 
             return View(usuario);
@@ -287,11 +360,12 @@ namespace SosDog.Controllers
         {
             if (id != usuario.IdUsuario) return NotFound();
 
-            // 1. Buscar o usuário atual do banco (sem rastreamento para não conflitar com o Update depois)
-            var usuarioNoBanco = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.IdUsuario == id);
+            var usuarioNoBanco = await _context.Usuarios
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.IdUsuario == id);
+
             if (usuarioNoBanco == null) return NotFound();
 
-            // 2. Validação de Imagem (Tamanho e Formato)
             if (NovaFoto != null && NovaFoto.Length > 0)
             {
                 var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
@@ -301,13 +375,12 @@ namespace SosDog.Controllers
                 {
                     ModelState.AddModelError("FotoPerfil", "Apenas imagens .jpg, .jpeg ou .png são permitidas.");
                 }
-                else if (NovaFoto.Length > 5 * 1024 * 1024) // 5MB
+                else if (NovaFoto.Length > 5 * 1024 * 1024)
                 {
                     ModelState.AddModelError("FotoPerfil", "A imagem deve ter no máximo 5MB.");
                 }
                 else
                 {
-                    // Se válida, converte para Base64 e salva no banco (IGUAL AO CREATE)
                     using (var ms = new MemoryStream())
                     {
                         await NovaFoto.CopyToAsync(ms);
@@ -318,18 +391,23 @@ namespace SosDog.Controllers
             }
             else
             {
-                // Se não enviou foto nova, mantém a que já estava no banco
                 usuario.FotoPerfil = usuarioNoBanco.FotoPerfil;
             }
 
-            // 3. Preservar dados que não estão no formulário de edição simples
             usuario.SenhaHash = usuarioNoBanco.SenhaHash;
+            usuario.ResetToken = usuarioNoBanco.ResetToken;
+            usuario.ResetTokenExpiracao = usuarioNoBanco.ResetTokenExpiracao;
+
+            usuario.EmailConfirmado = usuarioNoBanco.EmailConfirmado;
+            usuario.TokenConfirmacaoEmail = usuarioNoBanco.TokenConfirmacaoEmail;
+            usuario.TokenConfirmacaoEmailExpiracao = usuarioNoBanco.TokenConfirmacaoEmailExpiracao;
+
             usuario.TentativasLoginInvalidas = usuarioNoBanco.TentativasLoginInvalidas;
             usuario.BloqueadoAte = usuarioNoBanco.BloqueadoAte;
 
-            // Remover validação de campos que não vêm do formulário (como Senha)
             ModelState.Remove("SenhaHash");
             ModelState.Remove("NovaFoto");
+            ModelState.Remove("FotoPerfil");
 
             if (ModelState.IsValid)
             {
@@ -337,6 +415,7 @@ namespace SosDog.Controllers
                 {
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
+
                     TempData["Sucesso"] = "Perfil atualizado com sucesso!";
                     return RedirectToAction("Details", new { id = usuario.IdUsuario });
                 }
@@ -350,7 +429,6 @@ namespace SosDog.Controllers
             return View(usuario);
         }
 
-        // GET: Usuarios/Delete/5
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -364,19 +442,20 @@ namespace SosDog.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Delete/5
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
+
             if (usuario != null)
             {
                 _context.Usuarios.Remove(usuario);
             }
 
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
