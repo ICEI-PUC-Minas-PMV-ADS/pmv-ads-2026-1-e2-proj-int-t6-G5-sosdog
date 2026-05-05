@@ -148,6 +148,20 @@ namespace SosDog.Controllers
 
             usuario.Email = emailNormalizado;
 
+            // Normaliza telefone (remove tudo que não for número)
+            usuario.Telefone = new string(usuario.Telefone.Where(char.IsDigit).ToArray());
+
+            // Verifica telefone duplicado
+            var telefoneExiste = await _context.Usuarios
+                .AnyAsync(u => u.Telefone == usuario.Telefone);
+
+            if (telefoneExiste)
+            {
+                TempData["ErroCadastro"] = "Este telefone já está cadastrado.";
+                TempData["AbrirModalCadastro"] = true;
+                return RedirectToAction("Index", "Home");
+            }
+
             if (emailExiste)
             {
                 TempData["ErroCadastro"] = "Este e-mail já está cadastrado.";

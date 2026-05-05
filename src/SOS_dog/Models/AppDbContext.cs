@@ -60,6 +60,12 @@ namespace SosDog.Models
             modelBuilder.Entity<Usuario>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+
+            // Garantindo que o telefone do usuário seja único no sistema
+            // Isso evita dois cadastros usando o mesmo telefone.
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Telefone)
+                .IsUnique();
         }
     }
 }
