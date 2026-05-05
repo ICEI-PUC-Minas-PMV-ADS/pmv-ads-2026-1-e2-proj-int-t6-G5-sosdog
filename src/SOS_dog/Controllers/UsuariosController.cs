@@ -328,6 +328,29 @@ namespace SosDog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ValidarTokenReset(string email, string token)
+        {
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == email && u.ResetToken == token);
+
+            if (usuario == null || usuario.ResetTokenExpiracao < DateTime.Now)
+            {
+                TempData["ErroReset"] = "Token inválido ou expirado.";
+                TempData["EmailRecuperacao"] = email;
+                TempData["AbrirModalToken"] = "true";
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["EmailRecuperacao"] = email;
+            TempData["TokenResetValidado"] = token;
+            TempData["AbrirModalNovaSenha"] = "true";
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmarReset(string email, string token, string novaSenha, string confirmarNovaSenha)
         {
             if (novaSenha != confirmarNovaSenha)
