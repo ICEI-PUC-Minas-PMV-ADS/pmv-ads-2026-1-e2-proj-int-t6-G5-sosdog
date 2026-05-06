@@ -38,8 +38,7 @@ namespace SosDog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string senha)
         {
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == email);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
 
             if (usuario == null || !BCrypt.Net.BCrypt.Verify(senha, usuario.SenhaHash))
             {
@@ -63,9 +62,10 @@ namespace SosDog.Controllers
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity)
+            );
 
             return RedirectToAction("Index", "Home");
         }
@@ -82,10 +82,26 @@ namespace SosDog.Controllers
         {
             if (id == null) return NotFound();
 
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.IdUsuario == id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(m => m.IdUsuario == id);
 
             if (usuario == null) return NotFound();
+
+            return View(usuario);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Perfil()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+                return RedirectToAction("Index", "Home");
+
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.IdUsuario == int.Parse(userId));
+
+            if (usuario == null)
+                return NotFound();
 
             return View(usuario);
         }
@@ -148,10 +164,8 @@ namespace SosDog.Controllers
 
             usuario.Email = emailNormalizado;
 
-            // Normaliza telefone (remove tudo que não for número)
             usuario.Telefone = new string(usuario.Telefone.Where(char.IsDigit).ToArray());
 
-            // Verifica telefone duplicado
             var telefoneExiste = await _context.Usuarios
                 .AnyAsync(u => u.Telefone == usuario.Telefone);
 
@@ -181,7 +195,6 @@ namespace SosDog.Controllers
                 }
 
                 usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaHash);
-
                 usuario.EmailConfirmado = false;
                 usuario.TokenConfirmacaoEmail = Guid.NewGuid().ToString();
                 usuario.TokenConfirmacaoEmailExpiracao = DateTime.Now.AddHours(24);
@@ -225,7 +238,6 @@ namespace SosDog.Controllers
                     };
 
                     mailMessage.To.Add(usuario.Email);
-
                     await smtpClient.SendMailAsync(mailMessage);
 
                     TempData["Sucesso"] = "Conta criada com sucesso! Enviamos um link de confirmação para seu e-mail.";
@@ -286,8 +298,7 @@ namespace SosDog.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            Random random = new Random();
-            string token = random.Next(100000, 999999).ToString();
+            string token = new Random().Next(100000, 999999).ToString();
 
             usuario.ResetToken = token;
             usuario.ResetTokenExpiracao = DateTime.Now.AddMinutes(15);
@@ -348,7 +359,6 @@ namespace SosDog.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmarReset(string email, string token, string novaSenha, string confirmarNovaSenha)
@@ -379,11 +389,14 @@ namespace SosDog.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit()
         {
-            if (id == null) return NotFound();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var usuario = await _context.Usuarios.FindAsync(id);
+            if (userId == null) return RedirectToAction("Index", "Home");
+
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.IdUsuario == int.Parse(userId));
 
             if (usuario == null) return NotFound();
 
@@ -393,86 +406,46 @@ namespace SosDog.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdUsuario,Nome,Email,Telefone")] Usuario usuario, IFormFile NovaFoto)
+        public async Task<IActionResult> Edit([Bind("Nome,Email,Telefone")] Usuario usuario, IFormFile NovaFoto)
         {
-            if (id != usuario.IdUsuario) return NotFound();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             var usuarioNoBanco = await _context.Usuarios
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.IdUsuario == id);
+                .FirstOrDefaultAsync(u => u.IdUsuario == int.Parse(userId));
 
             if (usuarioNoBanco == null) return NotFound();
 
+            usuarioNoBanco.Nome = usuario.Nome;
+            usuarioNoBanco.Email = usuario.Email.Trim().ToLower();
+            usuarioNoBanco.Telefone = new string(usuario.Telefone.Where(char.IsDigit).ToArray());
+
             if (NovaFoto != null && NovaFoto.Length > 0)
             {
-                var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
-                var extensao = Path.GetExtension(NovaFoto.FileName).ToLower();
-
-                if (!extensoesPermitidas.Contains(extensao))
+                using (var ms = new MemoryStream())
                 {
-                    ModelState.AddModelError("FotoPerfil", "Apenas imagens .jpg, .jpeg ou .png são permitidas.");
-                }
-                else if (NovaFoto.Length > 5 * 1024 * 1024)
-                {
-                    ModelState.AddModelError("FotoPerfil", "A imagem deve ter no máximo 5MB.");
-                }
-                else
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        await NovaFoto.CopyToAsync(ms);
-                        byte[] fileBytes = ms.ToArray();
-                        usuario.FotoPerfil = $"data:{NovaFoto.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
-                    }
-                }
-            }
-            else
-            {
-                usuario.FotoPerfil = usuarioNoBanco.FotoPerfil;
-            }
-
-            usuario.SenhaHash = usuarioNoBanco.SenhaHash;
-            usuario.ResetToken = usuarioNoBanco.ResetToken;
-            usuario.ResetTokenExpiracao = usuarioNoBanco.ResetTokenExpiracao;
-
-            usuario.EmailConfirmado = usuarioNoBanco.EmailConfirmado;
-            usuario.TokenConfirmacaoEmail = usuarioNoBanco.TokenConfirmacaoEmail;
-            usuario.TokenConfirmacaoEmailExpiracao = usuarioNoBanco.TokenConfirmacaoEmailExpiracao;
-
-            usuario.TentativasLoginInvalidas = usuarioNoBanco.TentativasLoginInvalidas;
-            usuario.BloqueadoAte = usuarioNoBanco.BloqueadoAte;
-
-            ModelState.Remove("SenhaHash");
-            ModelState.Remove("NovaFoto");
-            ModelState.Remove("FotoPerfil");
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(usuario);
-                    await _context.SaveChangesAsync();
-
-                    TempData["Sucesso"] = "Perfil atualizado com sucesso!";
-                    return RedirectToAction("Details", new { id = usuario.IdUsuario });
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UsuarioExists(usuario.IdUsuario)) return NotFound();
-                    else throw;
+                    await NovaFoto.CopyToAsync(ms);
+                    var bytes = ms.ToArray();
+                    usuarioNoBanco.FotoPerfil = $"data:{NovaFoto.ContentType};base64,{Convert.ToBase64String(bytes)}";
                 }
             }
 
-            return View(usuario);
+            await _context.SaveChangesAsync();
+
+            TempData["Sucesso"] = "Perfil atualizado com sucesso!";
+            return RedirectToAction("Perfil");
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete()
         {
-            if (id == null) return NotFound();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.IdUsuario == id);
+                .FirstOrDefaultAsync(u => u.IdUsuario == int.Parse(userId));
 
             if (usuario == null) return NotFound();
 
@@ -482,18 +455,25 @@ namespace SosDog.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed()
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null) return RedirectToAction("Index", "Home");
+
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.IdUsuario == int.Parse(userId));
 
             if (usuario != null)
             {
                 _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return RedirectToAction(nameof(Index));
+            TempData["Sucesso"] = "Conta excluída com sucesso.";
+            return RedirectToAction("Index", "Home");
         }
 
         private bool UsuarioExists(int id)

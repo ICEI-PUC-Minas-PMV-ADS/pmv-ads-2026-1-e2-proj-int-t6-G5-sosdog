@@ -1,0 +1,35 @@
+﻿@model SosDog.Models.Usuario
+
+@{
+    ViewData["Title"] = "Excluir Conta";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto text-center" style="max-width: 600px;">
+        <i class="fa-solid fa-triangle-exclamation fa-4x text-danger mb-3"></i>
+
+        <h2 class="fw-bold mb-3">Excluir Conta</h2>
+
+        <p class="text-muted">
+            Tem certeza que deseja excluir sua conta? Essa ação não poderá ser desfeita.
+        </p>
+
+        <hr />
+
+        <p><strong>Nome:</strong> @Model.Nome</p>
+        <p><strong>E-mail:</strong> @Model.Email</p>
+        <p><strong>Telefone:</strong> @Model.Telefone</p>
+
+        <form asp-controller="Usuarios" asp-action="Delete" method="post" class="mt-4">
+            @Html.AntiForgeryToken()
+
+            <button type="submit" class="btn btn-danger rounded-pill px-4">
+                Sim, excluir minha conta
+            </button>
+
+            <a asp-action="Perfil" class="btn btn-secondary rounded-pill px-4 ms-2">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</div>

@@ -42,10 +42,10 @@
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <div class="user-menu-logged">
-                    <div class="user-info">
+                    <a asp-controller="Usuarios" asp-action="Perfil" class="user-info text-decoration-none text-white">
                         <i class="fa-solid fa-user-check fs-5"></i>
                         <span>@User.Identity.Name</span>
-                    </div>
+                    </a>
 
                     <form asp-controller="Usuarios" asp-action="Logout" method="post" class="m-0">
                         @Html.AntiForgeryToken()
