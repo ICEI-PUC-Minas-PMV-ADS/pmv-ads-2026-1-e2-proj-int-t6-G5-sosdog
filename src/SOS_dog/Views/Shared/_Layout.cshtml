@@ -24,15 +24,14 @@
         </div>
 
         <nav class="main-nav">
-            <a id="btn-mapa" class="nav-btn-transparent" href="#mapa">
+            <a id="btn-mapa" class="nav-btn-transparent" asp-controller="Home" asp-action="Index">
                 <i class="fa-solid fa-location-dot"></i> Mapa dos Casos
             </a>
 
-            <a id="btn-feed" class="nav-btn-transparent" href="#feed">
+            <a id="btn-feed" class="nav-btn-transparent" asp-controller="Home" asp-action="Feed">
                 <i class="fa-solid fa-folder-open"></i> Feed de Casos
             </a>
         </nav>
-
         <div class="header-right">
             <div class="search-bar">
                 <i class="fas fa-search"></i>
