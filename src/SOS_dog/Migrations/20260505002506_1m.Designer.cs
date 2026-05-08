@@ -12,7 +12,7 @@ using SosDog.Models;
 namespace SOS_dog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260502222121_1m")]
+    [Migration("20260505002506_1m")]
     partial class _1m
     {
         /// <inheritdoc />
