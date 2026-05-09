@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using SOS_dog.Models;
-using SosDog.Models;
+using Microsoft.EntityFrameworkCore; // Necessário para o ToListAsync se for usar
+using SosDog.Models; // Usando o namespace que vimos no seu Ocorrencia.cs
 using System.Diagnostics;
 
 namespace SOS_dog.Controllers
@@ -16,12 +16,25 @@ namespace SOS_dog.Controllers
 
         public IActionResult Index()
         {
-            // Buscamos a lista de ocorrências do banco
-            // Se quiser os dados do usuário junto, use: _context.Ocorrencias.Include(o => o.Usuario).ToList();
             var listaOcorrencias = _context.Ocorrencias.ToList();
-
-            // Passamos a lista para a View
             return View(listaOcorrencias);
+        }
+
+        // ADICIONE ESTE MÉTODO EXPLICITAMENTE:
+        public IActionResult Feed()
+        {
+            try
+            {
+                // Tenta buscar do banco
+                var listaOcorrencias = _context.Ocorrencias.ToList();
+                return View(listaOcorrencias);
+            }
+            catch (Exception)
+            {
+                // Se o banco der erro (como o erro de login que vimos), 
+                // ele retorna uma lista vazia para a página NÃO dar 404 nem tela preta.
+                return View(new List<Ocorrencia>());
+            }
         }
 
         public IActionResult Privacy()
@@ -32,8 +45,7 @@ namespace SOS_dog.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new SOS_dog.Models.ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-
 }

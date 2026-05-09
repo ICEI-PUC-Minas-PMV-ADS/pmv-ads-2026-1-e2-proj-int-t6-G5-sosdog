@@ -37,6 +37,10 @@ namespace SosDog.Models
         public string? ResetToken { get; set; }
         public DateTime? ResetTokenExpiracao { get; set; }
 
+        public bool EmailConfirmado { get; set; } = false;
+        public string? TokenConfirmacaoEmail { get; set; }
+        public DateTime? TokenConfirmacaoEmailExpiracao { get; set; }
+
         public int TentativasLoginInvalidas { get; set; } = 0;
         public DateTime? BloqueadoAte { get; set; }
 
