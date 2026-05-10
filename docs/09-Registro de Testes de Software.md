@@ -15,9 +15,7 @@ https://github.com/user-attachments/assets/0da83974-c2ed-4223-9395-94277bede979
 
 | **Caso de Teste** 	| **CT02 – Registrar ocorrência de animal de rua com foto e estado de saúde** 	|
 |:---:	|:---:	|
-|	Requisito Associado 	| RF-001 - Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento.
-RF-005 - Exigir a seleção do estado atual do animal durante o registro de uma marcação.
-RF-007 - Anexar fotos para facilitar a identificação visual do animal. |
+|	Requisito Associado 	| RF-001 - Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento; RF-005 - Exigir a seleção do estado atual do animal durante o registro de uma marcação; RF-007 - Anexar fotos para facilitar a identificação visual do animal. |
 |Registro de evidência | 
 
 https://github.com/user-attachments/assets/5b5a62e7-893e-4efa-bd15-0b39e1548380
