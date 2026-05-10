@@ -6,13 +6,35 @@ Para cada caso de teste definido no Plano de Testes de Software, realize o regis
 
 | **Caso de Teste** 	| **CT01 – Cadastrar perfil** 	|
 |:---:	|:---:	|
-|	Requisito Associado 	| RF-00X - A aplicação deve apresentar, na página principal, a funcionalidade de cadastro de usuários para que esses consigam criar e gerenciar seu perfil. |
-|Registro de evidência | www.teste.com.br/drive/ct-01 |
+|	Requisito Associado 	|RF-021 - Cadastrar nova conta de usuário. |
+|Registro de evidência | 
+https://github.com/user-attachments/assets/0da83974-c2ed-4223-9395-94277bede979
 
-| **Caso de Teste** 	| **CT02 – Realizar login** 	|
+ |
+
+| **Caso de Teste** 	| **CT02 – Registrar ocorrência de animal de rua com foto e estado de saúde** 	|
 |:---:	|:---:	|
-|	Requisito Associado 	| RF-00Y - A aplicação deve permitir que um usuário previamente cadastrado faça login |
-|Registro de evidência | www.teste.com.br/drive/ct-02 |
+|	Requisito Associado 	| RF-001 - Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento.
+RF-005 - Exigir a seleção do estado atual do animal durante o registro de uma marcação.
+RF-007 - Anexar fotos para facilitar a identificação visual do animal. |
+|Registro de evidência | 
+https://github.com/user-attachments/assets/5b5a62e7-893e-4efa-bd15-0b39e1548380
+
+ |
+
+| **Caso de Teste** 	| **CT05 – Adicionar comentário em ocorrência para atualizar status** 	|
+|:---:	|:---:	|
+|	Requisito Associado 	| RF-009 - Adicionar comentários nas marcações para atualizar o status do animal. |
+|Registro de evidência | 
+
+https://github.com/user-attachments/assets/271a5997-a065-4348-95d6-c4fd88d6af1f
+
+ |
+
+| **Caso de Teste** 	| **CT02 – XXXXXXXXXXXXX** 	|
+|:---:	|:---:	|
+|	Requisito Associado 	| RF-00Y - xxxxxxxxxxxxx |
+|Registro de evidência | xxxxxxxxxxx |
 
 ## Relatório de testes de software
 
