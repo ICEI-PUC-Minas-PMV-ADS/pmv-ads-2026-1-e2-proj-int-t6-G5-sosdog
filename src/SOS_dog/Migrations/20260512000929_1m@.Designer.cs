@@ -12,8 +12,8 @@ using SosDog.Models;
 namespace SOS_dog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260505230536_AddConfirmacaoEmailUsuario")]
-    partial class AddConfirmacaoEmailUsuario
+    [Migration("20260512000929_1m@")]
+    partial class _1m
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -194,7 +194,7 @@ namespace SOS_dog.Migrations
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TentativasLoginInvalidas")
                         .HasColumnType("int");
@@ -208,6 +208,9 @@ namespace SOS_dog.Migrations
                     b.HasKey("IdUsuario");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Telefone")
                         .IsUnique();
 
                     b.ToTable("Usuarios");

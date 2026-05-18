@@ -21,9 +21,12 @@ namespace SOS_dog.Migrations
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SenhaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FotoPerfil = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefone = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetTokenExpiracao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EmailConfirmado = table.Column<bool>(type: "bit", nullable: false),
+                    TokenConfirmacaoEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TokenConfirmacaoEmailExpiracao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TentativasLoginInvalidas = table.Column<int>(type: "int", nullable: false),
                     BloqueadoAte = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -153,6 +156,12 @@ namespace SOS_dog.Migrations
                 name: "IX_Usuarios_Email",
                 table: "Usuarios",
                 column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_Telefone",
+                table: "Usuarios",
+                column: "Telefone",
                 unique: true);
         }
 
