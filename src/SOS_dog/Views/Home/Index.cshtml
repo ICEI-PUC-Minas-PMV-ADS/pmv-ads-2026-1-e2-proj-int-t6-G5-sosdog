@@ -64,21 +64,22 @@
             }
         </div>
 
-        <div class="sidebar-buttons">
-            <button class="btn-orange @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
-                    onclick="@(User.Identity != null && User.Identity.IsAuthenticated ? "alert('Em desenvolvimento!')" : "")">
-                Urgente <i class="fa-solid fa-user-clock"></i>
-            </button>
+        <div class="sidebar-buttons" style="display: flex; gap: 10px; width: 100%;">
+            <a asp-controller="Home" asp-action="Emergencia" style="text-decoration: none; flex: 1; display: block;">
+                <button class="btn-orange" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0;">
+                    Urgente <i class="fa-solid fa-triangle-exclamation"></i>
+                </button>
+            </a>
 
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                <button type="button" class="btn-orange" data-bs-toggle="modal" data-bs-target="#modalOcorrencia">
+                <button type="button" class="btn-orange" data-bs-toggle="modal" data-bs-target="#modalOcorrencia" style="flex: 1;">
                     Reportar Animal <i class="fa-solid fa-pen-to-square"></i>
                 </button>
             }
             else
             {
-                <button type="button" class="btn-orange" data-bs-toggle="modal" data-bs-target="#loginModal">
+                <button type="button" class="btn-orange" data-bs-toggle="modal" data-bs-target="#loginModal" style="flex: 1;">
                     Reportar Animal <i class="fa-solid fa-pen-to-square"></i>
                 </button>
             }

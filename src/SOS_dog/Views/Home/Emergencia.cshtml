@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Contatos de Emergência";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+    .body-emergencia {
+        background-color: #1f242d;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+        padding: 20px;
+    }
+
+    .container-emergencia {
+        background-color: #2a313d;
+        width: 100%;
+        max-width: 600px;
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+
+    .header-emergencia i {
+        font-size: 3rem;
+        color: #e57357; /* Tom terracota/laranja do SOS Dog */
+        margin-bottom: 15px;
+    }
+
+    .container-emergencia h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: #fff;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .container-emergencia p {
+        font-size: 0.95rem;
+        color: #aeb7c2;
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+
+    .lista-contatos {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card-contato {
+        background-color: #1f242d;
+        border-left: 5px solid #e57357;
+        padding: 15px 20px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        transition: transform 0.2s;
+    }
+
+        .card-contato:hover {
+            transform: translateY(-2px);
+        }
+
+    .info-contato h3 {
+        font-size: 1.1rem;
+        color: #fff;
+        margin-bottom: 5px;
+    }
+
+    .info-contato p {
+        margin-bottom: 0;
+        font-size: 0.85rem;
+        color: #8c96a3;
+    }
+
+    .btn-ligar {
+        background-color: #e57357;
+        color: white !important;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.2s;
+    }
+
+        .btn-ligar:hover {
+            background-color: #cf5f44;
+        }
+
+    .btn-voltar {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #aeb7c2;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+        .btn-voltar:hover {
+            color: #fff;
+        }
+</style>
+
+<div class="body-emergencia">
+    <div class="container-emergencia">
+        <div class="header-emergencia">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h1>Contatos de Emergência</h1>
+            <p>Se você presenciou um caso de maus-tratos extremos, acidente grave ou risco iminente à vida de um animal, entre em contato com as autoridades pelos canais abaixo.</p>
+        </div>
+
+        <div class="lista-contatos">
+            <div class="card-contato">
+                <div class="info-contato">
+                    <h3>Polícia Militar (Flagrantes)</h3>
+                    <p>Para casos de agressão ou abandono acontecendo agora.</p>
+                </div>
+                <a href="tel:190" class="btn-ligar"><i class="fa-solid fa-phone"></i> 190</a>
+            </div>
+
+            <div class="card-contato">
+                <div class="info-contato">
+                    <h3>Corpo de Bombeiros (Resgate)</h3>
+                    <p>Para animais presos, em locais de risco ou atropelados.</p>
+                </div>
+                <a href="tel:193" class="btn-ligar"><i class="fa-solid fa-phone"></i> 193</a>
+            </div>
+
+            <div class="card-contato">
+                <div class="info-contato">
+                    <h3>Disque Denúncia / Polícia Civil</h3>
+                    <p>Para registrar denúncias anônimas e investigações.</p>
+                </div>
+                <a href="tel:181" class="btn-ligar"><i class="fa-solid fa-phone"></i> 181</a>
+            </div>
+        </div>
+
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn-voltar">
+            <i class="fa-solid fa-arrow-left"></i> Voltar para o Mapa
+        </a>
+    </div>
+</div>

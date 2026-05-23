@@ -37,6 +37,12 @@ namespace SOS_dog.Controllers
             }
         }
 
+        // Rota para carregar a página informativa de contatos de emergência
+        public IActionResult Emergencia()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
