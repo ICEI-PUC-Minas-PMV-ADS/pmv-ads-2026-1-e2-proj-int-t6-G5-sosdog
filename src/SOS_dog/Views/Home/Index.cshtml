@@ -7,12 +7,107 @@
 
 <main class="dashboard-container">
     <aside class="left-sidebar">
+        @* BARRA DE FILTRO: botão + contador *@
+        <div class="filtro-barra">
+            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
+                <i class="fa-solid fa-filter"></i>
+                Filtrar
+                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
+                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
+            </button>
+            <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
+        </div>
+
+        @* DROPDOWN COM OS SELECTS *@
+        <div class="filtro-dropdown" id="filtro-dropdown">
+            <div class="filtro-grid">
+
+                <div class="filtro-campo">
+                    <label class="filtro-label">Tipo de Ocorrência</label>
+                    <select class="filtro-select" id="filtro-tipo"
+                            onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                            .Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia))
+                            .Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
+                        {
+                            <option value="@tipo.ToLower()">@tipo</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filtro-campo">
+                    <label class="filtro-label">Estado de Saúde</label>
+                    <select class="filtro-select" id="filtro-estadosaude"
+                            onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                            .Where(o => !string.IsNullOrEmpty(o.EstadoSaude))
+                            .Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
+                        {
+                            <option value="@estado.ToLower()">@estado</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filtro-campo">
+                    <label class="filtro-label">Porte</label>
+                    <select class="filtro-select" id="filtro-porte"
+                            onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                            .Where(o => !string.IsNullOrEmpty(o.Porte))
+                            .Select(o => o.Porte).Distinct().OrderBy(p => p))
+                        {
+                            <option value="@porte.ToLower()">@porte</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filtro-campo">
+                    <label class="filtro-label">Sexo</label>
+                    <select class="filtro-select" id="filtro-sexo"
+                            onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                            .Where(o => !string.IsNullOrEmpty(o.Sexo))
+                            .Select(o => o.Sexo).Distinct().OrderBy(s => s))
+                        {
+                            <option value="@sexo.ToLower()">@sexo</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filtro-campo">
+                    <label class="filtro-label">Faixa Etária</label>
+                    <select class="filtro-select" id="filtro-faixaetaria"
+                            onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
+                        <option value="">Todas</option>
+                        @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                            .Where(o => !string.IsNullOrEmpty(o.FaixaEtaria))
+                            .Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
+                        {
+                            <option value="@idade.ToLower()">@idade</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="filtro-campo filtro-campo-limpar">
+                    <button class="btn-limpar-filtros"
+                            onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
+                        <i class="fa-solid fa-xmark"></i> Limpar filtros
+                    </button>
+                </div>
+
+            </div>
+        </div>
         <div class="cases-list">
             @if (Model != null && Model.Any())
             {
                 foreach (var item in Model)
                 {
                     <div class="case-card"
+                         data-tipo="@item.TipoOcorrencia"
                          data-id="@item.IdOcorrencia"
                          data-foto="@item.FotoAnimal" 
                          data-lat="@item.Latitude"
@@ -222,4 +317,35 @@
     <script src="~/js/map-handler.js" asp-append-version="true"></script>
     <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
+
+    <script>
+        function toggleFiltroDropdown() {
+        const dropdown = document.getElementById('filtro-dropdown');
+        const chevron  = document.getElementById('filtro-chevron');
+        const btn      = document.getElementById('btn-filtro-toggle');
+        const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
+        chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
+        btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
+        }
+
+        document.addEventListener('click', function(e) {
+        const barra    = document.getElementById('btn-filtro-toggle');
+        const dropdown = document.getElementById('filtro-dropdown');
+        if (!barra?.contains(e.target) && !dropdown?.contains(e.target)) {
+        dropdown?.classList.remove('filtro-dropdown--aberto');
+        document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
+        barra?.classList.remove('btn-filtro-toggle--ativo');
+        }
+        });
+
+        function atualizarBadge() {
+        const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
+        const ativos = ids.filter(id => document.getElementById(id)?.value !== '').length;
+        const badge = document.getElementById('filtro-badge');
+        if (badge) {
+        badge.textContent = ativos;
+        badge.style.display = ativos > 0 ? 'inline-flex' : 'none';
+        }
+        }
+    </script>
 }

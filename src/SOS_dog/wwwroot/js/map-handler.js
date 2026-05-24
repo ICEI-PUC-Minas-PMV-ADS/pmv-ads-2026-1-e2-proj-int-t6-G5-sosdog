@@ -2,6 +2,15 @@
     constructor() {
         this.map = null;
         this.userLocation = [-15.7801, -47.9292]; // Default: Brasília
+        // Filtro: array de marcadores e filtros ativos
+        this.markers = [];
+        this.activeFilters = {
+            tipo: '',
+            estadoSaude: '',
+            porte: '',
+            sexo: '',
+            faixaEtaria: ''
+        };
         this.init();
     }
 
@@ -37,6 +46,9 @@
         // Pega todos os cards da lista lateral que possuem coordenadas
         const cards = document.querySelectorAll('.case-card');
 
+        // Limpa array antes de recarregar
+        this.markers = [];
+
         cards.forEach(card => {
 
             const lat = parseFloat(card.dataset.lat.replace(',', '.'));
@@ -56,8 +68,66 @@
                     this.map.setView([lat, lng], 15); // Dá zoom no local
                     focusCard(id); // Chama a função que você já tem para abrir o card
                 });
+
+                // 3. Guarda referência do marcador + dados do card para o filtro
+                this.markers.push({
+                    marker,
+                    card,
+                    data: {
+                        tipo: (card.dataset.tipo || '').toLowerCase(),
+                        estadoSaude: (card.dataset.estadosaude || '').toLowerCase(),
+                        porte: (card.dataset.porte || '').toLowerCase(),
+                        sexo: (card.dataset.sexo || '').toLowerCase(),
+                        faixaEtaria: (card.dataset.idade || '').toLowerCase()
+                    }
+                });
             }
         });
+    }
+
+    // ==========================================
+    // MÉTODOS DE FILTRO
+    // ==========================================
+
+    aplicarFiltros() {
+        let visiveis = 0;
+
+        this.markers.forEach(({ marker, card, data }) => {
+            const passa =
+                (!this.activeFilters.tipo || data.tipo === this.activeFilters.tipo) &&
+                (!this.activeFilters.estadoSaude || data.estadoSaude === this.activeFilters.estadoSaude) &&
+                (!this.activeFilters.porte || data.porte === this.activeFilters.porte) &&
+                (!this.activeFilters.sexo || data.sexo === this.activeFilters.sexo) &&
+                (!this.activeFilters.faixaEtaria || data.faixaEtaria === this.activeFilters.faixaEtaria);
+
+            if (passa) {
+                card.style.display = '';
+                if (!this.map.hasLayer(marker)) marker.addTo(this.map);
+                visiveis++;
+            } else {
+                card.style.display = 'none';
+                if (this.map.hasLayer(marker)) this.map.removeLayer(marker);
+            }
+        });
+
+        // Atualiza contador de resultados
+        const contador = document.getElementById('filtro-contador');
+        if (contador) contador.textContent = `${visiveis} resultado${visiveis !== 1 ? 's' : ''}`;
+
+        // Mensagem de nenhum resultado
+        const semResultado = document.getElementById('sem-resultado-filtro');
+        if (semResultado) semResultado.style.display = visiveis === 0 ? 'block' : 'none';
+    }
+
+    setFiltro(campo, valor) {
+        this.activeFilters[campo] = valor.toLowerCase();
+        this.aplicarFiltros();
+    }
+
+    limparFiltros() {
+        this.activeFilters = { tipo: '', estadoSaude: '', porte: '', sexo: '', faixaEtaria: '' };
+        document.querySelectorAll('.filtro-select').forEach(el => el.value = '');
+        this.aplicarFiltros();
     }
 
     ativarModoCriacao() {
