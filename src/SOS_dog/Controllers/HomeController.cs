@@ -47,6 +47,7 @@ namespace SOS_dog.Controllers
             try
             {
                 var listaOcorrencias = _context.Ocorrencias.ToList();
+<<<<<<< HEAD
                 
                 // Repetindo a lógica de favoritos aqui para a tela de Feed também acender os corações
                 var listaFavoritosIds = new List<int>();
@@ -69,7 +70,22 @@ namespace SOS_dog.Controllers
             {
                 ViewBag.FavoritosIds = new List<int>(); // Retorna lista vazia se der erro no banco
                 return View(new List<Ocorrencia>());
+=======
+                return View("Index", listaOcorrencias);
             }
+            catch (Exception)
+            {
+                // Se o banco der erro (como o erro de login que vimos), 
+                // ele retorna uma lista vazia para a página NÃO dar 404 nem tela preta.
+                return View("Index", new List<Ocorrencia>());
+>>>>>>> 33fa1901d8d6c9dc476ada0030bbd2cb45ce3bdb
+            }
+        }
+
+        // Rota para carregar a página informativa de contatos de emergência
+        public IActionResult Emergencia()
+        {
+            return View();
         }
 
         public IActionResult Privacy()

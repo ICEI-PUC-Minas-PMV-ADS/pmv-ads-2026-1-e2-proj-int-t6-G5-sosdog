@@ -153,98 +153,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ==========================================
-    // 3. LÓGICA DE DETALHES (CLIQUE NOS CARDS)
+    // 3. LÓGICA DE DETALHES (CLIQUE NOS CARDS DA LISTA E DO CARROSSEL)
     // ==========================================
-    const cards = document.querySelectorAll('.case-card');
-    const painelDetalhes = document.getElementById('painel-detalhes');
-    const btnEditar = document.getElementById('btn-editar-ocorrencia');
+    // Seleciona tanto os cards da lista lateral quanto os cards do carrossel do feed
+    const todosOsCards = document.querySelectorAll('.case-card, .animal-card');
 
-    cards.forEach(card => {
+    todosOsCards.forEach(card => {
         card.addEventListener('click', function () {
-            if (painelDetalhes) painelDetalhes.style.display = 'flex';
+            const idOcorrencia = this.dataset.id;
 
-            ocorrenciaSelecionadaId = this.dataset.id;
-
-            // ATUALIZA O INPUT HIDDEN PARA O SISTEMA DE COMENTÁRIOS
-            const hiddenId = document.getElementById('comentario-id-ocorrencia');
-            if (hiddenId) hiddenId.value = ocorrenciaSelecionadaId;
-
-            carregarComentarios(ocorrenciaSelecionadaId);
-
-            const horaAgua = this.getAttribute('data-agua') || "--:--";
-            const horaComida = this.getAttribute('data-comida') || "--:--";
-            const ultimoUser = this.getAttribute('data-ultimo-user') || "Nenhum";
-
-            const elAgua = document.getElementById('sidebar-last-agua');
-            if (elAgua) elAgua.innerText = horaAgua;
-
-            const elComida = document.getElementById('sidebar-last-comida');
-            if (elComida) elComida.innerText = horaComida;
-
-            const elSidebarUser = document.getElementById('sidebar-user-id');
-            if (elSidebarUser) elSidebarUser.innerText = ultimoUser;
-
-            const idCodigo = this.dataset.codigo || `ID #${this.dataset.id}`;
-            const sexo = this.dataset.sexo || 'Não informado';
-            const cor = this.dataset.cor || 'Não informada';
-            const porte = this.dataset.porte || 'Não informado';
-            const estadoSaude = this.dataset.estadosaude || 'Não informado';
-            const idade = this.dataset.idade || 'Não informada';
-
-            // NOVA LÓGICA DE IMAGEM PARA A SIDEBAR
-            const fotoString = this.dataset.foto; // Pega exatamente a string do banco de dados (URL ou Base64)
-            const sidebarFoto = document.getElementById('sidebar-foto');
-            const avisoSemFoto = document.querySelector('.aviso-sem-foto');
-
-            if (sidebarFoto && avisoSemFoto) {
-                if (fotoString && fotoString.trim() !== '') {
-                    // Se o animal TIVER foto: joga o src, mostra a imagem e esconde o aviso
-                    sidebarFoto.src = fotoString;
-                    sidebarFoto.style.display = 'block';
-                    avisoSemFoto.style.display = 'none';
-                } else {
-                    // Se o animal NÃO TIVER foto: limpa o src, esconde a imagem e mostra o aviso
-                    sidebarFoto.src = '';
-                    sidebarFoto.style.display = 'none';
-                    avisoSemFoto.style.display = 'flex';
-                }
+            // Invoca a função centralizada que resolve tudo de forma idêntica ao Mapa
+            if (typeof focusCard === 'function') {
+                focusCard(idOcorrencia);
             }
-
-            const sidebarTituloId = document.getElementById('sidebar-titulo-id');
-            if (sidebarTituloId) sidebarTituloId.innerText = idCodigo;
-
-            const sidebarSexo = document.getElementById('sidebar-sexo');
-            if (sidebarSexo) sidebarSexo.innerText = sexo;
-
-            const sidebarCor = document.getElementById('sidebar-cor');
-            if (sidebarCor) sidebarCor.innerText = cor;
-
-            const sidebarPorte = document.getElementById('sidebar-porte');
-            if (sidebarPorte) sidebarPorte.innerText = porte;
-
-            const sidebarEstadoSaude = document.getElementById('sidebar-estadosaude');
-            if (sidebarEstadoSaude) sidebarEstadoSaude.innerText = estadoSaude;
-
-            const sidebarIdade = document.getElementById('sidebar-idade');
-            if (sidebarIdade) sidebarIdade.innerText = idade;
-
-            const dashboardContainer = document.querySelector('.dashboard-container');
-            const formDeletar = document.getElementById('form-deletar-sidebar');
-
-            if (dashboardContainer && formDeletar) {
-                const currentUserId = dashboardContainer.dataset.userId;
-                const donoOcorrenciaId = this.dataset.usuario;
-
-                if (currentUserId && currentUserId === donoOcorrenciaId) {
-                    formDeletar.style.display = 'block';
-                    formDeletar.action = `/Ocorrencias/Delete/${ocorrenciaSelecionadaId}`;
-                } else {
-                    formDeletar.style.display = 'none';
-                }
-            }
-
-            cards.forEach(c => c.classList.remove('border', 'border-success', 'bg-light', 'active-card'));
-            this.classList.add('border', 'border-success', 'bg-light', 'active-card');
         });
     });
 
@@ -307,3 +228,57 @@ function carregarComentarios(idOcorrencia) {
             });
         });
 }
+
+// ==========================================================
+// FUNÇÕES DE CONTROLE DA EXCLUSÃO DE OCORRÊNCIA
+// ==========================================================
+
+/**
+ * Controla se o ícone de lixeira deve ou não aparecer na barra lateral.
+ * Chame esta função sempre que preencher/abrir a sidebar com uma ocorrência.
+ * @param {string|number} idCriadorOcorrencia - ID do usuário que criou a ocorrência atual.
+ */
+function gerenciarVisibilidadeBotaoDeletar(idCriadorOcorrencia) {
+    const containerAcoes = document.getElementById('header-acoes-ocorrencia');
+    const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
+
+    if (!containerAcoes || !btnDeletar) return;
+
+    // Recupera o ID do usuário logado diretamente do atributo HTML data-* que definimos no cshtml
+    const usuarioLogadoId = containerAcoes.dataset.usuarioLogado;
+
+    // Se o usuário estiver logado e for o criador desta ocorrência específica, mostra o botão
+    if (usuarioLogadoId && String(idCriadorOcorrencia) === String(usuarioLogadoId)) {
+        btnDeletar.style.display = 'inline-block';
+    } else {
+        btnDeletar.style.display = 'none';
+    }
+}
+
+// Ouvinte de eventos para quando o documento HTML terminar de carregar
+document.addEventListener("DOMContentLoaded", function () {
+    const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
+
+    if (btnDeletar) {
+        btnDeletar.addEventListener('click', function () {
+            // 'ocorrenciaSelecionadaId' é a sua variável global já existente que guarda o ID ativo
+            if (!ocorrenciaSelecionadaId) {
+                alert('Nenhuma ocorrência selecionada.');
+                return;
+            }
+
+            const confirmar = confirm('Tem certeza de que deseja excluir permanentemente esta ocorrência? Todos os comentários vinculados a ela também serão deletados!');
+
+            if (confirmar) {
+                const form = document.getElementById('form-deletar-ocorrencia');
+                const inputId = document.getElementById('deletar-ocorrencia-id');
+
+                if (form && inputId) {
+                    // Define o ID no input e submete o formulário nativo com o AntiForgeryToken
+                    inputId.value = ocorrenciaSelecionadaId;
+                    form.submit();
+                }
+            }
+        });
+    }
+});

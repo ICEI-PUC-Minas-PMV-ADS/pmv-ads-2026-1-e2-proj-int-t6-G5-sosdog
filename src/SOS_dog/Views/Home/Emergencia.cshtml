@@ -1,0 +1,177 @@
+﻿@{
+    ViewData["Title"] = "Contatos de Emergência";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+   
+    body, main, .dashboard-container {
+        background-color: #f2f2f2 !important;
+    }
+
+    .body-emergencia {
+        background-color: #f2f2f2 !important; 
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 78vh;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .container-emergencia {
+        background-color: #2b443b !important; 
+        width: 100%;
+        max-width: 650px;
+        padding: 40px 35px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .header-emergencia i {
+        font-size: 3.5rem;
+        color: #e57357;
+        margin-bottom: 20px;
+    }
+
+    .container-emergencia h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #ffffff;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .container-emergencia p {
+        font-size: 0.95rem;
+        color: #cbd5e1;
+        margin-bottom: 35px;
+        line-height: 1.6;
+    }
+
+    .lista-contatos {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 35px;
+    }
+
+    .card-contato {
+        background-color: #1f322b !important; 
+        border-left: 4px solid #e57357;
+        padding: 18px 22px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        transition: transform 0.2s;
+    }
+
+        .card-contato:hover {
+            transform: translateY(-2px);
+            background-color: #253b33 !important;
+        }
+
+    .info-contato h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 4px;
+    }
+
+    .info-contato p {
+        margin-bottom: 0;
+        font-size: 0.88rem;
+        color: #a3b8cc;
+        line-height: 1.4;
+    }
+
+    .btn-ligar {
+        background-color: #e57357 !important;
+        color: white !important;
+        text-decoration: none !important;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-ligar:hover {
+            background-color: #cf5f44 !important;
+        }
+
+    .btn-voltar {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #cbd5e1;
+        text-decoration: none !important;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+        .btn-voltar:hover {
+            color: #e57357;
+        }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const bodyElement = document.body;
+        if (bodyElement) {
+            bodyElement.style.setProperty("background-color", "#f2f2f2", "important");
+        }
+        // Se houver uma tag <main> genérica no _Layout, ajusta ela também
+        const mainElement = document.querySelector("main");
+        if (mainElement) {
+            mainElement.style.setProperty("background-color", "#f2f2f2", "important");
+        }
+    });
+</script>
+<div class="body-emergencia">
+    <div class="container-emergencia">
+        <div class="header-emergencia">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h1>Contatos de Emergência</h1>
+            <p>Se você presenciou um caso de maus-tratos extremos, acidente grave ou risco iminente à vida de um animal, entre em contato com as autoridades pelos canais abaixo.</p>
+        </div>
+
+        <div class="lista-contatos">
+            <div class="card-contato">
+                <div class="info-contato">
+                    <h3>Polícia Militar (Flagrantes)</h3>
+                    <p>Para casos de agressão ou abandono acontecendo agora.</p>
+                </div>
+                <a href="tel:190" class="btn-ligar"><i class="fa-solid fa-phone"></i> 190</a>
+            </div>
+
+            <div class="card-contato">
+                <div class="info-contato">
+                    <h3>Corpo de Bombeiros (Resgate)</h3>
+                    <p>Para animais presos, em locais de risco ou atropelados.</p>
+                </div>
+                <a href="tel:193" class="btn-ligar"><i class="fa-solid fa-phone"></i> 193</a>
+            </div>
+
+            <div class="card-contato">
+                <div class="info-contato">
+                    <h3>Disque Denúncia / Polícia Civil</h3>
+                    <p>Para registrar denúncias anônimas e investigações.</p>
+                </div>
+                <a href="tel:181" class="btn-ligar"><i class="fa-solid fa-phone"></i> 181</a>
+            </div>
+        </div>
+
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn-voltar">
+            <i class="fa-solid fa-arrow-left"></i> Voltar para o Mapa
+        </a>
+    </div>
+</div>

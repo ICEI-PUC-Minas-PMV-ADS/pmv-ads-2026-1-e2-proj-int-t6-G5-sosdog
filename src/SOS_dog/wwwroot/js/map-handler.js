@@ -2,6 +2,15 @@
     constructor() {
         this.map = null;
         this.userLocation = [-15.7801, -47.9292]; // Default: Brasília
+        // Filtro: array de marcadores e filtros ativos
+        this.markers = [];
+        this.activeFilters = {
+            tipo: '',
+            estadoSaude: '',
+            porte: '',
+            sexo: '',
+            faixaEtaria: ''
+        };
         this.init();
     }
 
@@ -37,6 +46,9 @@
         // Pega todos os cards da lista lateral que possuem coordenadas
         const cards = document.querySelectorAll('.case-card');
 
+        // Limpa array antes de recarregar
+        this.markers = [];
+
         cards.forEach(card => {
 
             const lat = parseFloat(card.dataset.lat.replace(',', '.'));
@@ -56,8 +68,66 @@
                     this.map.setView([lat, lng], 15); // Dá zoom no local
                     focusCard(id); // Chama a função que você já tem para abrir o card
                 });
+
+                // 3. Guarda referência do marcador + dados do card para o filtro
+                this.markers.push({
+                    marker,
+                    card,
+                    data: {
+                        tipo: (card.dataset.tipo || '').toLowerCase(),
+                        estadoSaude: (card.dataset.estadosaude || '').toLowerCase(),
+                        porte: (card.dataset.porte || '').toLowerCase(),
+                        sexo: (card.dataset.sexo || '').toLowerCase(),
+                        faixaEtaria: (card.dataset.idade || '').toLowerCase()
+                    }
+                });
             }
         });
+    }
+
+    // ==========================================
+    // MÉTODOS DE FILTRO
+    // ==========================================
+
+    aplicarFiltros() {
+        let visiveis = 0;
+
+        this.markers.forEach(({ marker, card, data }) => {
+            const passa =
+                (!this.activeFilters.tipo || data.tipo === this.activeFilters.tipo) &&
+                (!this.activeFilters.estadoSaude || data.estadoSaude === this.activeFilters.estadoSaude) &&
+                (!this.activeFilters.porte || data.porte === this.activeFilters.porte) &&
+                (!this.activeFilters.sexo || data.sexo === this.activeFilters.sexo) &&
+                (!this.activeFilters.faixaEtaria || data.faixaEtaria === this.activeFilters.faixaEtaria);
+
+            if (passa) {
+                card.style.display = '';
+                if (!this.map.hasLayer(marker)) marker.addTo(this.map);
+                visiveis++;
+            } else {
+                card.style.display = 'none';
+                if (this.map.hasLayer(marker)) this.map.removeLayer(marker);
+            }
+        });
+
+        // Atualiza contador de resultados
+        const contador = document.getElementById('filtro-contador');
+        if (contador) contador.textContent = `${visiveis} resultado${visiveis !== 1 ? 's' : ''}`;
+
+        // Mensagem de nenhum resultado
+        const semResultado = document.getElementById('sem-resultado-filtro');
+        if (semResultado) semResultado.style.display = visiveis === 0 ? 'block' : 'none';
+    }
+
+    setFiltro(campo, valor) {
+        this.activeFilters[campo] = valor.toLowerCase();
+        this.aplicarFiltros();
+    }
+
+    limparFiltros() {
+        this.activeFilters = { tipo: '', estadoSaude: '', porte: '', sexo: '', faixaEtaria: '' };
+        document.querySelectorAll('.filtro-select').forEach(el => el.value = '');
+        this.aplicarFiltros();
     }
 
     ativarModoCriacao() {
@@ -162,18 +232,25 @@ function abrirModalCriacao() {
     }
 }
 
-// Função para destacar o card ao clicar no mapa ou interagir com ele
+// Função global para destacar o card ao clicar no mapa ou interagir com ele
 function focusCard(id) {
-    const card = document.querySelector(`.case-card[data-id="${id}"]`);
+    // Busca o card correspondente (pode ser da lista ou do carrossel/feed)
+    const card = document.querySelector(`.case-card[data-id="${id}"], .animal-card[data-id="${id}"]`);
     const painel = document.getElementById('painel-detalhes');
 
     if (card && painel) {
-        // 1. Destaque Visual
-        document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active-card'));
-        card.classList.add('active-card');
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Sincroniza o ID global para o sistema de comentários e ações
+        ocorrenciaSelecionadaId = id;
 
-        // 2. Exibir Painel
+        // 1. Destaque Visual (apenas para cards que estão na lista lateral esquerda)
+        document.querySelectorAll('.case-card').forEach(c => c.classList.remove('border', 'border-success', 'bg-light', 'active-card'));
+        const cardLista = document.querySelector(`.case-card[data-id="${id}"]`);
+        if (cardLista) {
+            cardLista.classList.add('border', 'border-success', 'bg-light', 'active-card');
+            cardLista.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 2. Exibir Painel Lateral
         painel.style.display = 'flex';
 
         // 3. Preencher Dados de Texto
@@ -183,34 +260,51 @@ function focusCard(id) {
         document.getElementById('sidebar-porte').innerText = card.dataset.porte || '---';
         document.getElementById('sidebar-idade').innerText = card.dataset.idade || '---';
 
-        // Correção Sociabilidade / EstadoSaude
-        const elSociabilidade = document.getElementById('sidebar-estadosaude'); // Ajustado para o ID do seu HTML
-        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---..';
+        const elSociabilidade = document.getElementById('sidebar-estadosaude');
+        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---';
 
-        // 4. Lógica de Imagem (O PONTO CRÍTICO - ATUALIZADO)
+        // 4. Lógica de Imagem
         const imgElement = document.getElementById('sidebar-foto');
         const avisoSemFoto = document.querySelector('.aviso-sem-foto');
 
-        // Procura a tag <img> que está dentro do card que o utilizador clicou
-        const imgNoCard = card.querySelector('img');
+        // Tenta pegar do atributo data-foto ou da tag img interna do card
+        const fotoUrl = card.dataset.foto || (card.querySelector('img') ? card.querySelector('img').src : '');
 
-        // Se o card tiver uma imagem, copia o "src" dela para a sidebar direita
-        if (imgNoCard && imgNoCard.src) {
-            imgElement.src = imgNoCard.src;
-            imgElement.style.display = 'block';
-            avisoSemFoto.style.display = 'none';
-        } else {
-            imgElement.src = "";
-            imgElement.style.display = 'none';
-            avisoSemFoto.style.display = 'flex';
+        if (imgElement && avisoSemFoto) {
+            if (fotoUrl && fotoUrl.trim() !== '' && !fotoUrl.includes('undefined')) {
+                imgElement.src = fotoUrl;
+                imgElement.style.display = 'block';
+                avisoSemFoto.style.display = 'none';
+            } else {
+                imgElement.src = "";
+                imgElement.style.display = 'none';
+                avisoSemFoto.style.display = 'flex';
+            }
         }
 
-        // 5. Ações e Registros
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum registro';
-        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || '--:--';
-        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || '--:--';
+        // 5. Ações e Histórico de Registros
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registro';
+        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || card.getAttribute('data-agua') || '--:--';
+        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || card.getAttribute('data-comida') || '--:--';
 
-        // 6. Lógica do Formulário de Comentários
+        // 6. LÓGICA UNIFICADA DE EXCLUSÃO (BOTÃO DELETAR)
+        const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
+        const containerAcoes = document.getElementById('header-acoes-ocorrencia') || document.querySelector('.dashboard-container');
+
+        if (btnDeletar && containerAcoes) {
+            // Mapeamento resiliente para aceitar as variações que você usou no HTML
+            const usuarioLogadoId = containerAcoes.dataset.usuarioLogado || containerAcoes.dataset.userId;
+            const idCriadorOcorrencia = card.dataset.idUsuario || card.dataset.usuario;
+
+            // Se o usuário logado for o criador, exibe o botão da lixeira
+            if (usuarioLogadoId && idCriadorOcorrencia && String(idCriadorOcorrencia) === String(usuarioLogadoId)) {
+                btnDeletar.style.display = 'inline-block';
+            } else {
+                btnDeletar.style.display = 'none';
+            }
+        }
+
+        // 7. Lógica do Formulário de Comentários
         const hiddenId = document.getElementById('comentario-id-ocorrencia');
         if (hiddenId) hiddenId.value = id;
 
@@ -218,7 +312,7 @@ function focusCard(id) {
             window.carregarComentarios(id);
         }
 
-        // 7. Mapa (Ajuste de coordenadas para o padrão Leaflet)
+        // 8. Movimentação do Mapa (Ajuste Leaflet)
         if (window.sosDogMap && window.sosDogMap.map) {
             const latStr = card.dataset.lat ? card.dataset.lat.toString().replace(',', '.') : "";
             const lngStr = card.dataset.lng ? card.dataset.lng.toString().replace(',', '.') : "";

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Xht0IYaUf+o=",
+  "dgSpecHash": "wotsFwf/wCM=",
   "success": true,
   "projectFilePath": "C:\\Users\\andry\\Desktop\\Nova pasta\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
   "expectedPackageFiles": [
@@ -133,5 +133,15 @@
     "C:\\Users\\andry\\.nuget\\packages\\system.security.cryptography.pkcs\\9.0.4\\system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
     "C:\\Users\\andry\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.6\\system.security.cryptography.protecteddata.9.0.6.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problema ao ler o arquivo de cache C:\\Users\\andry\\Desktop\\Nova pasta\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\obj\\project.nuget.cache: '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
+      "projectPath": "C:\\Users\\andry\\Desktop\\Nova pasta\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\andry\\Desktop\\Nova pasta\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\SOS_dog.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

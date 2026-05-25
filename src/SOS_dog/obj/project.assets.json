@@ -6317,6 +6317,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "Azure.Core >= 1.47.1",
       "BCrypt.Net-Next >= 4.1.0",
       "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation >= 10.0.7",
       "Microsoft.EntityFrameworkCore >= 10.0.7",
@@ -6380,6 +6381,10 @@
         "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
+          "Azure.Core": {
+            "target": "Package",
+            "version": "[1.47.1, )"
+          },
           "BCrypt.Net-Next": {
             "target": "Package",
             "version": "[4.1.0, )"
@@ -6855,5 +6860,13 @@
         }
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problema ao ler o arquivo de cache C:\\Users\\andry\\Desktop\\Nova pasta\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\obj\\project.nuget.cache: '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
+    }
+  ]
 }
