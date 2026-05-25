@@ -2378,7 +2378,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+88497e869491fe70bf4b7cb2d647d492dce59765")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33fa1901d8d6c9dc476ada0030bbd2cb45ce3bdb")]
 [assembly: System.Reflection.AssemblyProductAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2925,9 +2925,9 @@ using System.Reflection;
             }
         </div>
 
-        <div class="sidebar-buttons" style="display: flex; gap: 10px; width: 100%;">
+        <div class="sidebar-buttons">
             <a asp-controller="Home" asp-action="Emergencia" style="text-decoration: none; flex: 1; display: block;">
-                <button class="btn-orange" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0;">
+                <button class="btn-orange" >
                     Urgente <i class="fa-solid fa-triangle-exclamation"></i>
                 </button>
             </a>
@@ -3487,6 +3487,20 @@ using System.Reflection;
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\Views\Shared\_Layout.cshtml ---
 
 
+@using System.Security.Claims
+@inject SosDog.Models.AppDbContext _context
+@{
+    SosDog.Models.Usuario usuarioLogado = null;
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && int.TryParse(userIdClaim, out int idUsuario))
+        {
+            usuarioLogado = _context.Usuarios.FirstOrDefault(u => u.IdUsuario == idUsuario);
+        }
+    }
+}
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3530,8 +3544,15 @@ using System.Reflection;
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <div class="user-menu-logged">
-                    <a asp-controller="Usuarios" asp-action="Perfil" class="user-info text-decoration-none text-white">
-                        <i class="fa-solid fa-user-check fs-5"></i>
+                    <a href="#" class="user-info text-decoration-none text-white" data-bs-toggle="modal" data-bs-target="#modalPerfil">
+                        @if (usuarioLogado != null && !string.IsNullOrEmpty(usuarioLogado.FotoPerfil))
+                        {
+                            <img src="@usuarioLogado.FotoPerfil" class="rounded-circle border border-1 border-light me-1" width="30" height="30" style="object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-user-check fs-5"></i>
+                        }
                         <span>@User.Identity.Name</span>
                     </a>
 
@@ -3607,6 +3628,11 @@ using System.Reflection;
     <partial name="~/Views/Usuarios/_EsqueciSenhaModal.cshtml" />
     <partial name="~/Views/Usuarios/_RedefinirSenhaModais.cshtml" />
     <partial name="~/Views/Ocorrencias/_CriarOcorrenciaModal.cshtml" model="new SosDog.Models.Ocorrencia()" />
+
+    @if (User.Identity.IsAuthenticated && usuarioLogado != null)
+    {
+        <partial name="~/Views/Usuarios/_PerfilModais.cshtml" model="usuarioLogado" />
+    }
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -3931,6 +3957,145 @@ button.accept-policy {
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#esqueciSenhaModal">Esqueci a Senha</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\Views\Usuarios\_PerfilModais.cshtml ---
+
+
+@model SosDog.Models.Usuario
+
+<div class="modal fade" id="modalPerfil" tabindex="-1" aria-labelledby="modalPerfilLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalPerfilLabel">Meu Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="text-center">
+                    @if (Model != null && !string.IsNullOrEmpty(Model.FotoPerfil))
+                    {
+                        <img src="@Model.FotoPerfil" class="rounded-circle mb-3" width="130" height="130" style="object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-circle-user fa-6x text-muted mb-3"></i>
+                    }
+
+                    <h2 class="fw-bold mb-1">@Model?.Nome</h2>
+                    <p class="text-muted mb-4">@Model?.Email</p>
+                </div>
+
+                <hr />
+
+                <div class="mt-4">
+                    <h5 class="fw-bold mb-3">Dados da conta</h5>
+
+                    <div class="mb-3">
+                        <strong>Nome:</strong>
+                        <span>@Model?.Nome</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>E-mail:</strong>
+                        <span>@Model?.Email</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Telefone:</strong>
+                        <span>@Model?.Telefone</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>E-mail confirmado:</strong>
+                        @if (Model != null && Model.EmailConfirmado)
+                        {
+                            <span class="badge bg-success">Sim</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Não</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 pt-0 d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-warning rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">
+                    <i class="fa-solid fa-pen me-1"></i> Editar
+                </button>
+
+                <a asp-controller="Usuarios" asp-action="Delete" class="btn btn-danger rounded-pill px-4 fw-bold">
+                    <i class="fa-solid fa-trash me-1"></i> Excluir Conta
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditarPerfil" tabindex="-1" aria-labelledby="modalEditarPerfilLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalEditarPerfilLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form asp-controller="Usuarios" asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        @if (Model != null && !string.IsNullOrEmpty(Model.FotoPerfil))
+                        {
+                            <img src="@Model.FotoPerfil" class="rounded-circle mb-3 shadow-sm" width="120" height="120" style="object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-circle-user fa-6x text-muted mb-3"></i>
+                        }
+                    </div>
+
+                    <input type="hidden" asp-for="IdUsuario" />
+
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label fw-bold">Nome</label>
+                        <input asp-for="Nome" class="form-control rounded-pill" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-bold">E-mail</label>
+                        <input asp-for="Email" type="email" class="form-control rounded-pill" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Telefone" class="form-label fw-bold">Telefone</label>
+                        <input asp-for="Telefone" class="form-control rounded-pill" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="NovaFoto" class="form-label fw-bold">Nova Foto</label>
+                        <input type="file" id="NovaFoto" name="NovaFoto" class="form-control" accept="image/*" />
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 pt-0 d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">
+                        Salvar Alterações
+                    </button>
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalPerfil">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -5539,7 +5704,7 @@ footer.footer {
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    transition: background-color var(--transition-fat), transform var(--transition-fast);
     background-size: 40%; /* Ajusta a proporÃ§Ã£o interna do chevron nativo */
 }
 
@@ -5879,21 +6044,25 @@ function abrirModalCriacao() {
     }
 }
 
-// Função para destacar o card ao clicar no mapa ou interagir com ele
+// Função global para destacar o card ao clicar no mapa ou interagir com ele
 function focusCard(id) {
-    const card = document.querySelector(`.case-card[data-id="${id}"]`);
+    // Busca o card correspondente (pode ser da lista ou do carrossel/feed)
+    const card = document.querySelector(`.case-card[data-id="${id}"], .animal-card[data-id="${id}"]`);
     const painel = document.getElementById('painel-detalhes');
 
     if (card && painel) {
-        // [MODIFICAÇÃO]: Sincroniza o ID com o arquivo 'ocorrencias.js'
+        // Sincroniza o ID global para o sistema de comentários e ações
         ocorrenciaSelecionadaId = id;
 
-        // 1. Destaque Visual
-        document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active-card'));
-        card.classList.add('active-card');
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 1. Destaque Visual (apenas para cards que estão na lista lateral esquerda)
+        document.querySelectorAll('.case-card').forEach(c => c.classList.remove('border', 'border-success', 'bg-light', 'active-card'));
+        const cardLista = document.querySelector(`.case-card[data-id="${id}"]`);
+        if (cardLista) {
+            cardLista.classList.add('border', 'border-success', 'bg-light', 'active-card');
+            cardLista.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
 
-        // 2. Exibir Painel
+        // 2. Exibir Painel Lateral
         painel.style.display = 'flex';
 
         // 3. Preencher Dados de Texto
@@ -5903,49 +6072,51 @@ function focusCard(id) {
         document.getElementById('sidebar-porte').innerText = card.dataset.porte || '---';
         document.getElementById('sidebar-idade').innerText = card.dataset.idade || '---';
 
-        // Correção Sociabilidade / EstadoSaude
-        const elSociabilidade = document.getElementById('sidebar-estadosaude'); // Ajustado para o ID do seu HTML
-        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---..';
+        const elSociabilidade = document.getElementById('sidebar-estadosaude');
+        if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---';
 
-        // 4. Lógica de Imagem (O PONTO CRÍTICO - ATUALIZADO)
+        // 4. Lógica de Imagem
         const imgElement = document.getElementById('sidebar-foto');
         const avisoSemFoto = document.querySelector('.aviso-sem-foto');
 
-        // Procura a tag <img> que está dentro do card que o utilizador clicou
-        const imgNoCard = card.querySelector('img');
+        // Tenta pegar do atributo data-foto ou da tag img interna do card
+        const fotoUrl = card.dataset.foto || (card.querySelector('img') ? card.querySelector('img').src : '');
 
-        // Se o card tiver uma imagem, copia o "src" dela para a sidebar direita
-        if (imgNoCard && imgNoCard.src) {
-            imgElement.src = imgNoCard.src;
-            imgElement.style.display = 'block';
-            avisoSemFoto.style.display = 'none';
-        } else {
-            imgElement.src = "";
-            imgElement.style.display = 'none';
-            avisoSemFoto.style.display = 'flex';
+        if (imgElement && avisoSemFoto) {
+            if (fotoUrl && fotoUrl.trim() !== '' && !fotoUrl.includes('undefined')) {
+                imgElement.src = fotoUrl;
+                imgElement.style.display = 'block';
+                avisoSemFoto.style.display = 'none';
+            } else {
+                imgElement.src = "";
+                imgElement.style.display = 'none';
+                avisoSemFoto.style.display = 'flex';
+            }
         }
 
-        // 5. Ações e Registros
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || 'Nenhum registro';
-        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || '--:--';
-        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || '--:--';
+        // 5. Ações e Histórico de Registros
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registro';
+        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || card.getAttribute('data-agua') || '--:--';
+        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || card.getAttribute('data-comida') || '--:--';
 
-        // [MODIFICAÇÃO]: Lógica de exibição/ocultação do botão de Deletar Ocorrência
-        const containerAcoes = document.getElementById('header-acoes-ocorrencia');
+        // 6. LÓGICA UNIFICADA DE EXCLUSÃO (BOTÃO DELETAR)
         const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
-        if (containerAcoes && btnDeletar) {
-            const usuarioLogadoId = containerAcoes.dataset.usuarioLogado;
-            const idCriadorOcorrencia = card.dataset.idUsuario;
+        const containerAcoes = document.getElementById('header-acoes-ocorrencia') || document.querySelector('.dashboard-container');
 
-            // Se o usuário logado for o mesmo que criou a ocorrência, exibe a lixeira
-            if (usuarioLogadoId && String(idCriadorOcorrencia) === String(usuarioLogadoId)) {
+        if (btnDeletar && containerAcoes) {
+            // Mapeamento resiliente para aceitar as variações que você usou no HTML
+            const usuarioLogadoId = containerAcoes.dataset.usuarioLogado || containerAcoes.dataset.userId;
+            const idCriadorOcorrencia = card.dataset.idUsuario || card.dataset.usuario;
+
+            // Se o usuário logado for o criador, exibe o botão da lixeira
+            if (usuarioLogadoId && idCriadorOcorrencia && String(idCriadorOcorrencia) === String(usuarioLogadoId)) {
                 btnDeletar.style.display = 'inline-block';
             } else {
                 btnDeletar.style.display = 'none';
             }
         }
 
-        // 6. Lógica do Formulário de Comentários
+        // 7. Lógica do Formulário de Comentários
         const hiddenId = document.getElementById('comentario-id-ocorrencia');
         if (hiddenId) hiddenId.value = id;
 
@@ -5953,7 +6124,7 @@ function focusCard(id) {
             window.carregarComentarios(id);
         }
 
-        // 7. Mapa (Ajuste de coordenadas para o padrão Leaflet)
+        // 8. Movimentação do Mapa (Ajuste Leaflet)
         if (window.sosDogMap && window.sosDogMap.map) {
             const latStr = card.dataset.lat ? card.dataset.lat.toString().replace(',', '.') : "";
             const lngStr = card.dataset.lng ? card.dataset.lng.toString().replace(',', '.') : "";
@@ -6137,109 +6308,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
     // Seleciona tanto os cards da lista lateral quanto os cards do carrossel do feed
     const todosOsCards = document.querySelectorAll('.case-card, .animal-card');
-    const painelDetalhes = document.getElementById('painel-detalhes');
-    const btnEditar = document.getElementById('btn-editar-ocorrencia');
 
     todosOsCards.forEach(card => {
         card.addEventListener('click', function () {
-            // Abre a sidebar lateral de detalhes
-            if (painelDetalhes) painelDetalhes.style.display = 'flex';
+            const idOcorrencia = this.dataset.id;
 
-            ocorrenciaSelecionadaId = this.dataset.id;
-
-            // ATUALIZA O INPUT HIDDEN PARA O SISTEMA DE COMENTÁRIOS
-            const hiddenId = document.getElementById('comentario-id-ocorrencia');
-            if (hiddenId) hiddenId.value = ocorrenciaSelecionadaId;
-
-            // Carrega os comentários dinamicamente via AJAX
-            carregarComentarios(ocorrenciaSelecionadaId);
-
-            // Resgata os valores dos atributos data-* passados pelo HTML
-            const horaAgua = this.getAttribute('data-agua') || "--:--";
-            const horaComida = this.getAttribute('data-comida') || "--:--";
-            const ultimoUser = this.getAttribute('data-ultimo-user') || "Nenhum";
-
-            const elAgua = document.getElementById('sidebar-last-agua');
-            if (elAgua) elAgua.innerText = horaAgua;
-
-            const elComida = document.getElementById('sidebar-last-comida');
-            if (elComida) elComida.innerText = horaComida;
-
-            const elSidebarUser = document.getElementById('sidebar-user-id');
-            if (elSidebarUser) elSidebarUser.innerText = ultimoUser;
-
-            const idCodigo = this.dataset.codigo || `ID #${this.dataset.id}`;
-            const sexo = this.dataset.sexo || 'Não informado';
-            const cor = this.dataset.cor || 'Não informada';
-            const porte = this.dataset.porte || 'Não informado';
-            const estadoSaude = this.dataset.estadosaude || 'Não informado';
-            const idade = this.dataset.idade || 'Não informada';
-
-            // LOGICA DE IMAGEM PARA A SIDEBAR
-            const fotoString = this.dataset.foto;
-            const sidebarFoto = document.getElementById('sidebar-foto');
-            const avisoSemFoto = document.querySelector('.aviso-sem-foto');
-
-            if (sidebarFoto && avisoSemFoto) {
-                if (fotoString && fotoString.trim() !== '') {
-                    sidebarFoto.src = fotoString;
-                    sidebarFoto.style.display = 'block';
-                    avisoSemFoto.style.display = 'none';
-                } else {
-                    sidebarFoto.src = '';
-                    sidebarFoto.style.display = 'none';
-                    avisoSemFoto.style.display = 'flex';
-                }
-            }
-
-            // Atualiza os campos de texto da barra lateral
-            const sidebarTituloId = document.getElementById('sidebar-titulo-id');
-            if (sidebarTituloId) sidebarTituloId.innerText = idCodigo;
-
-            const sidebarSexo = document.getElementById('sidebar-sexo');
-            if (sidebarSexo) sidebarSexo.innerText = sexo;
-
-            const sidebarCor = document.getElementById('sidebar-cor');
-            if (sidebarCor) sidebarCor.innerText = cor;
-
-            const sidebarPorte = document.getElementById('sidebar-porte');
-            if (sidebarPorte) sidebarPorte.innerText = porte;
-
-            const sidebarEstadoSaude = document.getElementById('sidebar-estadosaude');
-            if (sidebarEstadoSaude) sidebarEstadoSaude.innerText = estadoSaude;
-
-            const sidebarIdade = document.getElementById('sidebar-idade');
-            if (sidebarIdade) sidebarIdade.innerText = idade;
-
-            // GERENCIAMENTO DE PERMISSÃO DE EXCLUSÃO (BOTÃO DELETAR)
-            const dashboardContainer = document.querySelector('.dashboard-container');
-            const formDeletar = document.getElementById('form-deletar-sidebar');
-
-            if (dashboardContainer && formDeletar) {
-                const currentUserId = dashboardContainer.dataset.userId;
-                const donoOcorrenciaId = this.dataset.usuario;
-
-                if (currentUserId && currentUserId === donoOcorrenciaId) {
-                    formDeletar.style.display = 'block';
-                    formDeletar.action = `/Ocorrencias/Delete/${ocorrenciaSelecionadaId}`;
-                } else {
-                    formDeletar.style.display = 'none';
-                }
-            }
-
-            // ESTILIZAÇÃO VISUAL: Remove classes de ativação de todos os cards da lista lateral
-            const cardsDaLista = document.querySelectorAll('.case-card');
-            cardsDaLista.forEach(c => c.classList.remove('border', 'border-success', 'bg-light', 'active-card'));
-
-            // Se o item clicado foi o da lista lateral esquerda, destaca ele
-            if (this.classList.contains('case-card')) {
-                this.classList.add('border', 'border-success', 'bg-light', 'active-card');
-            } else {
-                // Se foi clicado no carrossel, localiza o card correspondente na lista e o destaca
-                const cardCorrespondenteNaLista = document.querySelector(`.case-card[data-id='${ocorrenciaSelecionadaId}']`);
-                if (cardCorrespondenteNaLista) {
-                    cardCorrespondenteNaLista.classList.add('border', 'border-success', 'bg-light', 'active-card');
-                }
+            // Invoca a função centralizada que resolve tudo de forma idêntica ao Mapa
+            if (typeof focusCard === 'function') {
+                focusCard(idOcorrencia);
             }
         });
     });

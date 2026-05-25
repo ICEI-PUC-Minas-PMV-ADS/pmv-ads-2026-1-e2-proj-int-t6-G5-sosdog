@@ -1385,7 +1385,7 @@ footer.footer {
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    transition: background-color var(--transition-fat), transform var(--transition-fast);
     background-size: 40%; /* Ajusta a proporção interna do chevron nativo */
 }
 
