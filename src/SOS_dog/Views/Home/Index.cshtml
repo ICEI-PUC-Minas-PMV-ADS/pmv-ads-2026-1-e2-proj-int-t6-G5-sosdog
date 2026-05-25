@@ -5,13 +5,36 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
+<style>
+    /* Estilo para o coração de favoritos */
+    .favoritar-btn {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+    .favoritar-btn:hover {
+        transform: scale(1.2);
+    }
+    .favoritar-btn.favoritado {
+        color: #e63946 !important;
+    }
+</style>
+
 <main class="dashboard-container">
     <aside class="left-sidebar">
-        <div class="cases-list">
+        
+        <div class="cases-list mt-3">
             @if (Model != null && Model.Any())
             {
+                // Garante a captura da lista de favoritos enviada pelo Controller
+                var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
+
                 foreach (var item in Model)
                 {
+                    // Força a verificação exata do ID da ocorrência
+                    bool estaFavoritado = listafavoritosIds.Contains(item.IdOcorrencia);
+
                     <div class="case-card"
                          data-id="@item.IdOcorrencia"
                          data-foto="@item.FotoAnimal" 
@@ -26,24 +49,29 @@
                          data-usuario="@item.IdUsuario"
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                          data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
+                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)"
+                         onclick="mostrarDetalhes(@item.IdOcorrencia)">
 
                         @if (!string.IsNullOrEmpty(item.FotoAnimal))
                         {
-                            // Se a string Base64 já vier do banco com "data:image...", não precisa do prefixo.
-                            // Mas se vier pura (que é o mais comum), o prefixo abaixo é obrigatório:
                             <img src="@item.FotoAnimal" class="dog-api-img" alt="Foto do Animal">
                         }
                         else
                         {
-                            // Uma imagem padrão caso a ocorrência não tenha foto
                             <img src="~/images/sem-foto.jpg" class="dog-api-img" alt="Sem foto cadastrada">
                         }
 
                         <div class="case-details">
-                            <div class="case-header">
-                                <span>Id: @item.CodigoCachorro</span>
-                                <span class="badge badge-green">@item.EstadoSaude</span>
+                            <div class="case-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span>Id: @item.CodigoCachorro</span>
+                                    <span class="badge badge-green">@item.EstadoSaude</span>
+                                </div>
+                                
+                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")" 
+                                   id="coracao-@item.IdOcorrencia"
+                                   onclick="alternarFavorito(event, @item.IdOcorrencia)" 
+                                   title="Favoritar"></i>
                             </div>
 
                             <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
@@ -116,71 +144,31 @@
 
         <div class="profile-section">
             <h3 class="section-title">Status do Animal</h3>
-
             <div class="status-box">
-                <div class="status-item">
-                    <span class="status-label">Sexo:</span>
-                    <span class="status-data" id="sidebar-sexo">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Cor:</span>
-                    <span class="status-data" id="sidebar-cor">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Porte:</span>
-                    <span class="status-data" id="sidebar-porte">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Estado de Saúde:</span>
-                    <span class="status-data" id="sidebar-estadosaude">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Faixa Etária:</span>
-                    <span class="status-data" id="sidebar-idade">---</span>
-                </div>
+                <div class="status-item"><span class="status-label">Sexo:</span><span class="status-data" id="sidebar-sexo">---</span></div>
+                <div class="status-item"><span class="status-label">Cor:</span><span class="status-data" id="sidebar-cor">---</span></div>
+                <div class="status-item"><span class="status-label">Porte:</span><span class="status-data" id="sidebar-porte">---</span></div>
+                <div class="status-item"><span class="status-label">Estado de Saúde:</span><span class="status-data" id="sidebar-estadosaude">---</span></div>
+                <div class="status-item"><span class="status-label">Faixa Etária:</span><span class="status-data" id="sidebar-idade">---</span></div>
             </div>
         </div>
 
         <div class="profile-section action-card-container">
             <h3 class="section-title">Registro de Ações</h3>
-
             <div class="action-layout">
                 <div class="action-buttons-modern">
-                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)">
-                        <i class="fa-solid fa-droplet"></i>
-                        <span>Água</span>
-                    </button>
-
-                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)">
-                        <i class="fa-solid fa-bowl-food"></i>
-                        <span>Comida</span>
-                    </button>
+                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
+                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)"><i class="fa-solid fa-bowl-food"></i><span>Comida</span></button>
                 </div>
-
                 <div class="user-status-card">
                     <div class="user-card-header">
                         <div class="user-card-info">
-                            <span class="user-label">
-                                Último cuidador:
-                                <strong id="sidebar-user-id" class="text-primary">Nenhum</strong>
-                            </span>
+                            <span class="user-label">Último cuidador:<strong id="sidebar-user-id" class="text-primary">Nenhum</strong></span>
                         </div>
                     </div>
-
                     <div class="user-card-body">
-                        <div class="status-row">
-                            <i class="fa-solid fa-droplet icon-agua"></i>
-                            <span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span>
-                        </div>
-
-                        <div class="status-row">
-                            <i class="fa-solid fa-bowl-food icon-comida"></i>
-                            <span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span>
-                        </div>
+                        <div class="status-row"><i class="fa-solid fa-droplet icon-agua"></i><span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span></div>
+                        <div class="status-row"><i class="fa-solid fa-bowl-food icon-comida"></i><span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span></div>
                     </div>
                 </div>
             </div>
@@ -190,23 +178,12 @@
 
         <div class="profile-section comments-section">
             <h3 class="section-title">Comentários:</h3>
-
             <form id="form-comentario-sidebar" asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
                 @Html.AntiForgeryToken()
-
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
-
-                <input type="text"
-                       name="texto"
-                       class="comment-input"
-                       placeholder="Adicionar comentário..."
-                       required>
-
-                <button type="submit" class="btn-send-comment" title="Enviar">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
+                <input type="text" name="texto" class="comment-input" placeholder="Adicionar comentário..." required>
+                <button type="submit" class="btn-send-comment" title="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
-
             <div class="comments-list" id="comentarios-container">
                 <p class="text-muted">Ainda não há nenhum comentário.</p>
             </div>
@@ -221,4 +198,67 @@
     <script src="~/js/map-handler.js" asp-append-version="true"></script>
     <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
+
+    <script>
+        // CONECTANDO A BUSCA COM A BARRA VERDE DO TOPO AUTOMATICAMENTE
+        let inputBuscaGlobal;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            inputBuscaGlobal = document.querySelector('input[placeholder="Busca..."]');
+            
+            if (inputBuscaGlobal) {
+                inputBuscaGlobal.addEventListener('keyup', realizarBuscaGlobal);
+            }
+        });
+
+        function realizarBuscaGlobal() {
+            if (!inputBuscaGlobal) return;
+            const termoBusca = inputBuscaGlobal.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.case-card');
+
+            cards.forEach(card => {
+                const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
+                const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
+
+                if (!termoBusca || codigoCard.includes(termoBusca) || corCard.includes(termoBusca)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // LÓGICA DE FAVORITOS (AJAX) - MUDANDO COR NO CLIQUE
+        async function alternarFavorito(event, idOcorrencia) {
+            event.stopPropagation(); 
+            const icone = document.getElementById(`coracao-${idOcorrencia}`);
+            
+            try {
+                const response = await fetch('/Favoritos/Alternar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idOcorrencia=${idOcorrencia}`
+                });
+
+                if (response.status === 401) {
+                    alert("Você precisa estar logado para favoritar um animal.");
+                    return;
+                }
+
+                if (response.ok) {
+                    const resultado = await response.json();
+                    
+                    if (resultado.favoritado) {
+                        icone.classList.add('favoritado');
+                    } else {
+                        icone.classList.remove('favoritado');
+                    }
+                } else {
+                    console.error("Erro no Controller de Favoritos.");
+                }
+            } catch (error) {
+                console.error("Erro ao favoritar:", error);
+            }
+        }
+    </script>
 }

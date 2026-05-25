@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SosDog.Models;
-using System.Security.Claims; // Necessário para usar Claims
-using Microsoft.AspNetCore.Authorization; // Necessário para [Authorize]
+using System.Security.Claims; 
+using Microsoft.AspNetCore.Authorization; 
 
 namespace SosDog.Controllers
 {
-    [Authorize] // Garante que o usuário esteja logado para qualquer ação neste Controller
+    [Authorize] 
     public class FavoritosController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,17 +18,60 @@ namespace SosDog.Controllers
             _context = context;
         }
 
-        // POST: Favoritar
+        // ========================================================
+        // 1. MÉTODO NOVO PARA O MAPA (AJAX)
+        // ========================================================
+        [HttpPost]
+        public async Task<IActionResult> Alternar(int idOcorrencia)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+            
+            int idUsuario = int.Parse(userId);
+
+            // Procura se esse usuário já curtiu esse cachorro
+            var favorito = _context.Favoritos
+                .FirstOrDefault(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);
+
+            bool isFavoritado;
+
+            if (favorito != null)
+            {
+                // Se achou, significa que já estava favoritado. Então a gente remove.
+                _context.Favoritos.Remove(favorito);
+                isFavoritado = false;
+            }
+            else
+            {
+                // Se não achou, a gente cria o favorito.
+                var novoFavorito = new Favorito
+                {
+                    IdUsuario = idUsuario,
+                    IdOcorrencia = idOcorrencia
+                };
+                _context.Favoritos.Add(novoFavorito);
+                isFavoritado = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Responde para o JavaScript com um JSON simples, sem recarregar a página
+            return Json(new { favoritado = isFavoritado });
+        }
+
+
+        // ========================================================
+        // 2. MÉTODOS ORIGINAIS DA EQUIPE (Mantidos para não quebrar)
+        // ========================================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int idOcorrencia)
         {
-            // RECUPERANDO O ID DO USUÁRIO LOGADO
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
             int idUsuario = int.Parse(userId);
 
-            // Verifica se já existe para evitar duplicados no banco
             var existe = _context.Favoritos
                 .Any(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);
 
@@ -47,12 +90,10 @@ namespace SosDog.Controllers
             return RedirectToAction("Details", "Ocorrencias", new { id = idOcorrencia });
         }
 
-        // POST: Remover favorito
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int idOcorrencia)
         {
-            // RECUPERANDO O ID DO USUÁRIO LOGADO
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
             int idUsuario = int.Parse(userId);
