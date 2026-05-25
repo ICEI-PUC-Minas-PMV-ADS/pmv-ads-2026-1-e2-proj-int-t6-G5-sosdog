@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<SosDog.Models.Ocorrencia>
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Dashboard de Ocorrências";
 }
@@ -125,13 +126,10 @@
 
                         @if (!string.IsNullOrEmpty(item.FotoAnimal))
                         {
-                            // Se a string Base64 já vier do banco com "data:image...", não precisa do prefixo.
-                            // Mas se vier pura (que é o mais comum), o prefixo abaixo é obrigatório:
                             <img src="@item.FotoAnimal" class="dog-api-img" alt="Foto do Animal">
                         }
                         else
                         {
-                            // Uma imagem padrão caso a ocorrência não tenha foto
                             <img src="~/images/sem-foto.jpg" class="dog-api-img" alt="Sem foto cadastrada">
                         }
 
@@ -184,11 +182,89 @@
     <section class="main-map-area">
         <div id="map">
             <button onclick="window.sosDogMap.ativarModoCriacao()"
-                    class="btn-reportar-flutuante shadow-lg @(User.Identity.IsAuthenticated ? "" : "auth-required")">
+                    class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
                 <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
             </button>
         </div>
     </section>
+
+     <section id="section-feed" class="container-fluid py-4 d-none">
+     <div class="feed-wrapper row g-4">
+
+         <div class="col-12 col-md-8 carousel-section">
+
+             <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
+                 <div class="carousel-inner pb-4">
+                     @{
+                         var isFirst = true;
+                     }
+                     @foreach (var item in Model)
+                     {
+                         <div class="carousel-item @(isFirst ? "active" : "")">
+                            <div class="mx-auto shadow-lg animal-card"
+                                 style="max-width: 400px; cursor: pointer;"
+                                 data-id="@item.IdOcorrencia"
+                                 data-tipo="@item.TipoOcorrencia"
+                                 data-foto="@item.FotoAnimal" 
+                                 data-lat="@item.Latitude"
+                                 data-lng="@item.Longitude"
+                                 data-codigo="@item.CodigoCachorro"
+                                 data-sexo="@item.Sexo"
+                                 data-cor="@item.CorPelagem"
+                                 data-porte="@item.Porte"
+                                 data-estadoSaude="@item.EstadoSaude"
+                                 data-idade="@item.FaixaEtaria"
+                                 data-usuario="@item.IdUsuario"
+                                 data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
+                                 data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
+                                 data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
+
+                                <div class="animal-card-img-wrapper">
+                                    <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                                         class="animal-card-img" alt="Foto do animal" />
+                                    
+                                    <div class="distance-badge shadow-sm">
+                                        <i class="fa-solid fa-location-dot"></i> 15 Km
+                                    </div>
+
+                                    <div class="animal-card-overlay text-start">
+                                        <h3 class="mb-1 fw-bold text-white">@item.Sexo - @item.Porte</h3>
+                                        <p class="mb-0 text-light" style="font-size: 0.9rem;">
+                                            <i class="fa-solid fa-map-pin text-danger"></i> @item.Endereco
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 text-start bg-white">
+                                    <h6 class="fw-bold text-secondary mb-2" style="font-size: 0.85rem; letter-spacing: 1px;">SOBRE</h6>
+                                    <p class="text-muted small mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                        @(string.IsNullOrEmpty(item.Descricao) ? "Nenhuma observação informada." : item.Descricao)
+                                    </p>
+                                    <div class="d-flex flex-wrap gap-2 mb-4">
+                                        <span class="animal-tag">@item.CorPelagem</span>
+                                        <span class="animal-tag">@item.FaixaEtaria</span>
+                                        <span class="animal-tag">@item.EstadoSaude</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        isFirst = false;
+                     }
+                 </div>
+
+                 <button class="carousel-control-prev" type="button" data-bs-target="#dogCarousel" data-bs-slide="prev">
+                     <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                     <span class="visually-hidden">Anterior</span>
+                 </button>
+                 <button class="carousel-control-next" type="button" data-bs-target="#dogCarousel" data-bs-slide="next">
+                     <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                     <span class="visually-hidden">Próximo</span>
+                 </button>
+             </div>
+         </div>
+     </div>
+ </section>
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap" id="container-foto-sidebar">
@@ -200,13 +276,32 @@
             </div>
         </div>
 
-        <div class="profile-header">
+        <div class="profile-header d-flex align-items-center justify-content-between">
             <h2 id="sidebar-titulo-id">ID do Cachorro</h2>
-            <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
-               id="btn-editar-ocorrencia"
-               style="cursor: pointer;"
-               title="Editar Ocorrência"></i>
+            
+            <div class="header-actions d-flex align-items-center" 
+                 id="header-acoes-ocorrencia" 
+                 data-usuario-logado="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                
+                <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
+                   id="btn-editar-ocorrencia"
+                   style="cursor: pointer;"
+                   title="Editar Ocorrência"></i>
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <i class="fa-regular fa-trash-can delete-icon ms-3"
+                       id="btn-deletar-ocorrencia"
+                       style="cursor: pointer; color: var(--primary-orange); display: none;"
+                       title="Excluir Ocorrência"></i>
+                }
+            </div>
         </div>
+
+        <form id="form-deletar-ocorrencia" asp-controller="Ocorrencias" asp-action="Delete" method="post" style="display:none;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="deletar-ocorrencia-id" value="" />
+        </form>
 
         <hr class="profile-divider">
 

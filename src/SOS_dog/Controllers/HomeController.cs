@@ -27,13 +27,13 @@ namespace SOS_dog.Controllers
             {
                 // Tenta buscar do banco
                 var listaOcorrencias = _context.Ocorrencias.ToList();
-                return View(listaOcorrencias);
+                return View("Index", listaOcorrencias);
             }
             catch (Exception)
             {
                 // Se o banco der erro (como o erro de login que vimos), 
                 // ele retorna uma lista vazia para a página NÃO dar 404 nem tela preta.
-                return View(new List<Ocorrencia>());
+                return View("Index", new List<Ocorrencia>());
             }
         }
 
