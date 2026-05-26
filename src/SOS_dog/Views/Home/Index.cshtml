@@ -6,9 +6,24 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
+<style>
+    .favoritar-btn {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+    .favoritar-btn:hover {
+        transform: scale(1.2);
+    }
+    .favoritar-btn.favoritado {
+        color: #e63946 !important;
+    }
+</style>
+
 <main class="dashboard-container">
     <aside class="left-sidebar">
-        @* BARRA DE FILTRO: botão + contador *@
+        @* BARRA DE FILTRO: botão + contador (FEITO PELA EQUIPE) *@
         <div class="filtro-barra">
             <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
                 <i class="fa-solid fa-filter"></i>
@@ -19,94 +34,77 @@
             <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
         </div>
 
-        @* DROPDOWN COM OS SELECTS *@
+        @* DROPDOWN COM OS SELECTS (FEITO PELA EQUIPE) *@
         <div class="filtro-dropdown" id="filtro-dropdown">
             <div class="filtro-grid">
-
                 <div class="filtro-campo">
                     <label class="filtro-label">Tipo de Ocorrência</label>
-                    <select class="filtro-select" id="filtro-tipo"
-                            onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
+                    <select class="filtro-select" id="filtro-tipo" onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
                         <option value="">Todos</option>
-                        @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia))
-                            .Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
+                        @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia)).Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
                         {
                             <option value="@tipo.ToLower()">@tipo</option>
                         }
                     </select>
                 </div>
-
                 <div class="filtro-campo">
                     <label class="filtro-label">Estado de Saúde</label>
-                    <select class="filtro-select" id="filtro-estadosaude"
-                            onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
+                    <select class="filtro-select" id="filtro-estadosaude" onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
                         <option value="">Todos</option>
-                        @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.EstadoSaude))
-                            .Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
+                        @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.EstadoSaude)).Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
                         {
                             <option value="@estado.ToLower()">@estado</option>
                         }
                     </select>
                 </div>
-
                 <div class="filtro-campo">
                     <label class="filtro-label">Porte</label>
-                    <select class="filtro-select" id="filtro-porte"
-                            onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
+                    <select class="filtro-select" id="filtro-porte" onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
                         <option value="">Todos</option>
-                        @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.Porte))
-                            .Select(o => o.Porte).Distinct().OrderBy(p => p))
+                        @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.Porte)).Select(o => o.Porte).Distinct().OrderBy(p => p))
                         {
                             <option value="@porte.ToLower()">@porte</option>
                         }
                     </select>
                 </div>
-
                 <div class="filtro-campo">
                     <label class="filtro-label">Sexo</label>
-                    <select class="filtro-select" id="filtro-sexo"
-                            onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
+                    <select class="filtro-select" id="filtro-sexo" onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
                         <option value="">Todos</option>
-                        @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.Sexo))
-                            .Select(o => o.Sexo).Distinct().OrderBy(s => s))
+                        @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.Sexo)).Select(o => o.Sexo).Distinct().OrderBy(s => s))
                         {
                             <option value="@sexo.ToLower()">@sexo</option>
                         }
                     </select>
                 </div>
-
                 <div class="filtro-campo">
                     <label class="filtro-label">Faixa Etária</label>
-                    <select class="filtro-select" id="filtro-faixaetaria"
-                            onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
+                    <select class="filtro-select" id="filtro-faixaetaria" onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
                         <option value="">Todas</option>
-                        @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.FaixaEtaria))
-                            .Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
+                        @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.FaixaEtaria)).Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
                         {
                             <option value="@idade.ToLower()">@idade</option>
                         }
                     </select>
                 </div>
-
                 <div class="filtro-campo filtro-campo-limpar">
-                    <button class="btn-limpar-filtros"
-                            onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
+                    <button class="btn-limpar-filtros" onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
                         <i class="fa-solid fa-xmark"></i> Limpar filtros
                     </button>
                 </div>
-
             </div>
         </div>
+
         <div class="cases-list">
             @if (Model != null && Model.Any())
             {
+                // 2. LÓGICA DO CORAÇÃO VERMELHO RESTAURADA
+                var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
+
                 foreach (var item in Model)
                 {
+                    bool estaFavoritado = listafavoritosIds.Contains(item.IdOcorrencia);
+
                     <div class="case-card"
                          data-tipo="@item.TipoOcorrencia"
                          data-id="@item.IdOcorrencia"
@@ -134,9 +132,15 @@
                         }
 
                         <div class="case-details">
-                            <div class="case-header">
-                                <span>Id: @item.CodigoCachorro</span>
-                                <span class="badge badge-green">@item.EstadoSaude</span>
+                            <div class="case-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span>Id: @item.CodigoCachorro</span>
+                                    <span class="badge badge-green">@item.EstadoSaude</span>
+                                </div>
+                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")" 
+                                   id="coracao-@item.IdOcorrencia"
+                                   onclick="alternarFavorito(event, @item.IdOcorrencia)" 
+                                   title="Favoritar"></i>
                             </div>
 
                             <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
@@ -190,9 +194,7 @@
 
     <section id="section-feed" class="container-fluid py-4 d-none">
         <div class="feed-wrapper row g-4">
-
             <div class="col-12 col-md-8 carousel-section">
-
                 <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
                     <div class="carousel-inner pb-4">
                         @{
@@ -222,11 +224,9 @@
                                     <div class="animal-card-img-wrapper">
                                         <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
                                              class="animal-card-img" alt="Foto do animal" />
-
                                         <div class="distance-badge shadow-sm">
                                             <i class="fa-solid fa-location-dot"></i> 15 Km
                                         </div>
-
                                         <div class="animal-card-overlay text-start">
                                             <h3 class="mb-1 fw-bold text-white">@item.Sexo - @item.Porte</h3>
                                             <p class="mb-0 text-light" style="font-size: 0.9rem;">
@@ -246,7 +246,6 @@
                                             <span class="animal-tag">@item.EstadoSaude</span>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             isFirst = false;
@@ -269,7 +268,6 @@
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap" id="container-foto-sidebar">
             <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-
             <div class="aviso-sem-foto" style="display:none; flex-direction:column; align-items:center; justify-content:center; background:#eee; height:200px;">
                 <i class="fa-solid fa-dog fa-3x text-secondary"></i>
                 <p class="text-secondary mt-2">Imagem não encontrada</p>
@@ -278,22 +276,11 @@
 
         <div class="profile-header d-flex align-items-center justify-content-between">
             <h2 id="sidebar-titulo-id">ID do Cachorro</h2>
-
-            <div class="header-actions d-flex align-items-center"
-                 id="header-acoes-ocorrencia"
-                 data-usuario-logado="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
-
-                <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
-                   id="btn-editar-ocorrencia"
-                   style="cursor: pointer;"
-                   title="Editar Ocorrência"></i>
-
+            <div class="header-actions d-flex align-items-center" id="header-acoes-ocorrencia" data-usuario-logado="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")" id="btn-editar-ocorrencia" style="cursor: pointer;" title="Editar Ocorrência"></i>
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    <i class="fa-regular fa-trash-can delete-icon ms-3"
-                       id="btn-deletar-ocorrencia"
-                       style="cursor: pointer; color: var(--primary-orange); display: none;"
-                       title="Excluir Ocorrência"></i>
+                    <i class="fa-regular fa-trash-can delete-icon ms-3" id="btn-deletar-ocorrencia" style="cursor: pointer; color: var(--primary-orange); display: none;" title="Excluir Ocorrência"></i>
                 }
             </div>
         </div>
@@ -307,71 +294,31 @@
 
         <div class="profile-section">
             <h3 class="section-title">Status do Animal</h3>
-
             <div class="status-box">
-                <div class="status-item">
-                    <span class="status-label">Sexo:</span>
-                    <span class="status-data" id="sidebar-sexo">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Cor:</span>
-                    <span class="status-data" id="sidebar-cor">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Porte:</span>
-                    <span class="status-data" id="sidebar-porte">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Estado de Saúde:</span>
-                    <span class="status-data" id="sidebar-estadosaude">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Faixa Etária:</span>
-                    <span class="status-data" id="sidebar-idade">---</span>
-                </div>
+                <div class="status-item"><span class="status-label">Sexo:</span><span class="status-data" id="sidebar-sexo">---</span></div>
+                <div class="status-item"><span class="status-label">Cor:</span><span class="status-data" id="sidebar-cor">---</span></div>
+                <div class="status-item"><span class="status-label">Porte:</span><span class="status-data" id="sidebar-porte">---</span></div>
+                <div class="status-item"><span class="status-label">Estado de Saúde:</span><span class="status-data" id="sidebar-estadosaude">---</span></div>
+                <div class="status-item"><span class="status-label">Faixa Etária:</span><span class="status-data" id="sidebar-idade">---</span></div>
             </div>
         </div>
 
         <div class="profile-section action-card-container">
             <h3 class="section-title">Registro de Ações</h3>
-
             <div class="action-layout">
                 <div class="action-buttons-modern">
-                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)">
-                        <i class="fa-solid fa-droplet"></i>
-                        <span>Água</span>
-                    </button>
-
-                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)">
-                        <i class="fa-solid fa-bowl-food"></i>
-                        <span>Comida</span>
-                    </button>
+                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
+                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)"><i class="fa-solid fa-bowl-food"></i><span>Comida</span></button>
                 </div>
-
                 <div class="user-status-card">
                     <div class="user-card-header">
                         <div class="user-card-info">
-                            <span class="user-label">
-                                Último cuidador:
-                                <strong id="sidebar-user-id" class="text-primary">Nenhum</strong>
-                            </span>
+                            <span class="user-label">Último cuidador:<strong id="sidebar-user-id" class="text-primary">Nenhum</strong></span>
                         </div>
                     </div>
-
                     <div class="user-card-body">
-                        <div class="status-row">
-                            <i class="fa-solid fa-droplet icon-agua"></i>
-                            <span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span>
-                        </div>
-
-                        <div class="status-row">
-                            <i class="fa-solid fa-bowl-food icon-comida"></i>
-                            <span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span>
-                        </div>
+                        <div class="status-row"><i class="fa-solid fa-droplet icon-agua"></i><span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span></div>
+                        <div class="status-row"><i class="fa-solid fa-bowl-food icon-comida"></i><span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span></div>
                     </div>
                 </div>
             </div>
@@ -381,23 +328,12 @@
 
         <div class="profile-section comments-section">
             <h3 class="section-title">Comentários:</h3>
-
             <form id="form-comentario-sidebar" asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
                 @Html.AntiForgeryToken()
-
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
-
-                <input type="text"
-                       name="texto"
-                       class="comment-input"
-                       placeholder="Adicionar comentário..."
-                       required>
-
-                <button type="submit" class="btn-send-comment" title="Enviar">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
+                <input type="text" name="texto" class="comment-input" placeholder="Adicionar comentário..." required>
+                <button type="submit" class="btn-send-comment" title="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
-
             <div class="comments-list" id="comentarios-container">
                 <p class="text-muted">Ainda não há nenhum comentário.</p>
             </div>
@@ -414,33 +350,94 @@
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
 
     <script>
+        // SCRIPT DA EQUIPE (Filtros Dropdown)
         function toggleFiltroDropdown() {
-        const dropdown = document.getElementById('filtro-dropdown');
-        const chevron  = document.getElementById('filtro-chevron');
-        const btn      = document.getElementById('btn-filtro-toggle');
-        const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
-        chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
-        btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
+            const dropdown = document.getElementById('filtro-dropdown');
+            const chevron  = document.getElementById('filtro-chevron');
+            const btn      = document.getElementById('btn-filtro-toggle');
+            const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
+            chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
+            btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
         }
 
         document.addEventListener('click', function(e) {
-        const barra    = document.getElementById('btn-filtro-toggle');
-        const dropdown = document.getElementById('filtro-dropdown');
-        if (!barra?.contains(e.target) && !dropdown?.contains(e.target)) {
-        dropdown?.classList.remove('filtro-dropdown--aberto');
-        document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
-        barra?.classList.remove('btn-filtro-toggle--ativo');
-        }
+            const barra    = document.getElementById('btn-filtro-toggle');
+            const dropdown = document.getElementById('filtro-dropdown');
+            if (!barra?.contains(e.target) && !dropdown?.contains(e.target)) {
+                dropdown?.classList.remove('filtro-dropdown--aberto');
+                if (document.getElementById('filtro-chevron')) {
+                    document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
+                }
+                barra?.classList.remove('btn-filtro-toggle--ativo');
+            }
         });
 
         function atualizarBadge() {
-        const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
-        const ativos = ids.filter(id => document.getElementById(id)?.value !== '').length;
-        const badge = document.getElementById('filtro-badge');
-        if (badge) {
-        badge.textContent = ativos;
-        badge.style.display = ativos > 0 ? 'inline-flex' : 'none';
+            const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
+            const ativos = ids.filter(id => document.getElementById(id)?.value !== '').length;
+            const badge = document.getElementById('filtro-badge');
+            if (badge) {
+                badge.textContent = ativos;
+                badge.style.display = ativos > 0 ? 'inline-flex' : 'none';
+            }
         }
+
+        // 4. SEU SCRIPT RESTAURADO (Busca Topo e Favoritos)
+        let inputBuscaGlobal;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            inputBuscaGlobal = document.querySelector('input[placeholder="Busca..."]');
+            if (inputBuscaGlobal) {
+                inputBuscaGlobal.addEventListener('keyup', realizarBuscaGlobal);
+            }
+        });
+
+        function realizarBuscaGlobal() {
+            if (!inputBuscaGlobal) return;
+            const termoBusca = inputBuscaGlobal.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.case-card');
+
+            cards.forEach(card => {
+                const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
+                const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
+
+                if (!termoBusca || codigoCard.includes(termoBusca) || corCard.includes(termoBusca)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        async function alternarFavorito(event, idOcorrencia) {
+            event.stopPropagation(); 
+            const icone = document.getElementById(`coracao-${idOcorrencia}`);
+            
+            try {
+                const response = await fetch('/Favoritos/Alternar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idOcorrencia=${idOcorrencia}`
+                });
+
+                if (response.status === 401) {
+                    alert("Você precisa estar logado para favoritar um animal.");
+                    return;
+                }
+
+                if (response.ok) {
+                    const resultado = await response.json();
+                    if (resultado.favoritado) {
+                        icone.classList.add('favoritado');
+                    } else {
+                        icone.classList.remove('favoritado');
+                    }
+                } else {
+                    console.error("Erro no Controller de Favoritos.");
+                }
+            } catch (error) {
+                console.error("Erro ao favoritar:", error);
+            }
         }
     </script>
 }
