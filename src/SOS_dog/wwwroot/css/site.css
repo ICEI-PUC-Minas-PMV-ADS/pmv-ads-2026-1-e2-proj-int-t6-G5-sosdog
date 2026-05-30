@@ -1416,4 +1416,138 @@ footer.footer {
     #dogCarousel:hover .carousel-control-next {
         right: 10px;
     }
+
+    /* ==========================================================================
+   ESTILOS TELA DE EMERGÊNCIA (SOS DOG)
+   ========================================================================== */
+
+    #sosdog-emergencia, .body-emergencia {
+        background-color: #f2f2f2 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: calc(100vh - 120px) !important; /* Desconta o Header/Footer do ASP.NET */
+        overflow-y: auto !important;
+        padding: 40px 20px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+        /* Container Verde Escuro Principal */
+        #sosdog-emergencia .container-emergencia,
+        .body-emergencia .container-emergencia {
+            background-color: #2b443b !important;
+            width: 100% !important;
+            max-width: 650px !important;
+            padding: 40px 35px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+            text-align: center !important;
+            margin: auto !important; /* Força o alinhamento no centro perfeito */
+        }
+
+    /* Ícone de Alerta */
+    .container-emergencia .header-emergencia i {
+        font-size: 3.5rem !important;
+        color: #e57357 !important;
+        margin-bottom: 20px !important;
+        display: inline-block !important;
+    }
+
+    /* Título */
+    .container-emergencia h1 {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+        color: #ffffff !important;
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* Texto de Apoio */
+    .container-emergencia p {
+        font-size: 0.95rem !important;
+        color: #cbd5e1 !important;
+        margin-bottom: 35px !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Lista */
+    .container-emergencia .lista-contatos {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        margin-bottom: 35px !important;
+        padding: 0 !important;
+    }
+
+    /* Cards de Contato Internos */
+    .container-emergencia .card-contato {
+        background-color: #1f322b !important;
+        border-left: 4px solid #e57357 !important;
+        padding: 18px 22px !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        text-align: left !important;
+        transition: transform 0.2s, background-color 0.2s !important;
+        text-decoration: none !important;
+    }
+
+        .container-emergencia .card-contato:hover {
+            transform: translateY(-2px) !important;
+            background-color: #253b33 !important;
+        }
+
+    /* Títulos dos Cards */
+    .card-contato .info-contato h3 {
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        margin-bottom: 4px !important;
+    }
+
+    /* Descrições dos Cards */
+    .card-contato .info-contato p {
+        margin-bottom: 0 !important;
+        font-size: 0.88rem !important;
+        color: #a3b8cc !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Botão Ligar */
+    .container-emergencia .btn-ligar {
+        background-color: #e57357 !important;
+        color: white !important;
+        text-decoration: none !important;
+        padding: 12px 20px !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: background-color 0.2s !important;
+    }
+
+        .container-emergencia .btn-ligar:hover {
+            background-color: #cf5f44 !important;
+        }
+
+    /* Botão Voltar */
+    .container-emergencia .btn-voltar {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        color: #cbd5e1 !important;
+        text-decoration: none !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        transition: color 0.2s !important;
+        margin-top: 15px !important;
+    }
+
+        .container-emergencia .btn-voltar:hover {
+            color: #e57357 !important;
+        }
 }
