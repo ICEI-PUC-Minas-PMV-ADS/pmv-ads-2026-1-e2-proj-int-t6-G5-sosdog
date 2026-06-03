@@ -284,8 +284,8 @@ function focusCard(id) {
 
         // 5. Ações e Histórico de Registros
         document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registro';
-        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || card.getAttribute('data-agua') || '--:--';
-        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || card.getAttribute('data-comida') || '--:--';
+        document.getElementById('sidebar-last-agua').innerText = formatarDataAcao(card.dataset.agua) || '--:--';
+        document.getElementById('sidebar-last-comida').innerText = formatarDataAcao(card.dataset.comida) || '--:--';
 
         // 6. LÓGICA UNIFICADA DE EXCLUSÃO (BOTÃO DELETAR)
         const btnDeletar = document.getElementById('btn-deletar-ocorrencia');

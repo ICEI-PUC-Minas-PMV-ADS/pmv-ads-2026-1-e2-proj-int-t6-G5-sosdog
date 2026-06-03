@@ -2,31 +2,32 @@
 
 <div class="modal fade" id="modalOcorrencia" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div class="modal-content border-0 modal-reportar">
+
             <div class="modal-header border-0 pb-0 justify-content-center position-relative">
-                <h4 class="modal-title fw-bold text-dark w-100 text-center mt-2">Reportar Animal</h4>
-                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h4 class="modal-title fw-bold w-100 text-center mt-2 titulo-modal">Reportar Animal</h4>
+                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            
+
             <form asp-controller="Ocorrencias" asp-action="Create" method="post" enctype="multipart/form-data">
                 <div class="modal-body px-4 pt-4">
-                    
+
                     <div class="mb-3">
-                        <input asp-for="Endereco" id="Endereco" class="form-control bg-light text-secondary" placeholder="Localização / Nome da Rua" required style="border: 1px solid #ddd;" />
+                        <input asp-for="Endereco" id="Endereco" class="form-control form-custom" placeholder="Localização / Nome da Rua" required />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Tipo de Ocorrência:</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Tipo de Ocorrência:</label>
                     <div class="d-flex gap-2 mb-3">
                         <input type="radio" class="btn-check" name="TipoOcorrencia" id="tipoRua" value="Rua" checked>
-                        <label class="btn btn-outline-warning w-50 fw-semibold" for="tipoRua">Animal na Rua</label>
+                        <label class="btn btn-radio-custom w-50 fw-semibold" for="tipoRua">Animal na Rua</label>
 
                         <input type="radio" class="btn-check" name="TipoOcorrencia" id="tipoPerdido" value="Perdido">
-                        <label class="btn btn-outline-primary w-50 fw-semibold" for="tipoPerdido">Meu Pet Sumiu</label>
+                        <label class="btn btn-radio-custom btn-radio-orange w-50 fw-semibold" for="tipoPerdido">Meu Pet Sumiu</label>
                     </div>
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="Porte" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Porte" class="form-select form-custom">
                                 <option value="" disabled selected>Porte</option>
                                 <option value="Pequeno">Pequeno</option>
                                 <option value="Médio">Médio</option>
@@ -34,7 +35,7 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="Sexo" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Sexo" class="form-select form-custom">
                                 <option value="" disabled selected>Sexo</option>
                                 <option value="Macho">Macho</option>
                                 <option value="Fêmea">Fêmea</option>
@@ -45,7 +46,7 @@
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="EstadoSaude" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="EstadoSaude" class="form-select form-custom">
                                 <option value="" disabled selected>Estado</option>
                                 <option value="Aparentemente Saudável">Aparentemente Saudável</option>
                                 <option value="Ferido / Machucado">Ferido / Machucado</option>
@@ -54,7 +55,7 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="FaixaEtaria" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="FaixaEtaria" class="form-select form-custom">
                                 <option value="" disabled selected>Idade</option>
                                 <option value="Filhote">Filhote</option>
                                 <option value="Adulto">Adulto</option>
@@ -64,37 +65,57 @@
                     </div>
 
                     <div class="mb-3">
-                        <input asp-for="CorPelagem" class="form-control text-secondary" placeholder="Cor / Pelagem (Ex: Caramelo)" style="border: 1px solid #ddd;" />
+                        <input asp-for="CorPelagem" class="form-control form-custom" placeholder="Cor / Pelagem (Ex: Caramelo)" />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Cuidados fornecidos:</label>
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="form-check">
-                            <input asp-for="RecebeuAgua" class="form-check-input" type="checkbox" id="checkAgua">
-                            <label class="form-check-label text-secondary" for="checkAgua">Dei Água</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Cuidados fornecidos:</label>
+                    <div class="d-flex gap-3 mb-4">
+
+                        <div>
+                            <input asp-for="RecebeuAgua" type="checkbox" class="btn-check" id="checkAgua" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="checkAgua">
+                                <i class="fa-solid fa-droplet icon-agua"></i> Dei Água
+                            </label>
                         </div>
-                        <div class="form-check">
-                            <input asp-for="RecebeuComida" class="form-check-input" type="checkbox" id="checkComida">
-                            <label class="form-check-label text-secondary" for="checkComida">Dei Comida</label>
+
+                        <div>
+                            <input asp-for="RecebeuComida" type="checkbox" class="btn-check" id="checkComida" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="checkComida">
+                                <i class="fa-solid fa-bowl-food icon-comida"></i> Dei Comida
+                            </label>
                         </div>
+
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Adicionar Foto:</label>
-                    <div class="mb-3">
-                        <input type="file" name="FotoAnimal" class="form-control text-secondary" accept="image/*" style="border: 1px solid #ddd;" required />
+                    <label class="form-label fw-bold small mb-2 label-custom">Adicionar Foto:</label>
+                    <div class="mb-4">
+                        <input type="file" name="FotoAnimal" id="FotoAnimal" class="d-none" accept="image/*" required onchange="mostrarNomeArquivo(this)" />
+
+                        <label for="FotoAnimal" class="upload-box-custom">
+                            <div class="upload-content text-center">
+                                <i class="fa-solid fa-camera upload-icon mb-2"></i>
+                                <p class="mb-0 fw-semibold text-dark" id="upload-texto-principal">Clique para enviar uma foto</p>
+                                <span class="small text-muted" id="upload-texto-secundario">PNG, JPG ou WEBP</span>
+
+                                <div id="file-name-display" class="mt-2 text-success fw-bold d-none align-items-center justify-content-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span id="file-name-text" class="text-truncate" style="max-width: 200px; display: inline-block;"></span>
+                                </div>
+                            </div>
+                        </label>
                     </div>
 
                     <div class="mb-3">
-                        <textarea asp-for="Descricao" class="form-control text-secondary" placeholder="Observações e detalhes sobre o animal..." rows="3" required style="border: 1px solid #ddd;"></textarea>
+                        <textarea asp-for="Descricao" class="form-control form-custom" placeholder="Observações e detalhes sobre o animal..." rows="3" required></textarea>
                     </div>
 
                     <input type="hidden" asp-for="Latitude" id="lat" />
                     <input type="hidden" asp-for="Longitude" id="lng" />
 
                 </div>
-                
+
                 <div class="modal-footer border-0 px-4 pb-4 pt-0">
-                    <button type="submit" class="btn w-100 text-white fw-bold" style="background-color: #2ecc71; border-radius: 5px; padding: 12px 0; font-size: 16px;">
+                    <button type="submit" class="btn btn-submit-custom w-100 fw-bold">
                         Registrar Marcação
                     </button>
                 </div>

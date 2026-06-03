@@ -259,17 +259,19 @@ main[role="main"] {
     flex-direction: column;
     height: 100%;
     min-height: 0;
+    contain: layout style;
 }
 
 /* Lista de casos com scroll interno */
 .cases-list {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: 6px;
+    padding-inline-end: 6px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-height: 0;
+    contain: layout style;
 }
 
 /* Card de caso */
@@ -284,6 +286,10 @@ main[role="main"] {
     box-shadow: var(--shadow-xs);
     transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
     cursor: pointer;
+    isolation: isolate;
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    margin: 4px 2px 2px;
 }
 
     .case-card:hover {
@@ -297,7 +303,7 @@ main[role="main"] {
         border: 2px solid var(--primary-orange) !important;
         background-color: rgba(223, 120, 96, 0.04);
         transform: scale(1.015);
-        box-shadow: 0 4px 18px rgba(223, 120, 96, 0.18);
+        box-shadow: 0 4px 18px rgba(223, 120, 96, 0.18), 0 1px 4px rgba(223, 120, 96, 0.10);
     }
 
     .case-card img {
@@ -309,6 +315,7 @@ main[role="main"] {
         box-shadow: var(--shadow-xs);
         flex-shrink: 0;
         transition: border-color var(--transition-base);
+        will-change: border-color;
     }
 
     .case-card:hover img {
@@ -322,6 +329,7 @@ main[role="main"] {
     flex-direction: column;
     gap: 3px;
     overflow: hidden;
+    min-width: 0;
 }
 
 .case-header {
@@ -333,6 +341,7 @@ main[role="main"] {
     color: var(--primary-green);
     margin-bottom: 3px;
     letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
 }
 
 .case-details p {
@@ -351,6 +360,7 @@ main[role="main"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .badge-green {
@@ -362,6 +372,8 @@ main[role="main"] {
     font-size: 10.5px;
     font-weight: 700;
     letter-spacing: 0.4px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* Botões inferiores da sidebar esquerda */
@@ -389,18 +401,21 @@ main[role="main"] {
     gap: 8px;
     letter-spacing: 0.02em;
     box-shadow: var(--shadow-orange);
-    transition: filter var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
     .btn-orange:hover {
-        filter: brightness(1.06);
+        background-color: var(--primary-orange-light);
         transform: translateY(-1px);
         box-shadow: 0 6px 20px rgba(223, 120, 96, 0.38);
     }
 
     .btn-orange:active {
+        background-color: var(--primary-orange-dark);
         transform: scale(0.98);
-        filter: brightness(0.95);
+        box-shadow: var(--shadow-orange);
     }
 
 /* ==================== ÁREA DO MAPA ==================== */
@@ -412,6 +427,8 @@ main[role="main"] {
     overflow: hidden;
     border: var(--border-main);
     box-shadow: var(--shadow-sm);
+    contain: layout paint;
+    isolation: isolate;
 }
 
 #map {
@@ -444,7 +461,8 @@ main[role="main"] {
     font-weight: 600;
     width: 100%;
     cursor: pointer;
-    transition: background var(--transition-fast);
+    transition: background-color var(--transition-fast);
+    will-change: background-color;
 }
 
     .leaflet-popup-content button:hover {
@@ -471,7 +489,9 @@ main[role="main"] {
     align-items: center;
     gap: 10px;
     box-shadow: var(--shadow-orange);
-    transition: all var(--transition-base);
+    transition: background-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
     .btn-reportar-flutuante:hover {
@@ -481,24 +501,28 @@ main[role="main"] {
     }
 
     .btn-reportar-flutuante:active {
+        background-color: var(--primary-orange-dark);
         transform: translateX(-50%) translateY(0px) scale(0.98);
+        box-shadow: var(--shadow-orange);
     }
 
 /* Animação de bounce para marcadores */
 @keyframes bounce {
     0%, 100% {
         transform: translateY(0);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     }
 
     50% {
         transform: translateY(-10px);
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
     }
 }
 
 .marker-bounce {
-    animation: bounce 0.55s ease infinite;
+    animation: bounce 0.55s infinite;
+    will-change: transform;
 }
-
 /* ==================== SIDEBAR DIREITA — PERFIL DO ANIMAL ==================== */
 .right-sidebar,
 .dog-profile-sidebar {
@@ -511,6 +535,7 @@ main[role="main"] {
     overflow-y: auto;
     height: 100%;
     scrollbar-gutter: stable;
+    contain: layout style;
 }
 
     /* Placeholder quando nenhum animal está selecionado */
@@ -534,13 +559,20 @@ main[role="main"] {
     border: 3px solid var(--white);
     margin-bottom: 13px;
     box-shadow: var(--shadow-sm);
+    display: block;
+    transition: box-shadow var(--transition-base);
 }
+
+    .profile-img-wrap img:hover {
+        box-shadow: var(--shadow-md);
+    }
 
 /* Cabeçalho do perfil */
 .profile-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
     .profile-header h2 {
@@ -549,6 +581,10 @@ main[role="main"] {
         font-weight: 800;
         letter-spacing: -0.01em;
         line-height: 1.2;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
 .edit-icon {
@@ -557,18 +593,21 @@ main[role="main"] {
     cursor: pointer;
     padding: 5px;
     border-radius: var(--border-radius-sm);
-    transition: color var(--transition-fast), background var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+    flex-shrink: 0;
+    line-height: 1;
 }
 
     .edit-icon:hover {
         color: var(--primary-green);
-        background: rgba(58, 94, 86, 0.08);
+        background-color: rgba(58, 94, 86, 0.08);
     }
 
 .profile-divider {
     border: none;
     border-top: 1px solid rgba(90, 120, 115, 0.2);
     margin: 2px 0;
+    flex-shrink: 0;
 }
 
 /* Títulos de seção */
@@ -598,6 +637,7 @@ main[role="main"] {
     align-items: center;
     border-bottom: 1px solid rgba(58, 94, 86, 0.07);
     padding-bottom: 5px;
+    gap: 8px;
 }
 
     .status-item:last-child {
@@ -611,12 +651,15 @@ main[role="main"] {
     color: var(--primary-green);
     text-transform: uppercase;
     letter-spacing: 0.6px;
+    flex-shrink: 0;
 }
 
 .status-data {
     font-size: 12px;
     font-weight: 600;
     color: var(--text-dark);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 .status-col p {
@@ -653,16 +696,21 @@ main[role="main"] {
     font-weight: 700;
     cursor: pointer;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    will-change: transform;
+    backface-visibility: hidden;
+    isolation: isolate;
 }
 
     .btn-modern i {
         font-size: 22px;
         margin-bottom: 4px;
+        pointer-events: none;
     }
 
     .btn-modern span {
         font-size: 11.5px;
         letter-spacing: 0.02em;
+        pointer-events: none;
     }
 
     .btn-modern:hover {
@@ -696,14 +744,14 @@ main[role="main"] {
     background: linear-gradient(145deg, #5aade6, #3498db) !important;
     box-shadow: 0 0 16px rgba(52, 152, 219, 0.65) !important;
     transform: scale(1.07);
-    transition: all 0.28s ease-in-out;
+    transition: background var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
 .btn-animacao-comida {
     background: linear-gradient(145deg, #f0a060, #e67e22) !important;
     box-shadow: 0 0 16px rgba(230, 126, 34, 0.65) !important;
     transform: scale(1.07);
-    transition: all 0.28s ease-in-out;
+    transition: background var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
 /* Card de registro de água/comida */
@@ -731,6 +779,8 @@ main[role="main"] {
 .user-card-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    flex-grow: 1;
 }
 
 .user-label {
@@ -740,11 +790,15 @@ main[role="main"] {
     justify-content: space-between;
     align-items: center;
     line-height: 1.4;
+    gap: 6px;
 }
 
     .user-label strong {
         color: var(--primary-green);
         font-size: 13.5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
 .user-card-body {
@@ -756,13 +810,25 @@ main[role="main"] {
 
 .status-row {
     display: flex;
-    align-items: center;
-    gap: 9px;
+    flex-direction: column; /* empilha label em cima, valor embaixo */
+    align-items: flex-start;
+    gap: 2px;
     background-color: var(--bg-main);
     padding: 8px 10px;
     border-radius: var(--border-radius-sm);
-    transition: background var(--transition-fast);
+    transition: background-color var(--transition-fast);
+    min-width: 0;
+    overflow: hidden;
 }
+    .status-row i {
+        display: none; /* ou reposicione conforme o design — veja abaixo */
+    }
+    .status-row > span,
+    .status-row > strong {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+    }
 
     .status-row:hover {
         background-color: #e5ebe9;
@@ -774,22 +840,52 @@ main[role="main"] {
         font-size: 10.5px;
         color: var(--text-muted);
         line-height: 1.4;
+        min-width: 0;
+        overflow: hidden;
+        flex: 1;
     }
 
-    .status-row strong {
-        font-size: 12.5px;
-        color: var(--text-dark);
-        font-weight: 600;
-    }
+        .status-row span strong {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12.5px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            display: block; /* garante que o ellipsis funcione */
+        }
+
+.status-value {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    min-width: 0;
+    width: 100%;
+}
+
+.status-label-text {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    line-height: 1.4;
+}
 
 .icon-agua {
     color: #3498db;
     font-size: 17px;
+    flex-shrink: 0;
 }
 
 .icon-comida {
     color: #e67e22;
     font-size: 17px;
+    flex-shrink: 0;
 }
 
 .animal-name {
@@ -803,6 +899,8 @@ main[role="main"] {
     height: 42px;
     border-radius: 50%;
     background: #dde4e2;
+    flex-shrink: 0;
+    object-fit: cover;
 }
 
 .avatar-sm {
@@ -810,6 +908,7 @@ main[role="main"] {
     height: 28px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
 /* Mantém datas de água/comida alinhadas e sem quebra de linha */
@@ -817,6 +916,9 @@ main[role="main"] {
 #sidebar-last-comida {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 /* ==================== SEÇÃO DE COMENTÁRIOS ==================== */
@@ -843,7 +945,8 @@ main[role="main"] {
     background-color: rgba(255, 255, 255, 0.65);
     color: var(--text-dark);
     line-height: 1.4;
-    transition: all var(--transition-base);
+    transition: background-color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+    min-width: 0;
 }
 
     .comment-input::placeholder {
@@ -871,11 +974,14 @@ main[role="main"] {
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(157, 191, 160, 0.35);
     transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
     .btn-send-comment i {
         font-size: 13px;
         margin-left: -1px;
+        pointer-events: none;
     }
 
     .btn-send-comment:hover {
@@ -886,17 +992,19 @@ main[role="main"] {
 
     .btn-send-comment:active {
         transform: scale(0.94);
+        box-shadow: 0 1px 4px rgba(58, 94, 86, 0.2);
     }
 
 /* Lista de comentários com scroll interno */
 .comments-list {
     max-height: 240px;
     overflow-y: auto;
-    padding-right: 4px;
+    padding-inline-end: 4px;
     margin-top: 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    contain: layout style;
 }
 
 /* Item individual de comentário */
@@ -907,7 +1015,7 @@ main[role="main"] {
     background: rgba(255, 255, 255, 0.38);
     padding: 9px 10px;
     border-radius: var(--border-radius-md);
-    transition: background var(--transition-fast);
+    transition: background-color var(--transition-fast);
 }
 
     .comment-item:hover {
@@ -918,6 +1026,7 @@ main[role="main"] {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    min-width: 0;
 }
 
     .comment-content p {
@@ -925,6 +1034,8 @@ main[role="main"] {
         margin: 0;
         color: var(--text-dark);
         line-height: 1.5;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .comment-content strong {
@@ -946,7 +1057,249 @@ main[role="main"] {
     font-size: 17px;
 }
 
+
+/* =========================================
+   MODAL DE REPORTAR OCORRÊNCIA
+   ========================================= */
+
+/* Estrutura do Modal */
+.modal-reportar {
+    border-radius: var(--border-radius-lg, 18px); /* Fallback caso a variável não exista neste escopo */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: var(--white, #fff);
+}
+
+    .modal-reportar .titulo-modal {
+        color: var(--text-dark, #2a2f2e);
+    }
+
+    .modal-reportar .label-custom {
+        color: var(--text-dark, #2a2f2e);
+    }
+
+    /* Inputs, Selects e Textareas */
+    .modal-reportar .form-custom {
+        background-color: var(--surface, #f7f9f8);
+        border: var(--border-subtle, 1px solid rgba(58, 94, 86, 0.12));
+        border-radius: var(--border-radius-sm, 6px);
+        color: var(--text-medium, #4a5552);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .modal-reportar .form-custom:focus {
+            background-color: var(--white, #fff);
+            border-color: var(--primary-green, #3a5e56);
+            box-shadow: 0 0 0 3px rgba(58, 94, 86, 0.15); /* Efeito de foco acessível */
+            outline: none;
+        }
+
+        .modal-reportar .form-custom::placeholder {
+            color: var(--text-muted, #7a8c88);
+        }
+
+    /* Checkboxes customizados */
+    .modal-reportar .check-custom .form-check-input {
+        border-color: var(--text-muted, #7a8c88);
+        cursor: pointer;
+    }
+
+        .modal-reportar .check-custom .form-check-input:checked {
+            background-color: var(--primary-green, #3a5e56);
+            border-color: var(--primary-green, #3a5e56);
+        }
+
+    .modal-reportar .check-custom .form-check-label {
+        color: var(--text-medium, #4a5552);
+        cursor: pointer;
+    }
+
+    /* Botões Radio Customizados (Animal na Rua / Meu Pet Sumiu) */
+    .modal-reportar .btn-radio-custom {
+        border: 1px solid var(--border-subtle, rgba(58, 94, 86, 0.12));
+        color: var(--text-medium, #4a5552);
+        background-color: var(--surface, #f7f9f8);
+        transition: all 0.2s ease-in-out;
+        border-radius: var(--border-radius-sm, 6px);
+    }
+
+        .modal-reportar .btn-radio-custom:hover {
+            background-color: #eef1f0; /* bg-main */
+        }
+
+/* Estado Ativo: Animal na Rua (Verde) */
+.btn-check:checked + .btn-radio-custom:not(.btn-radio-orange) {
+    background-color: var(--primary-green, #3a5e56);
+    color: var(--white, #ffffff);
+    border-color: var(--primary-green, #3a5e56);
+}
+
+/* Estado Ativo: Meu Pet Sumiu (Laranja) - Para dar urgência */
+.btn-check:checked + .btn-radio-orange {
+    background-color: var(--primary-orange, #df7860);
+    color: var(--white, #ffffff);
+    border-color: var(--primary-orange, #df7860);
+}
+
+/* Botão de Submit (Registrar Marcação) */
+.modal-reportar .btn-submit-custom {
+    background-color: var(--primary-green, #3a5e56);
+    color: var(--white, #ffffff);
+    border-radius: var(--border-radius-md, 12px);
+    padding: 14px 0;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+    .modal-reportar .btn-submit-custom:hover {
+        background-color: var(--primary-green-dark, #2e4c45);
+        color: var(--white, #ffffff);
+    }
+
+    .modal-reportar .btn-submit-custom:active {
+        transform: scale(0.98); /* Microinteração de clique */
+    }
+
+/* =========================================
+   CHIPS DE CUIDADOS (Água / Comida)
+   ========================================= */
+
+.modal-reportar .btn-chip-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--surface, #f7f9f8);
+    border: 1px solid var(--border-subtle, rgba(58, 94, 86, 0.12));
+    color: var(--text-medium, #4a5552);
+    border-radius: 50px; /* Formato de pílula arredondada */
+    padding: 8px 18px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+    /* Efeito de Hover suave */
+    .modal-reportar .btn-chip-custom:hover {
+        background-color: #eef1f0; /* var(--bg-main) */
+        transform: translateY(-1px);
+    }
+
+    /* Cores Iniciais dos Ícones */
+    .modal-reportar .btn-chip-custom i {
+        font-size: 1.1rem;
+        transition: color 0.2s ease;
+    }
+
+.modal-reportar .icon-agua {
+    color: #5bc0de;
+}
+/* Azul claro/água */
+.modal-reportar .icon-comida {
+    color: #f0ad4e;
+}
+/* Laranja/amarelo */
+
+/* * Estado Selecionado (Checked)
+ * Quando o checkbox invisível estiver marcado, o label ao lado dele muda de estilo
+ */
+.btn-check:checked + .btn-chip-custom {
+    background-color: var(--primary-green, #3a5e56);
+    color: var(--white, #ffffff);
+    border-color: var(--primary-green, #3a5e56);
+    box-shadow: 0 4px 12px rgba(58, 94, 86, 0.25);
+}
+
+    /* Deixa os ícones brancos quando selecionado para dar contraste */
+    .btn-check:checked + .btn-chip-custom i {
+        color: var(--white, #ffffff);
+    }
+
+/* =========================================
+   UPLOAD DE FOTO CUSTOMIZADO
+   ========================================= */
+
+.modal-reportar .upload-box-custom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 24px 16px;
+    background-color: var(--surface, #f7f9f8);
+    border: 2px dashed var(--text-muted, #7a8c88);
+    border-radius: var(--border-radius-md, 12px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    /* Efeito ao passar o mouse */
+    .modal-reportar .upload-box-custom:hover {
+        background-color: #eef1f0; /* var(--bg-main) */
+        border-color: var(--primary-green, #3a5e56);
+    }
+
+        .modal-reportar .upload-box-custom:hover .upload-icon {
+            color: var(--primary-green, #3a5e56);
+            transform: scale(1.1);
+        }
+
+/* Ícone da Câmera */
+.modal-reportar .upload-icon {
+    font-size: 2.2rem;
+    color: var(--text-muted, #7a8c88);
+    transition: all 0.3s ease;
+}
+
+/* Estado de Sucesso (Quando há arquivo) */
+.modal-reportar .upload-box-custom.has-file {
+    border-color: var(--primary-green, #3a5e56);
+    background-color: rgba(58, 94, 86, 0.05); /* Fundo verde super clarinho */
+
+
+}
+
+/* =========================================
+   COMPLEMENTOS - MODAL DE EDIÇÃO
+   ========================================= */
+
+/* Botão Salvar (Laranja) */
+.modal-reportar .btn-submit-orange {
+    background-color: var(--primary-orange, #df7860);
+    color: var(--white, #ffffff);
+    border-radius: var(--border-radius-md, 12px);
+    padding: 14px 0;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+    .modal-reportar .btn-submit-orange:hover {
+        background-color: var(--primary-orange-dark, #c96a52);
+        color: var(--white, #ffffff);
+    }
+
+    .modal-reportar .btn-submit-orange:active {
+        transform: scale(0.98);
+    }
+
+/* Card demonstrativo da foto atual */
+.modal-reportar .foto-atual-card {
+    background-color: var(--surface, #f7f9f8);
+    border-radius: var(--border-radius-sm, 6px);
+    border: 1px solid var(--border-subtle, rgba(58, 94, 86, 0.12));
+}
+
+.modal-reportar .foto-atual-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(0,0,0,0.1);
+}
 /* ==================== MODAIS ==================== */
+
+
 .nav-btn-transparent {
     background-color: transparent;
     border: none;

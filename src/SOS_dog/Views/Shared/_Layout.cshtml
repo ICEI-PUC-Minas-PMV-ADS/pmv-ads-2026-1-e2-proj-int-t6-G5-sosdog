@@ -91,8 +91,9 @@
     <main>
         @if (TempData["Sucesso"] != null)
         {
-            <div class="alert alert-success text-center m-3">
+            <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
                 @TempData["Sucesso"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
 
@@ -112,15 +113,17 @@
 
         @if (TempData["ErroReset"] != null)
         {
-            <div class="alert alert-danger text-center m-3">
+            <div class="alert alert-danger alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
                 @TempData["ErroReset"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
 
         @if (TempData["SucessoReset"] != null)
         {
-            <div class="alert alert-success text-center m-3">
+            <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
                 @TempData["SucessoReset"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
 
@@ -150,6 +153,7 @@
 
     <script src="~/js/usuario.js" asp-append-version="true"></script>
     <script src="~/js/feedCasos.js" asp-append-version="true"></script>
+    <script src="~/js/alertsScript.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

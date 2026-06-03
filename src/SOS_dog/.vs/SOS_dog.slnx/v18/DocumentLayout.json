@@ -1,26 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\",
+  "WorkspaceRootPath": "C:\\Users\\vitor\\OneDrive\\\u00C1rea de Trabalho\\dog-sos\\src\\SOS_dog\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\wwwroot\\js\\emergencia.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:wwwroot\\js\\emergencia.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\home\\emergencia.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\home\\emergencia.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-g5-sosdog\\src\\sos_dog\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|c:\\users\\vitor\\onedrive\\\u00E1rea de trabalho\\dog-sos\\src\\sos_dog\\controllers\\ocorrenciascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D4494CE-D3E0-9107-4040-F18781A73A9B}|SOS_dog.csproj|solutionrelative:controllers\\ocorrenciascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -45,71 +29,16 @@
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "emergencia.js",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\wwwroot\\js\\emergencia.js",
-              "RelativeDocumentMoniker": "wwwroot\\js\\emergencia.js",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\wwwroot\\js\\emergencia.js",
-              "RelativeToolTip": "wwwroot\\js\\emergencia.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-05-30T19:03:35.618Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Emergencia.cshtml",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Home\\Emergencia.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Emergencia.cshtml",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Home\\Emergencia.cshtml",
-              "RelativeToolTip": "Views\\Home\\Emergencia.cshtml",
-              "ViewState": "AgIAAJcAAAAAAAAAAAAowLQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-30T18:54:38.15Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "site.css",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\wwwroot\\css\\site.css",
-              "RelativeDocumentMoniker": "wwwroot\\css\\site.css",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\wwwroot\\css\\site.css",
-              "RelativeToolTip": "wwwroot\\css\\site.css",
-              "ViewState": "AgIAAAcGAAAAAAAAAAAowBAGAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-05-30T18:52:33.665Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAALoBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-26T00:03:23.175Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog\\src\\SOS_dog\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAgwDgAAAABAAAAAAAAAA==",
+              "Title": "OcorrenciasController.cs",
+              "DocumentMoniker": "C:\\Users\\vitor\\OneDrive\\\u00C1rea de Trabalho\\dog-sos\\src\\SOS_dog\\Controllers\\OcorrenciasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\OcorrenciasController.cs",
+              "ToolTip": "C:\\Users\\vitor\\OneDrive\\\u00C1rea de Trabalho\\dog-sos\\src\\SOS_dog\\Controllers\\OcorrenciasController.cs",
+              "RelativeToolTip": "Controllers\\OcorrenciasController.cs",
+              "ViewState": "AgIAAGABAAAAAAAAAAAmwHYBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-25T23:46:51.936Z",
+              "WhenOpened": "2026-06-02T23:30:09.401Z",
               "EditorCaption": ""
             }
           ]

@@ -143,7 +143,10 @@
                                    title="Favoritar"></i>
                             </div>
 
-                            <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
+                            <p>
+                                <strong>Tipo:</strong>
+                                @(item.TipoOcorrencia == "Rua" ? "Animal na Rua" : "Meu Pet Sumiu")
+                            </p>
 
                             <p class="text-truncate" title="@item.Descricao">
                                 <strong>Status:</strong> @item.EstadoSaude - @item.Porte - @item.Sexo
@@ -317,8 +320,16 @@
                         </div>
                     </div>
                     <div class="user-card-body">
-                        <div class="status-row"><i class="fa-solid fa-droplet icon-agua"></i><span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span></div>
-                        <div class="status-row"><i class="fa-solid fa-bowl-food icon-comida"></i><span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span></div>
+                        <div class="status-row">
+                            <i class="fa-solid fa-droplet icon-agua"></i>
+                            <span class="status-label-text">Última Água:</span>
+                            <strong id="sidebar-last-agua" class="status-value">--:--</strong>
+                        </div>
+                        <div class="status-row">
+                            <i class="fa-solid fa-bowl-food icon-comida"></i>
+                            <span class="status-label-text">Última Comida:</span>
+                            <strong id="sidebar-last-comida" class="status-value">--:--</strong>
+                        </div>
                     </div>
                 </div>
             </div>
