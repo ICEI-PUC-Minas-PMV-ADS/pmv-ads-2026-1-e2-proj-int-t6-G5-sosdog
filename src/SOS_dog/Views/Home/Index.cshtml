@@ -268,6 +268,59 @@
         </div>
     </section>
 
+    <section id="section-tutores" class="container-fluid py-4 d-none">
+
+        <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
+            <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
+                <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
+            </h2>
+
+            <button class="btn-registrar-perdido shadow-sm @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
+                    onclick="abrirModalPetPerdido()">
+                <i class="fa-solid fa-plus"></i> Registrar Pet
+            </button>
+        </div>
+
+        <div class="tutores-grid px-md-4 px-2 pb-5">
+            @* Filtramos na própria View os pets marcados como 'Perdido' (ou o status que você definir no BD) *@
+            @foreach (var item in Model.Where(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="animal-card mx-auto shadow-lg" data-id="@item.IdOcorrencia">
+                    <div class="animal-card-img-wrapper">
+                        <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                             class="animal-card-img" alt="Foto do pet perdido" />
+
+                        <div class="badge-desaparecido shadow-sm">
+                            <i class="fa-solid fa-circle-exclamation fa-fade"></i> PROCURA-SE
+                        </div>
+
+                        <div class="animal-card-overlay text-start">
+                            <h3 class="mb-1 fw-bold text-white">@(string.IsNullOrEmpty(item.CodigoCachorro) ? "Sem Nome" : item.CodigoCachorro)</h3>
+
+                            <p class="mb-2 text-light" style="font-size: 0.9rem;">
+                                <i class="fa-solid fa-phone text-warning"></i> Contato: @(item.Usuario?.Telefone ?? "Não informado")
+                            </p>
+
+                            <button class="btn-gerar-cartaz w-100" onclick="gerarCartazPdf(@item.IdOcorrencia)">
+                                <i class="fa-solid fa-print"></i> Gerar Cartaz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Fallback caso não tenha nenhum cachorro perdido no momento *@
+            @if (!Model.Any(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">
+                    <i class="fa-solid fa-check-circle fa-3x mb-3" style="color: var(--light-green);"></i>
+                    <h5>Nenhum pet perdido registrado no momento.</h5>
+                </div>
+            }
+        </div>
+    </section>
+
+
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap" id="container-foto-sidebar">
             <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

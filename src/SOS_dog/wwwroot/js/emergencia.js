@@ -1,5 +1,4 @@
-﻿
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     // 1. Captura os elementos estruturais e o container da nossa página
     const bodyElement = document.body;
     const mainElement = document.querySelector("main");
@@ -25,12 +24,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("SOS Dog: Rolagem e dimensões liberadas para a página de Emergência.");
 
-        // 3. Opcional: Log de clique nos botões de ligação para monitoramento no Console
+        // 3. Lógica para copiar o número ao invés de ligar
         const botoesLigar = document.querySelectorAll(".btn-ligar");
         botoesLigar.forEach(botao => {
-            botao.addEventListener("click", function () {
-                const numero = this.textContent.trim();
-                console.log(`Chamada iniciada para o número de emergência: ${numero}`);
+            botao.addEventListener("click", function (event) {
+                // Impede que a página pule para o topo por causa do href="#"
+                event.preventDefault();
+
+                // Pega o número do atributo data-numero
+                const numero = this.getAttribute("data-numero");
+
+                // Copia para a área de transferência do usuário
+                navigator.clipboard.writeText(numero).then(() => {
+                    console.log(`Número copiado: ${numero}`);
+
+                    // Feedback visual: Guarda o HTML original e mostra mensagem de sucesso
+                    const conteudoOriginal = this.innerHTML;
+                    this.innerHTML = `<i class="fa-solid fa-check"></i> Copiado!`;
+
+                    // Retorna ao botão original após 2 segundos
+                    setTimeout(() => {
+                        this.innerHTML = conteudoOriginal;
+                    }, 2000);
+
+                }).catch(err => {
+                    console.error("Falha ao copiar o número: ", err);
+                    alert("Não foi possível copiar o número. Tente manualmente.");
+                });
             });
         });
     }

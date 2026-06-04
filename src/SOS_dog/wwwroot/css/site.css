@@ -506,6 +506,97 @@ main[role="main"] {
         box-shadow: var(--shadow-orange);
     }
 
+/* ==========================================
+   SEÇÃO TUTORES (PETS PERDIDOS)
+   ========================================== */
+#section-tutores {
+    grid-column: 2; /* Mantém o alinhamento caso use CSS grid global */
+    height: 100%;
+    width: 100%;
+    overflow-y: auto; /* Permite rolar a lista de pets */
+}
+
+/* Grid Inteligente e Responsivo */
+.tutores-grid {
+    display: grid;
+    /* Cria colunas automáticas de no mínimo 280px (largura do seu card) */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: start;
+}
+
+/* Badge Vermelho Pulsante para Procura-se */
+.badge-desaparecido {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    background-color: rgba(220, 53, 69, 0.90); /* Vermelho Bootstrap */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.05em;
+    z-index: 4;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.45);
+}
+
+/* Botão Topo: Registrar Pet */
+.btn-registrar-perdido {
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-base);
+}
+
+    .btn-registrar-perdido:hover {
+        background-color: var(--primary-green-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: var(--white);
+    }
+
+/* Botão Base do Card: Gerar Cartaz (Glassmorphism) */
+.btn-gerar-cartaz {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-gerar-cartaz:hover {
+        background-color: var(--primary-orange);
+        border-color: var(--primary-orange);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(223, 120, 96, 0.4);
+    }
 /* Animação de bounce para marcadores */
 @keyframes bounce {
     0%, 100% {
@@ -1564,19 +1655,17 @@ footer.footer {
    ========================================== */
 /* ==================== SEÇÃO DO FEED / CAROUSEL ==================== */
 
-/* Ajuste do container para se encaixar perfeitamente na coluna central do dashboard grid */
 #section-feed:not(.d-none) {
     grid-column: 2;
     height: 100%;
     width: 100%;
-    overflow-y: auto;
-    padding: 0 !important; /* Sobrescreve o py-4 do Bootstrap para alinhar perfeitamente à altura do mapa */
+    overflow: hidden;
+    padding: 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Wrapper do Grid do Bootstrap adaptado ao comportamento interno */
 .feed-wrapper {
     width: 100%;
     margin: 0 !important;
@@ -1588,145 +1677,240 @@ footer.footer {
 
 .carousel-section {
     display: flex;
-    justify-content: center;|
+    justify-content: center;
     align-items: center;
     width: 100%;
 }
 
-/* Customização do container principal do Carrossel */
 #dogCarousel {
     width: 100%;
-    background-color: var(--white) !important;
-    border-radius: var(--border-radius-lg) !important; /* Alinhado ao padrão de 18px do projeto */
-    border: var(--border-subtle);
-    box-shadow: var(--shadow-lg) !important;
-    padding: 24px !important;
+    background-color: var(--bg-sidebar-right) !important;
+    border-radius: var(--border-radius-lg) !important;
+    border: var(--border-main);
+    box-shadow: var(--shadow-md) !important;
+    padding: 24px 48px !important;
     position: relative;
-    overflow: visible; /* Permite que os botões flutuem para fora do card se desejado */
+    overflow: hidden;
 }
 
-/* Card individual do Animal dentro do Feed */
+    /* ---- Track com peek lateral ---- */
+    #dogCarousel .carousel-inner {
+        overflow: visible !important;
+        display: flex;
+        align-items: center;
+        padding: 16px 0 !important;
+    }
+
+    #dogCarousel .carousel-item {
+        display: block !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.82) translateY(12px);
+        opacity: 0.52;
+        filter: brightness(0.78);
+        transition: transform 0.38s cubic-bezier(.4,0,.2,1), opacity 0.38s ease, filter 0.38s ease, box-shadow 0.38s ease;
+        width: 280px;
+        pointer-events: none;
+        will-change: transform, opacity, filter;
+        z-index: 1;
+    }
+
+        #dogCarousel .carousel-item.active {
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            filter: none;
+            pointer-events: auto;
+            z-index: 3;
+            margin-inline: auto;
+        }
+
+        /* Vizinhos visíveis (prev e next) */
+        #dogCarousel .carousel-item.carousel-item-next,
+        #dogCarousel .carousel-item.carousel-item-prev {
+            opacity: 0.52;
+            filter: brightness(0.78);
+            transform: translate(-50%, -50%) scale(0.82) translateY(12px);
+            z-index: 2;
+        }
+
+/* Card full-bleed */
 .animal-card {
-    background-color: var(--white);
-    border-radius: var(--border-radius-lg);
+    width: 280px;
+    border-radius: 22px !important;
     overflow: hidden;
-    border: var(--border-subtle);
+    border: none !important;
+    box-shadow: 0 12px 40px rgba(46, 76, 69, 0.28);
     transition: transform var(--transition-base), box-shadow var(--transition-base);
+    cursor: pointer;
+    position: relative;
+    isolation: isolate;
+    will-change: transform;
 }
 
     .animal-card:hover {
         transform: translateY(-4px);
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 18px 48px rgba(46, 76, 69, 0.34);
     }
 
-/* Wrapper da foto do animal para criar o efeito de aspecto e corte moderno */
+/* Foto ocupa tudo — sem área branca abaixo */
 .animal-card-img-wrapper {
     position: relative;
     width: 100%;
-    height: 280px; /* Altura ideal proporcional para fotos horizontais/verticais */
+    height: 340px;
     overflow: hidden;
     background-color: var(--bg-main);
+    border-radius: 22px;
 }
 
 .animal-card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
     transition: transform var(--transition-slow);
+    will-change: transform;
 }
 
 .animal-card:hover .animal-card-img {
-    transform: scale(1.04); /* Sutil zoom ao passar o mouse */
+    transform: scale(1.04);
 }
 
-/* Badge flutuante de distância (Ex: 15 Km) */
+/* Badge flutuante de distância */
 .distance-badge {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    background-color: rgba(46, 76, 69, 0.85); /* Baseado no seu var(--primary-green-dark) com opacidade */
-    backdrop-filter: blur(4px);
+    top: 13px;
+    right: 13px;
+    background-color: rgba(46, 76, 69, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: var(--white);
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 11.5px;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 10.5px;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 6px;
-    letter-spacing: 0.02em;
-    z-index: 2;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: var(--shadow-sm);
+    gap: 5px;
+    letter-spacing: 0.04em;
+    z-index: 4;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: var(--shadow-xs);
 }
 
     .distance-badge i {
-        color: var(--primary-orange); /* Destaque para o ícone de localização */
+        color: var(--primary-orange);
     }
 
-/* Gradiente escuro na base da foto para garantir excelente legibilidade do Texto Branco */
+/* Overlay glassmorphism na base da foto */
 .animal-card-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 45px 20px 20px;
-    background: linear-gradient(to top, rgba(46, 76, 69, 0.95) 0%, rgba(46, 76, 69, 0.4) 65%, transparent 100%);
-    z-index: 1;
+    padding: 48px 18px 18px;
+    background: linear-gradient(to top, rgba(36, 60, 54, 0.90) 0%, rgba(36, 60, 54, 0.50) 55%, transparent 100%);
+    z-index: 3;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
 }
 
-    .animal-card-overlay h3 {
-        font-size: 1.3rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+/* Painel glass com info e tags dentro do overlay */
+.animal-card-glass {
+    background: rgba(36, 60, 54, 0.48);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px;
+    margin-top: 8px;
+}
+
+.animal-card-id {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.52);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.animal-card-overlay h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.25;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 3px;
+}
+
+.animal-card-addr {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+    .animal-card-addr i {
+        flex-shrink: 0;
+        font-size: 10px;
+        color: var(--primary-orange);
     }
 
-    .animal-card-overlay p {
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-        font-weight: 500;
-    }
-
-/* Tags de Características (Cor, Faixa Etária, Estado de Saúde) */
+/* Tags de Características */
 .animal-tag {
-    background-color: rgba(157, 191, 160, 0.15); /* Baseado na opacidade do var(--light-green) */
-    border: 1px solid rgba(157, 191, 160, 0.35);
-    color: var(--primary-green-dark);
-    padding: 5px 12px;
+    background-color: rgba(157, 191, 160, 0.22);
+    border: 1px solid rgba(157, 191, 160, 0.38);
+    color: #cde8d0;
+    padding: 3px 10px;
     border-radius: 30px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition: background var(--transition-fast), color var(--transition-fast);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    transition: background-color var(--transition-fast);
 }
 
     .animal-tag:hover {
-        background-color: var(--light-green);
-        color: var(--primary-green-dark);
+        background-color: rgba(157, 191, 160, 0.40);
     }
 
-/* Customização dos Botões Laterais (Setas do Bootstrap) */
-#dogCarousel .carousel-control-prev,
-#dogCarousel .carousel-control-next {
-    width: 44px;
-    height: 44px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0; /* Invisíveis por padrão para um visual clean */
-    transition: opacity var(--transition-base), left var(--transition-base), right var(--transition-base);
-    z-index: 5;
+/* Remove a área branca inferior que existia antes */
+.animal-card .p-4,
+.animal-card .bg-white {
+    display: none !important;
 }
 
-/* Revela as setas suavemente flutuando para as laterais ao passar o mouse sobre o carrossel */
+/* Botões de seta */
+#dogCarousel .carousel-control-prev,
+#dogCarousel .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity var(--transition-base), left var(--transition-base), right var(--transition-base);
+    z-index: 10;
+}
+
 #dogCarousel:hover .carousel-control-prev {
     opacity: 1;
-    left: -22px;
+    left: 6px;
 }
 
 #dogCarousel:hover .carousel-control-next {
     opacity: 1;
-    right: -22px;
+    right: 6px;
 }
 
-/* Estilização dos círculos internos das setas seguindo sua identidade visual */
 #dogCarousel .carousel-control-prev-icon,
 #dogCarousel .carousel-control-next-icon {
     background-color: var(--primary-green) !important;
@@ -1737,23 +1921,32 @@ footer.footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-fat), transform var(--transition-fast);
-    background-size: 40%; /* Ajusta a proporção interna do chevron nativo */
+    box-shadow: var(--shadow-sm);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    background-size: 40%;
 }
 
-    /* Hover das setas mudando para a cor secundária de alerta (Laranja) */
     #dogCarousel .carousel-control-prev-icon:hover,
     #dogCarousel .carousel-control-next-icon:hover {
         background-color: var(--primary-orange) !important;
         transform: scale(1.08);
     }
 
-/* Reset de padding desnecessário do Bootstrap */
-#dogCarousel .carousel-inner {
-    padding-bottom: 0 !important;
-}
+@media (max-width: 992px) {
+    #section-feed:not(.d-none) {
+        grid-column: span 3;
+        height: auto;
+        padding: 20px !important;
+    }
 
+    #dogCarousel:hover .carousel-control-prev {
+        left: 10px;
+    }
+
+    #dogCarousel:hover .carousel-control-next {
+        right: 10px;
+    }
+}
 /* Media query preventiva caso o grid do dashboard colapse em telas menores */
 @media (max-width: 992px) {
     #section-feed:not(.d-none) {
