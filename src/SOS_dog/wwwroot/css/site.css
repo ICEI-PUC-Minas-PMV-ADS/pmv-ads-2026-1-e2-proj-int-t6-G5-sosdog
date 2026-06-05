@@ -911,9 +911,11 @@ main[role="main"] {
     min-width: 0;
     overflow: hidden;
 }
+
     .status-row i {
         display: none; /* ou reposicione conforme o design — veja abaixo */
     }
+
     .status-row > span,
     .status-row > strong {
         display: block;
@@ -1346,8 +1348,6 @@ main[role="main"] {
 .modal-reportar .upload-box-custom.has-file {
     border-color: var(--primary-green, #3a5e56);
     background-color: rgba(58, 94, 86, 0.05); /* Fundo verde super clarinho */
-
-
 }
 
 /* =========================================
@@ -1478,177 +1478,6 @@ footer.footer {
             color: var(--light-green);
             text-decoration: underline;
         }
-
-/* ==========================================
-   FILTRO DROPDOWN DO MAPA
-   ========================================== */
-
-.filtro-barra {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 10px;
-    background: var(--white);
-    border-bottom: 1px solid rgba(0,0,0,0.07);
-    flex-shrink: 0;
-    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-    margin-bottom: 0;
-}
-
-.btn-filtro-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    border: 1.5px solid var(--primary-orange);
-    border-radius: 20px;
-    background: var(--white);
-    color: var(--primary-orange);
-    cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast);
-    white-space: nowrap;
-}
-
-    .btn-filtro-toggle:hover,
-    .btn-filtro-toggle--ativo {
-        background: var(--primary-orange);
-        color: var(--white);
-    }
-
-.filtro-chevron {
-    font-size: 0.65rem;
-    transition: transform 0.25s ease;
-}
-
-.filtro-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 3px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    border-radius: 50%;
-    background: var(--white);
-    color: var(--primary-orange);
-    border: 1.5px solid currentColor;
-    line-height: 1;
-}
-
-.btn-filtro-toggle--ativo .filtro-badge {
-    background: rgba(255,255,255,0.25);
-    color: var(--white);
-    border-color: rgba(255,255,255,0.6);
-}
-
-.filtro-contador {
-    font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    background: var(--bg-main);
-    padding: 3px 9px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-/* Dropdown — fechado por padrão */
-.filtro-dropdown {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.25s ease;
-    opacity: 0;
-    background: var(--surface);
-    border-bottom: 1px solid transparent;
-    flex-shrink: 0;
-}
-
-.filtro-dropdown--aberto {
-    max-height: 400px;
-    opacity: 1;
-    border-bottom-color: rgba(0,0,0,0.07);
-}
-
-/* Grid interno — 3 colunas para caber tudo em linha */
-.filtro-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    padding: 8px 10px 10px;
-}
-
-.filtro-campo {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.filtro-label {
-    font-size: 0.62rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.filtro-select {
-    width: 100%;
-    padding: 4px 20px 4px 7px;
-    font-size: 0.74rem;
-    border: 1.5px solid rgba(58, 94, 86, 0.15);
-    border-radius: var(--border-radius-sm);
-    background: var(--white);
-    color: var(--text-dark);
-    cursor: pointer;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%237a8c88'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 6px center;
-}
-
-    .filtro-select:focus {
-        outline: none;
-        border-color: var(--primary-orange);
-        box-shadow: 0 0 0 2px rgba(223, 120, 96, 0.12);
-    }
-
-/* Limpar filtros ocupa as 3 colunas, alinhado à direita */
-.filtro-campo-limpar {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 2px;
-}
-
-.btn-limpar-filtros {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    border: 1.5px solid rgba(58, 94, 86, 0.15);
-    border-radius: 20px;
-    background: var(--white);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-    .btn-limpar-filtros:hover {
-        background: #fee2e2;
-        border-color: #fca5a5;
-        color: #dc2626;
-    }
-
-
 
 /* ==========================================
    CARROUSSEL

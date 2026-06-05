@@ -30,7 +30,8 @@
     }
 
     renderMap(zoom) {
-        this.map = L.map('map').setView(this.userLocation, zoom);
+        this.map = L.map('map', { zoomControl: false }).setView(this.userLocation, zoom);
+        L.control.zoom({ position: 'topright' }).addTo(this.map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'

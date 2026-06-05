@@ -1,0 +1,196 @@
+﻿/* ==========================================
+   FILTRO FLUTUANTE DENTRO DO MAPA
+   ========================================== */
+
+/* Container flutuante no topo-esquerdo do mapa */
+.filtro-mapa-wrapper {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 260px;
+}
+
+/* Botão "Filtrar" flutuante */
+.btn-filtro-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 20px;
+    background: var(--primary-orange);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(223, 120, 96, 0.45);
+    transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    align-self: flex-start;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+    .btn-filtro-toggle:hover {
+        background: var(--primary-orange-dark);
+        box-shadow: 0 6px 20px rgba(223, 120, 96, 0.55);
+        transform: translateY(-1px);
+    }
+
+.btn-filtro-toggle--ativo {
+    background: var(--primary-green);
+    box-shadow: 0 4px 14px rgba(58, 94, 86, 0.4);
+}
+
+    .btn-filtro-toggle--ativo:hover {
+        background: var(--primary-green-dark);
+    }
+
+.filtro-chevron {
+    font-size: 0.65rem;
+    transition: transform 0.25s ease;
+}
+
+/* Badge de filtros ativos */
+.filtro-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.7);
+    line-height: 1;
+}
+
+/* Painel dropdown — fechado por padrão */
+.filtro-mapa-painel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.25s ease, transform 0.25s ease;
+    transform: translateY(-6px);
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(30, 50, 45, 0.18);
+    margin-top: 8px;
+    backdrop-filter: blur(8px);
+}
+
+.filtro-mapa-painel--aberto {
+    max-height: 400px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Cabeçalho do painel */
+.filtro-mapa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 6px;
+    border-bottom: 1px solid rgba(58, 94, 86, 0.08);
+}
+
+.filtro-mapa-titulo {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.filtro-contador {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    background: rgba(58, 94, 86, 0.08);
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+/* Grid dos selects — 3 colunas para não quebrar labels */
+.filtro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    padding: 8px 10px 10px;
+}
+
+.filtro-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.filtro-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filtro-select {
+    width: 100%;
+    padding: 4px 20px 4px 7px;
+    font-size: 0.74rem;
+    border: 1.5px solid rgba(58, 94, 86, 0.15);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%237a8c88'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+}
+
+    .filtro-select:focus {
+        outline: none;
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 0 2px rgba(223, 120, 96, 0.12);
+    }
+
+/* Limpar filtros — ocupa as 3 colunas */
+.filtro-campo-limpar {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 2px;
+}
+
+.btn-limpar-filtros {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: 1.5px solid rgba(58, 94, 86, 0.15);
+    border-radius: 20px;
+    background: #fff;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+    .btn-limpar-filtros:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
