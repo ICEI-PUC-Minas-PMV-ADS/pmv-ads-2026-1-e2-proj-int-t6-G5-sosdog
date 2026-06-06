@@ -32,8 +32,7 @@ Nesta seção, é FUNDAMENTAL indicar, para cada tela/wireframe proposto, quais 
 **TELA PRINCIPAL**
 
 Visão geral e interativa da plataforma, exibindo o mapa central com a localização dos animais, opções de filtros rápidos para buscas específicas e acesso fácil aos menus de navegação do sistema.
-
-<img width="1345" height="784" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/6b514ac4-b95a-478b-a447-7e02a226de17" />
+<img width="1556" height="1011" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/84a4f2c6-8798-44f3-ba07-920850775455" />
 
 
 **TELA DE LOGIN**
