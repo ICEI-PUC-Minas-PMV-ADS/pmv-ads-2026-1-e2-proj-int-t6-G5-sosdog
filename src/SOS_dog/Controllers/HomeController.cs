@@ -16,23 +16,23 @@ namespace SOS_dog.Controllers
 
         public IActionResult Index()
         {
-            var listaOcorrencias = _context.Ocorrencias.ToList();
+            var listaOcorrencias = _context.Ocorrencias
+                 .Include(o => o.Usuario) 
+                 .ToList();
             return View(listaOcorrencias);
         }
 
-        // ADICIONE ESTE MÉTODO EXPLICITAMENTE:
         public IActionResult Feed()
         {
             try
             {
-                // Tenta buscar do banco
-                var listaOcorrencias = _context.Ocorrencias.ToList();
+                var listaOcorrencias = _context.Ocorrencias
+                     .Include(o => o.Usuario) // <--- Garante o carregamento no Feed também
+                     .ToList();
                 return View("Index", listaOcorrencias);
             }
             catch (Exception)
             {
-                // Se o banco der erro (como o erro de login que vimos), 
-                // ele retorna uma lista vazia para a página NÃO dar 404 nem tela preta.
                 return View("Index", new List<Ocorrencia>());
             }
         }

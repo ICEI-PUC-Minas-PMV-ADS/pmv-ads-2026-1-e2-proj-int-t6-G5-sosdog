@@ -295,11 +295,6 @@
             <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
                 <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
             </h2>
-
-            <button class="btn-registrar-perdido shadow-sm @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
-                    onclick="abrirModalPetPerdido()">
-                <i class="fa-solid fa-plus"></i> Registrar Pet
-            </button>
         </div>
 
         <div class="tutores-grid px-md-4 px-2 pb-5">
@@ -434,6 +429,7 @@
     <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
     <script src="~/js/filtro-mapa.js" asp-append-version="true"></script>
+    <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
 
     <script>
         // 4. SEU SCRIPT RESTAURADO (Busca Topo e Favoritos)

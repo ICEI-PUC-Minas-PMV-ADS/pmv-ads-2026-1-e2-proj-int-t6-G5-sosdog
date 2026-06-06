@@ -348,6 +348,28 @@ namespace SosDog.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // GET: Ocorrencias/Cartaz/5
+        public async Task<IActionResult> Cartaz(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Busca a ocorrência trazendo os dados do usuário anexados (Eager Loading)
+            var ocorrencia = await _context.Ocorrencias
+                .Include(o => o.Usuario)
+                .FirstOrDefaultAsync(m => m.IdOcorrencia == id);
+
+            if (ocorrencia == null)
+            {
+                return NotFound();
+            }
+
+            // Retorna a view especializada do cartaz
+            return View(ocorrencia);
+        }
+
         // ==========================================
         // MÉTODOS AUXILIARES
         // ==========================================
@@ -373,6 +395,7 @@ namespace SosDog.Controllers
                 Console.WriteLine($"Aviso: Não foi possível deletar a imagem do disco. Erro: {ex.Message}");
             }
         }
+
 
         private bool OcorrenciaExists(int id)
         {
