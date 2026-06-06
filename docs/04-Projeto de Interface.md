@@ -2,9 +2,6 @@
 
 <span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md"> Documentação de Especificação</a></span>
 
-Visão geral da interação do usuário pelas telas do sistema e protótipo interativo das telas com as funcionalidades que fazem parte do sistema (wireframes).
-
-Apresente as principais interfaces da plataforma. Discuta como ela foi elaborada de forma a atender os requisitos funcionais, não funcionais e histórias de usuário abordados nas <a href="2-Especificação do Projeto.md"> Documentação de Especificação</a>.
 
 ## Diagrama de Fluxo (Fluxograma Principal)
 
@@ -22,11 +19,6 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
 * **Menu Secundário:** Acesso às opções de configurações da conta e central de ajuda do aplicativo.
 
 ## Wireframes
-
-![Exemplo de Wireframe](img/wireframe-example.png)
-
-Os wireframes são protótipos utilizados no design de interfaces para representar a estrutura de um site e o relacionamento entre suas páginas. Eles funcionam como ilustrações do layout e da disposição dos elementos essenciais da interface.
-Nesta seção, indicamos para cada tela/wireframe proposto quais requisitos funcionais do projeto estão sendo contemplados.
 
 ---
 
@@ -108,5 +100,3 @@ Linha do tempo dinâmica onde os usuários podem acompanhar as últimas atualiza
 
 ---
 
-**LINK DO FIGMA**
-https://www.figma.com/design/RfS7AOqTEDUfSA7F4k79R6/Sem-t%C3%ADtulo?node-id=0-1&t=kK8leeqBWRvLvbIE-1
