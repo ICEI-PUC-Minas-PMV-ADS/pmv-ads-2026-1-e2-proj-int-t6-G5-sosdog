@@ -82,6 +82,47 @@ Abaixo estão as versões oficiais do logotipo da SOSDOG, utilizadas no cabeçal
 </div>
 
 ---
+Com certeza! Como o projeto adota uma abordagem Desktop-First, a folha de estilos foi construída definindo o comportamento ideal em telas grandes como a estrutura padrão (sem @media), e utiliza seletores max-width para ir "desconstruindo" e simplificando o layout conforme o espaço de tela diminui.
 
+Aqui está o trecho em Markdown focado exclusivamente na Arquitetura de Responsividade, pronto para você copiar e colar logo abaixo da seção de Logotipo do seu documento principal:
+
+Markdown
+---
+
+## 3. Arquitetura de Responsividade (Estratégia Desktop-First)
+
+A plataforma SOSDOG foi desenvolvida seguindo a estratégia **Desktop-First**. O layout base e estrutural foi projetado nativamente para resoluções de monitores e laptops (onde protetores e administradores gerenciam o sistema com visão analítica completa). 
+
+A adaptação para telas menores ocorre de forma regressiva através de Media Queries baseadas em `max-width`, reduzindo a complexidade visual e priorizando a usabilidade touch conforme o dispositivo diminui.
+
+### 3.1 Tabela de Breakpoints e Comportamentos
+
+| Breakpoint | Dispositivo Alvo | Alteração Estrutural na Interface |
+|---|---|---|
+| **Padrão (Base)** | Desktop / Laptop (≥ 1200px) | Layout completo em **Grid de 3 Colunas**: Lista de Casos (Esquerda) \| Mapa Interativo (Centro) \| Perfil/Detalhes (Direita). |
+| **`min-width: 1400px`** | Monitores UltraWide / Grandes | Ajustes finos de expansão: Grid alargado (`320px 1fr 340px`) e aumento do espaçamento (*padding*) do cabeçalho. |
+| **`max-width: 1199px`** | Laptops Compactos / Tablets (Landscape) | Redução proporcional das barras laterais para preservar a área útil do mapa central. |
+| **`max-width: 991px`** | Tablets Standard / Telas Médias | **Colapso para 2 Colunas**. A Sidebar Direita sai do fluxo e transforma-se num *Off-Canvas Drawer* (gaveta lateral oculta) acionada por JavaScript. |
+| **`max-width: 767px`** | Tablets (Portrait) / Smartphones Largos | **Layout em Stack Vertical (Pilha)**. O Grid horizontal é desfeito (`display: flex` vertical). A Sidebar Direita passa a ser um *Bottom Sheet* (desliza de baixo para cima). |
+| **`max-width: 575px`** | Smartphones Padrão (Mobile) | Interface minimalista. Ocultação da barra de pesquisa flutuante, reorganização do menu de navegação em bloco centralizado e otimização total para toque (*touch*). |
+| **`max-width: 399px`** | Smartphones Pequenos (ex: iPhone SE) | Micro-ajustes de segurança: Redução do tamanho de fontes, imagens de cards compactadas e botões menores para evitar quebras de texto. |
+
+---
+
+### 3.2 Soluções Técnicas de UX Implementadas
+
+Para garantir que a experiência mobile seja tão rica quanto a desktop, o CSS adota três padrões modernos de engenharia de interface:
+
+#### A. O Padrão Off-Canvas & Bottom Sheet
+Em telas grandes, as informações do animal e os botões de ação ficam expostos permanentemente na direita. No ecossistema mobile, para poupar espaço, o elemento `.right-sidebar` (ou `.dog-profile-sidebar`) ganha propriedades dinâmicas:
+* **Em Tablets (`max-width: 991px`):** Fica oculto à direita (`right: -100%`) e desliza horizontalmente quando a classe `.drawer-open` é injetada via JS, acompanhado de um efeito de desfoque de fundo (`.drawer-overlay`).
+* **Em Celulares (`max-width: 767px`):** Muda seu ponto de ancoragem para a base da tela (`top: auto; bottom: -100%`), deslizando para cima como uma folha de propriedades (*Bottom Sheet*), facilitando o alcance do clique com o polegar.
+
+#### B. Altura Dinâmica com a Unidade `dvh`
+Nas propriedades dos painéis móveis, foi utilizada a unidade `height: 100dvh;` (Dynamic Viewport Height). Isso impede que as barras de navegação dinâmicas dos browsers mobile (como Safari do iOS ou Chrome do Android) cortem ou escondam os botões de ação situados no rodapé dos menus deslizantes.
+
+#### C. Simplificação de Elementos e Foco no Negócio
+* **Barra de Busca (`.search-bar`):** É completamente ocultada no mobile (`display: none` abaixo de 575px) para limpar o cabeçalho e dar destaque absoluto ao logotipo e às ações de urgência.
+* **Lista de Ocorrências (`.cases-list`):** Passa a ter uma altura máxima controlada por *Viewport Height* (`max-height: 30vh`) no mobile, garantindo que o usuário consiga visualizar o Mapa e a Lista na mesma tela sem precisar rolar a página inteira infinitamente.
 
 
