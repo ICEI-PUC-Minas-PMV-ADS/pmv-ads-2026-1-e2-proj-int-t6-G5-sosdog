@@ -37,8 +37,8 @@ Visão geral e interativa da plataforma, exibindo o mapa central com a localiza�
   * **RF-002:** Alternar a visualização do mapa por camadas baseadas no status do animal.
   * **RF-003:** Filtrar os animais no mapa por estado de saúde, tempo de avistamento e porte.
   * **RF-008:** Consultar ocorrências de animais próximos à localização atual do usuário.
-
-<img width="1345" height="784" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/6b514ac4-b95a-478b-a447-7e02a226de17" />
+  * 
+<img width="1556" height="1011" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/e01e47ad-97cd-48d5-94be-1f4493175222" />
 
 ---
 
