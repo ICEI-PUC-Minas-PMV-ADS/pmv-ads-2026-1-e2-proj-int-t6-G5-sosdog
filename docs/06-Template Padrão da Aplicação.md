@@ -71,8 +71,8 @@ O sistema utiliza um pack de ícones enxuto e reconhecível para acelerar a leit
 A identidade central da marca simboliza a conexão profunda entre cães, gatos e seus tutores ou protetores.
 
 <div align="center">
-  <img width="45%" alt="logolove" src="https://github.com/user-attachments/assets/4a3d676d-5e6b-4740-9be7-cece11a48b2c" />
-  <img width="45%" alt="logo cao e gato" src="https://github.com/user-attachments/assets/7f85e581-279a-4ab3-b84c-e23d61dcca9e" />
+<img width="53" height="45" alt="Captura de tela 2026-06-06 203900" src="https://github.com/user-attachments/assets/4bc8fc20-2bb9-4a48-a771-4a37355b6b65" />
+
 </div>
 
 ---
