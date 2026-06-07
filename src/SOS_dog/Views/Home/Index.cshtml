@@ -117,7 +117,10 @@
         </div>
     </aside>
 
+
+
     <section class="main-map-area">
+
         @* FILTRO FLUTUANTE NO MAPA (FEITO PELA EQUIPE) *@
         <div class="filtro-mapa-wrapper">
             <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
@@ -217,6 +220,13 @@
     </section>
 
     <section id="section-feed" class="container-fluid py-4 d-none">
+@*         <div class="section-header px-md-4 px-2 mb-3">
+            <h2 class="section-page-title">
+                <i class="fa-solid fa-paw"></i> Animais em Destaque
+            </h2>
+            <p class="section-page-subtitle">Animais reportados recentemente na sua região</p>
+        </div> *@
+
         <div class="feed-wrapper row g-4">
             <div class="col-12 col-md-8 carousel-section">
                 <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
@@ -291,11 +301,12 @@
 
     <section id="section-tutores" class="container-fluid py-4 d-none">
 
-        <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
-            <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
-                <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
+@*         <div class="section-header px-md-4 px-2 mb-3">
+            <h2 class="section-page-title">
+                <i class="fa-solid fa-circle-exclamation"></i> Pets Desaparecidos
             </h2>
-        </div>
+            <p class="section-page-subtitle">Ajude a encontrar esses animais — compartilhe o cartaz</p>
+        </div> *@
 
         <div class="tutores-grid px-md-4 px-2 pb-5">
             @* Filtramos na própria View os pets marcados como 'Perdido' (ou o status que você definir no BD) *@
