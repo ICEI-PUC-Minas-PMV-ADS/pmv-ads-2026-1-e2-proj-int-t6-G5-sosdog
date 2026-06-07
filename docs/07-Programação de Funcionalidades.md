@@ -60,21 +60,21 @@ A aplicação está funcional no ambiente de hospedagem a partir da Etapa 03.
 
 | ID | Descrição do Requisito | Artefatos Produzidos | Aluno(a) Responsável |
 |---|---|---|---|
-| RF-001 | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento | `map-handler.js`, `Ocorrencia.cs`, `AppDbContext.cs` | Vitor |
-| RF-002 | Alternar a visualização do mapa por camadas baseadas no status do animal | `map-handler.js`, `filtro-mapa.js` | Vitor |
-| RF-003 | Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal.	 | `filtro-mapa.js`, `Ocorrencia.cs` | Helena |
+| RF-001 | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento | `map-handler.js`, `Ocorrencia.cs`, `AppDbContext.cs` | Vitor, Andryws |
+| RF-002 | Alternar a visualização do mapa por camadas baseadas no status do animal | `map-handler.js`, `filtro-mapa.js` | Vitor, Andryws |
+| RF-003 | Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal. | `filtro-mapa.js`, `Ocorrencia.cs` | Helena, Andryws |
 | RF-005 | Exigir a seleção do estado atual do animal durante o registro de uma marcação | `ocorrencias.js`, `Ocorrencia.cs` | Vitor |
 | RF-006 | Registrar o fornecimento recente de cuidados básicos aos animais marcados | `ocorrencias.js`, `Comentario.cs` | Vitor |
 | RF-007 | Anexar fotos para facilitar a identificação visual do animal | `ocorrencias.js`, `Ocorrencia.cs` | Vitor |
-| RF-008 | Consultar ocorrências de animais próximos à localização atual do usuário | `ocorrencias.js`, `map-handler.js`, `Ocorrencia.cs` | Vitor |
+| RF-008 | Consultar ocorrências de animais próximos à localização atual do usuário | `ocorrencias.js`, `map-handler.js`, `Ocorrencia.cs` | Vitor, Andryws |
 | RF-009 | Adicionar comentários nas marcações para atualizar o status do animal | `ocorrencias.js`, `Comentario.cs`, `AppDbContext.cs` | Vitor |
 | RF-010 | Gerar cartaz digital de busca para animais perdidos (PDF) | `geradorCartaz.js` | Vitor |
 | RF-011 | Disponibilizar seção informativa com leis, contatos de emergência e instruções de resgate | `emergencia.js` | Vitor |
-| RF-012 | Editar os dados de perfil do usuário | `usuario.js`, `Usuario.cs` | Helena |
-| RF-013 | Excluir permanentemente a conta e os dados pessoais do usuário | `usuario.js`, `Usuario.cs`, `AppDbContext.cs` | Helena |
-| RF-014 | Cadastrar nova conta de usuário | `usuario.js`, `Usuario.cs` | Helena |
-| RF-015 | Redefinir a senha de acesso da conta | `usuario.js`, `Usuario.cs` | Helena |
-| RF-016 | Encerrar a sessão ativa do usuário de forma segura | `usuario.js` | Vitor |
+| RF-012 | Editar os dados de perfil do usuário | `usuario.js`, `Usuario.cs` | Helena, Andryws |
+| RF-013 | Excluir permanentemente a conta e os dados pessoais do usuário | `usuario.js`, `Usuario.cs`, `AppDbContext.cs` | Helena, Andryws |
+| RF-014 | Cadastrar nova conta de usuário | `usuario.js`, `Usuario.cs` | Helena, Andryws |
+| RF-015 | Redefinir a senha de acesso da conta | `usuario.js`, `Usuario.cs` | Helena, Andryws |
+| RF-016 | Encerrar a sessão ativa do usuário de forma segura | `usuario.js` | Vitor, Andryws |
 
 ---
 
