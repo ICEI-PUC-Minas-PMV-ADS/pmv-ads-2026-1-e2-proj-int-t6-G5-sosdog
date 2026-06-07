@@ -50,7 +50,7 @@ Não deixe de enumerar os casos de teste de forma sequencial e de garantir que o
 | | |
 | **Caso de Teste** | **CT07 – Favoritar e desfavoritar uma ocorrência** |
 |:---:|:---|
-| Requisito Associado | RF-008 - Consultar ocorrências de animais próximos à localização atual do usuário. |
+| Requisito Associado | RF-017 - Permitir que usuários autenticados favoritam ou desfavoritam uma ocorrência. |
 | Objetivo do Teste | Verificar se o usuário consegue favoritar e desfavoritar uma ocorrência sem recarregar a página. |
 | Passos | - Realizar login no sistema <br> - Na lista lateral, localizar o ícone de coração em um card de ocorrência <br> - Clicar no ícone para favoritar <br> - Clicar novamente para desfavoritar |
 | Critério de Êxito | - Ao favoritar, o ícone muda para vermelho sem recarregar a página. Ao desfavoritar, o ícone volta ao estado original. |
