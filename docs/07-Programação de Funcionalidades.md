@@ -1,30 +1,82 @@
-# Programação de Funcionalidades (INCLUIR A PROGRAMAÇAÕ DE FUNCIONALIDADE EM PROFUNDIDADE)
+# Programação de Funcionalidades
 
-<span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md"> Especificação do Projeto</a></span>, <a href="3-Projeto de Interface.md"> Projeto de Interface</a>, <a href="4-Metodologia.md"> Metodologia</a>, <a href="3-Projeto de Interface.md"> Projeto de Interface</a>, <a href="5-Arquitetura da Solução.md"> Arquitetura da Solução</a>
+<span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md">Especificação do Projeto</a></span>, <a href="3-Projeto de Interface.md">Projeto de Interface</a>, <a href="4-Metodologia.md">Metodologia</a>, <a href="5-Arquitetura da Solução.md">Arquitetura da Solução</a>
 
-Nesta seção, a implementação do sistema descrita por meio dos requisitos funcionais e/ou não funcionais. Nesta seção, é essencial relacionar os requisitos atendidos com os artefatos criados (código fonte) e com o(s) responsável(is) pelo desenvolvimento de cada artefato a cada etapa. Nesta seção também deverão ser apresentadas, se necessário, as instruções para acesso e verificação da **implementação que deve estar funcional no ambiente de hospedagem, OBRIGATORIAMENTE, a partir da Etapa 03**.
+Nesta seção, a implementação do sistema é descrita por meio dos requisitos funcionais e/ou não funcionais. É essencial relacionar os requisitos atendidos com os artefatos criados (código-fonte) e com o(s) responsável(is) pelo desenvolvimento de cada artefato a cada etapa.
 
-**O que DEVE ser utilizado para o desenvolvimento da aplicação:**
-- Microsoft Visual Studio (IDE de Codificação)
-- HTML e CSS (frontend)
-- Javascript (frontend)
-- C# (backend)
-- MySQL ou SQLServer(Base de Dados)
-- Bootstrap (template responsivo para frontend)
-- Github (documentação e controle de versão)
+A aplicação está funcional no ambiente de hospedagem a partir da Etapa 03.
 
-**O que NÃO PODE ser utilizado:**
-- Template React (e qualquer outro template - exceto o Bootstrap)
-- Qualquer outra liguagem de programação diferente de C#
+---
 
-A tabela a seguir é um exemplo de como ela deverá ser preenchida considerando os artefatos desenvolvidos.
+## Tecnologias Utilizadas
 
-|ID    | Descrição do Requisito  | Artefatos produzidos | Aluno(a) responsável |
-|------|-----------------------------------------|----|----|
-|RF-001| A aplicação deve permitir que o usuário avalie uma agência de intercâmbio com base na sua experiência| |  |
-|RF-002| A aplicação deve permitir que o usuário inclua comentários ao fazer uma avaliação de uma agência de intercâmbio     |  |  |
-|RF-003| A aplicação deve permitir que o usuário consulte todas as agências de intercâmbio cadastradas ordenando-as com base em suas notas |  |  |
+**Frontend:**
+- HTML, CSS e JavaScript
+- Bootstrap (template responsivo)
 
+**Backend:**
+- C# (ASP.NET)
+- MySQL / SQL Server (Base de Dados)
+
+**Versionamento:**
+- GitHub (documentação e controle de versão)
+
+**IDE:**
+- Microsoft Visual Studio
+
+---
+
+## Estrutura de Artefatos
+
+### Frontend — Pasta `/js`
+
+| Arquivo | Descrição |
+|---|---|
+| `alertsScript.js` | Scripts de alertas e notificações ao usuário |
+| `carrusel.js` | Lógica do carrossel de imagens |
+| `emergencia.js` | Funcionalidades da seção de emergência |
+| `feedCasos.js` | Exibição do feed de ocorrências/casos |
+| `filtro-mapa.js` | Filtros aplicados ao mapa |
+| `geradorCartaz.js` | Geração de cartaz digital de busca (PDF) |
+| `map-handler.js` | Manipulação e controle do mapa |
+| `ocorrencias.js` | Registro e consulta de ocorrências |
+| `usuario.js` | Gerenciamento de conta e sessão do usuário |
+| `site.css` | Estilos globais da aplicação |
+
+### Backend — Pasta `Models`
+
+| Arquivo | Descrição |
+|---|---|
+| `AppDbContext.cs` | Contexto do banco de dados (Entity Framework) |
+| `Comentario.cs` | Model de comentários nas marcações |
+| `ErrorViewModel.cs` | Model de tratamento de erros |
+| `Favorito.cs` | Model de marcações favoritas |
+| `Ocorrencia.cs` | Model de ocorrências de animais |
+| `Usuario.cs` | Model de usuário |
+
+---
+
+## Requisitos Funcionais Implementados
+
+| ID | Descrição do Requisito | Artefatos Produzidos | Aluno(a) Responsável |
+|---|---|---|---|
+| RF-001 | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento | `map-handler.js`, `Ocorrencia.cs`, `AppDbContext.cs` | Vitor, Andryws |
+| RF-002 | Alternar a visualização do mapa por camadas baseadas no status do animal | `map-handler.js`, `filtro-mapa.js` | Vitor, Andryws |
+| RF-003 | Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal. | `filtro-mapa.js`, `Ocorrencia.cs` | Helena, Andryws |
+| RF-005 | Exigir a seleção do estado atual do animal durante o registro de uma marcação | `ocorrencias.js`, `Ocorrencia.cs` | Vitor |
+| RF-006 | Registrar o fornecimento recente de cuidados básicos aos animais marcados | `ocorrencias.js`, `Comentario.cs` | Vitor |
+| RF-007 | Anexar fotos para facilitar a identificação visual do animal | `ocorrencias.js`, `Ocorrencia.cs` | Vitor |
+| RF-008 | Consultar ocorrências de animais próximos à localização atual do usuário | `ocorrencias.js`, `map-handler.js`, `Ocorrencia.cs` | Vitor, Andryws |
+| RF-009 | Adicionar comentários nas marcações para atualizar o status do animal | `ocorrencias.js`, `Comentario.cs`, `AppDbContext.cs` | Vitor |
+| RF-010 | Gerar cartaz digital de busca para animais perdidos (PDF) | `geradorCartaz.js` | Vitor |
+| RF-011 | Disponibilizar seção informativa com leis, contatos de emergência e instruções de resgate | `emergencia.js` | Vitor |
+| RF-012 | Editar os dados de perfil do usuário | `usuario.js`, `Usuario.cs` | Helena, Andryws |
+| RF-013 | Excluir permanentemente a conta e os dados pessoais do usuário | `usuario.js`, `Usuario.cs`, `AppDbContext.cs` | Helena, Andryws |
+| RF-014 | Cadastrar nova conta de usuário | `usuario.js`, `Usuario.cs` | Helena, Andryws |
+| RF-015 | Redefinir a senha de acesso da conta | `usuario.js`, `Usuario.cs` | Helena, Andryws |
+| RF-016 | Encerrar a sessão ativa do usuário de forma segura | `usuario.js` | Vitor, Andryws |
+
+---
 
 # Instruções de acesso
 

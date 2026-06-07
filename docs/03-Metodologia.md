@@ -85,21 +85,7 @@ Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvi
 
 ## Backlog do Produto
 
-### Milestones
-
-![Backlog_Produto_Milestones](https://github.com/user-attachments/assets/354e6f6e-a76b-482e-ad24-5d7a7b0f9521)
-
-### Inssues
-
-![Inssues](https://github.com/user-attachments/assets/cfd2a60a-a07c-4782-b040-1220111b22da)
-
-### Kambam
-
-![Kambam](https://github.com/user-attachments/assets/e97c48ae-8273-469a-b1c4-e9c377934011)
-
-### Projects
-
-![Projects](https://github.com/user-attachments/assets/06f2aa58-05b0-4798-adae-d89b27bdd0fd)
+KANBAN: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
 
 
 
