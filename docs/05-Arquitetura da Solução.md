@@ -8,7 +8,7 @@ Definição de como o software é estruturado em termos dos componentes que faze
 
 ## Diagrama de Classes
 
-O diagrama abaixo descreve a estrutura estática do sistema SosDog, extraída diretamente dos Models do projeto ASP.NET Core. As quatro entidades principais — `Usuario`, `Ocorrencia`, `Comentario` e `Favorito` — foram mapeadas com seus atributos reais, tipos de dados e relacionamentos de navegação conforme implementados no código.
+O diagrama abaixo descreve a estrutura estática do sistema SosDog. As quatro entidades principais — `Usuario`, `Ocorrencia`, `Comentario` e `Favorito` 
 
 ```mermaid
 classDiagram
@@ -87,7 +87,6 @@ classDiagram
 
 ## Modelo Entidade Relacionamento
 
-O MER abaixo foi derivado diretamente da Migration `20260512000929_1m@.cs` e reflete com precisão o esquema físico gerado pelo Entity Framework Core no SQL Server.
 
 ```mermaid
 erDiagram
@@ -174,7 +173,7 @@ erDiagram
 
 ## Projeto da Base de Dados
 
-Script DDL equivalente ao esquema gerado pelo EF Core no SQL Server, derivado da Migration oficial do projeto:
+
 
 ```sql
 CREATE TABLE Usuarios (
@@ -254,7 +253,6 @@ CREATE INDEX IX_Comentarios_IdUsuario          ON Comentarios(IdUsuario);
 CREATE INDEX IX_Favoritos_IdOcorrencia         ON Favoritos(IdOcorrencia);
 ```
 
-> **Nota de consistência:** Os três artefatos (Diagrama de Classes, MER e DDL) estão totalmente alinhados entre si e com o código-fonte real do projeto. Os tipos `nvarchar(max)` e a ausência de enums no banco refletem uma decisão de projeto para máxima flexibilidade nos campos categóricos (TipoOcorrencia, EstadoSaude, Porte etc.), que são validados na camada de aplicação.
 
 ---
 
