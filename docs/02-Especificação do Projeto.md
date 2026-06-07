@@ -54,6 +54,7 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-014** | Cadastrar nova conta de usuário. | ALTA |
 | **RF-015** | Redefinir a senha de acesso da conta. | ALTA |
 | **RF-016** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
+| **RF-017** | Permitir que usuários autenticados favoritam ou desfavoritam uma ocorrência. | MÉDIA |
 
 
 ### Requisitos não Funcionais
