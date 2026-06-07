@@ -85,7 +85,7 @@ Essas ferramentas foram escolhidas por facilitarem a organização do desenvolvi
 
 ## Backlog do Produto
 
-KAMBAM: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
+KANBAN: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
 
 
 
