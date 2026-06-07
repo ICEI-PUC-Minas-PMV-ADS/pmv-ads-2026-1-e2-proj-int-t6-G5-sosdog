@@ -466,6 +466,25 @@ namespace SosDog.Controllers
 
             if (usuario != null)
             {
+                // Remove ocorrências do usuário
+                var ocorrencias = _context.Ocorrencias.Where(o => o.IdUsuario == usuario.IdUsuario).ToList();
+                foreach (var ocorrencia in ocorrencias)
+                {
+                    // Remove comentários e favoritos da ocorrência
+                    var comentarios = _context.Comentarios.Where(c => c.IdOcorrencia == ocorrencia.IdOcorrencia).ToList();
+                    _context.Comentarios.RemoveRange(comentarios);
+
+                    var favoritos = _context.Favoritos.Where(f => f.IdOcorrencia == ocorrencia.IdOcorrencia).ToList();
+                    _context.Favoritos.RemoveRange(favoritos);
+                }
+                _context.Ocorrencias.RemoveRange(ocorrencias);
+
+                // Remove comentários feitos pelo usuário em ocorrências de outros
+                var comentariosDoUsuario = _context.Comentarios.Where(c => c.IdUsuario == usuario.IdUsuario).ToList();
+                _context.Comentarios.RemoveRange(comentariosDoUsuario);
+
+                await _context.SaveChangesAsync();
+
                 _context.Usuarios.Remove(usuario);
                 await _context.SaveChangesAsync();
             }
