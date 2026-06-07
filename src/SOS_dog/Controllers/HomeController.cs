@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Necessário para o ToListAsync se for usar
-using SosDog.Models; // Usando o namespace que vimos no seu Ocorrencia.cs
+using Microsoft.EntityFrameworkCore; 
+using SosDog.Models; 
 using System.Diagnostics;
+using System.Security.Claims;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SOS_dog.Controllers
 {
@@ -17,27 +20,53 @@ namespace SOS_dog.Controllers
         public IActionResult Index()
         {
             var listaOcorrencias = _context.Ocorrencias.ToList();
+
+            var listaFavoritosIds = new List<int>();
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null)
+            {
+                int idUsuario = int.Parse(userIdClaim);
+                listaFavoritosIds = _context.Favoritos
+                    .Where(f => f.IdUsuario == idUsuario)
+                    .Select(f => f.IdOcorrencia)
+                    .ToList();
+            }
+
+            ViewBag.FavoritosIds = listaFavoritosIds; 
+
             return View(listaOcorrencias);
         }
 
-        // ADICIONE ESTE MÉTODO EXPLICITAMENTE:
         public IActionResult Feed()
         {
             try
             {
-                // Tenta buscar do banco
                 var listaOcorrencias = _context.Ocorrencias.ToList();
-                return View("Index", listaOcorrencias);
+                
+                var listaFavoritosIds = new List<int>();
+                var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (userIdClaim != null)
+                {
+                    int idUsuario = int.Parse(userIdClaim);
+                    listaFavoritosIds = _context.Favoritos
+                        .Where(f => f.IdUsuario == idUsuario)
+                        .Select(f => f.IdOcorrencia)
+                        .ToList();
+                }
+
+                ViewBag.FavoritosIds = listaFavoritosIds;
+
+                return View(listaOcorrencias);
             }
-            catch (Exception)
+            catch (System.Exception)
             {
-                // Se o banco der erro (como o erro de login que vimos), 
-                // ele retorna uma lista vazia para a página NÃO dar 404 nem tela preta.
-                return View("Index", new List<Ocorrencia>());
+                ViewBag.FavoritosIds = new List<int>();
+                return View(new List<Ocorrencia>());
             }
         }
 
-        // Rota para carregar a página informativa de contatos de emergência
         public IActionResult Emergencia()
         {
             return View();

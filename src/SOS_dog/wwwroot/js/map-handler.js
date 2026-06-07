@@ -15,7 +15,7 @@
     }
 
     init() {
-        // 1. Tentar obter localização do usuário
+        // 1. Tentar obter localização do utilizador
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
@@ -66,7 +66,7 @@
                 // 2. Lógica de clique no PIN
                 marker.on('click', () => {
                     this.map.setView([lat, lng], 15); // Dá zoom no local
-                    focusCard(id); // Chama a função que você já tem para abrir o card
+                    focusCard(id); // Chama a função para abrir o card
                 });
 
                 // 3. Guarda referência do marcador + dados do card para o filtro
@@ -74,6 +74,10 @@
                     marker,
                     card,
                     data: {
+                        codigo: (card.dataset.codigo || '').toLowerCase(),
+                        cor: (card.dataset.cor || '').toLowerCase(),
+                        endereco: (card.dataset.endereco || '').toLowerCase(),
+                        cuidador: (card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || '').toLowerCase(),
                         tipo: (card.dataset.tipo || '').toLowerCase(),
                         estadoSaude: (card.dataset.estadosaude || '').toLowerCase(),
                         porte: (card.dataset.porte || '').toLowerCase(),
@@ -91,32 +95,73 @@
 
     aplicarFiltros() {
         let visiveis = 0;
+        
+        // Pega os dados da nossa barra de pesquisa e do filtro de favoritos
+        const inputBusca = document.getElementById('input-busca-global');
+        const termoBusca = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+        const filtroFavoritosAtivo = window.filtroFavoritosAtivo || false;
+
+        // 1. CRIAR UM ARRAY PARA GUARDAR AS COORDENADAS:
+        const posicoesVisiveis = [];
 
         this.markers.forEach(({ marker, card, data }) => {
-            const passa =
+            // Regra dos Dropdowns da equipa
+            const passaDropdown =
                 (!this.activeFilters.tipo || data.tipo === this.activeFilters.tipo) &&
                 (!this.activeFilters.estadoSaude || data.estadoSaude === this.activeFilters.estadoSaude) &&
-                (!this.activeFilters.porte || data.porte === this.activeFilters.porte) &&
+                (!this.activeFilters.porte || data.porte === this.activeFilters.porte) && // Corrigido
                 (!this.activeFilters.sexo || data.sexo === this.activeFilters.sexo) &&
                 (!this.activeFilters.faixaEtaria || data.faixaEtaria === this.activeFilters.faixaEtaria);
 
-            if (passa) {
-                card.style.display = '';
-                if (!this.map.hasLayer(marker)) marker.addTo(this.map);
+            // Regra da Pesquisa Global
+            const passaBusca = !termoBusca || 
+                               data.codigo.includes(termoBusca) || 
+                               data.cor.includes(termoBusca) ||
+                               data.tipo.includes(termoBusca) ||
+                               data.estadoSaude.includes(termoBusca) ||
+                               data.endereco.includes(termoBusca) ||
+                               data.cuidador.includes(termoBusca); 
+                               
+            // Regra dos Favoritos
+            const iconeCoracao = card.querySelector('.favoritar-btn');
+            const ehFavorito = iconeCoracao ? iconeCoracao.classList.contains('favoritado') : false;
+            const passaFavorito = !filtroFavoritosAtivo || ehFavorito;
+
+            // Resultado Final: Mostra ou esconde o Card E o Pino!
+            if (passaDropdown && passaBusca && passaFavorito) {
+                card.style.display = 'flex';
+                if (!this.map.hasLayer(marker)) marker.addTo(this.map); // Volta a colocar no mapa
                 visiveis++;
+
+                // 2. SALVAR A POSIÇÃO DO PINO QUE FICOU NA TELA:
+                posicoesVisiveis.push(marker.getLatLng());
             } else {
                 card.style.display = 'none';
-                if (this.map.hasLayer(marker)) this.map.removeLayer(marker);
+                if (this.map.hasLayer(marker)) marker.remove(); // Remove o pino do mapa corretamente
             }
         });
 
-        // Atualiza contador de resultados
+        // Atualiza contador 
         const contador = document.getElementById('filtro-contador');
         if (contador) contador.textContent = `${visiveis} resultado${visiveis !== 1 ? 's' : ''}`;
-
+        
         // Mensagem de nenhum resultado
         const semResultado = document.getElementById('sem-resultado-filtro');
         if (semResultado) semResultado.style.display = visiveis === 0 ? 'block' : 'none';
+
+        // 3. A MÁGICA DA CÂMERA ACONTECE AQUI:
+        if (posicoesVisiveis.length > 0) {
+            // Cria uma "caixa" imaginária envolvendo todos os pinos que restaram
+            const bounds = L.latLngBounds(posicoesVisiveis);
+
+            // Faz a câmera "voar" suavemente para essa caixa
+            this.map.flyToBounds(bounds, {
+                padding: [50, 50], // Dá um respiro nas bordas para os pinos não colarem na tela
+                maxZoom: 15,       // Evita dar um zoom exagerado na cara de um cachorro só
+                duration: 0.5      // Velocidade da animação em segundos
+            });
+        }
+
     }
 
     setFiltro(campo, valor) {
@@ -127,20 +172,26 @@
     limparFiltros() {
         this.activeFilters = { tipo: '', estadoSaude: '', porte: '', sexo: '', faixaEtaria: '' };
         document.querySelectorAll('.filtro-select').forEach(el => el.value = '');
+        
+        // Limpa também a barra de busca e desativa favoritos
+        const inputBusca = document.getElementById('input-busca-global');
+        if(inputBusca) inputBusca.value = '';
+        if(typeof window.filtroFavoritosAtivo !== 'undefined') window.filtroFavoritosAtivo = false;
+        const btnFavoritos = document.getElementById('btn-filtro-favoritos');
+        if(btnFavoritos) btnFavoritos.classList.remove('ativo');
+
         this.aplicarFiltros();
     }
 
     ativarModoCriacao() {
         const center = this.map.getCenter();
 
-        // Se já existir um marcador, apenas move-o para o centro atual do ecrã
         if (this.creationMarker) {
             this.creationMarker.setLatLng(center);
             this.creationMarker.openPopup();
             return;
         }
 
-        // Cria um ícone vermelho para se destacar dos restantes casos
         const createIcon = L.icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -150,23 +201,19 @@
             shadowSize: [41, 41]
         });
 
-        // Adiciona o marcador com a propriedade "draggable: true"
         this.creationMarker = L.marker(center, {
             draggable: true,
             icon: createIcon
         }).addTo(this.map);
 
-        // Define as coordenadas iniciais nos campos ocultos
         this.atualizarCamposCoordenadas(center.lat, center.lng);
 
-        // Evento: Dispara SEMPRE que o utilizador acaba de arrastar o pin
         this.creationMarker.on('dragend', (e) => {
             const position = e.target.getLatLng();
             this.atualizarCamposCoordenadas(position.lat, position.lng);
-            this.creationMarker.openPopup(); // Reabre o balão
+            this.creationMarker.openPopup(); 
         });
 
-        // Adiciona um balão com o botão que vai abrir a tua Modal
         this.creationMarker.bindPopup(`
             <div class="text-center p-1">
                 <b style="color: var(--primary-orange);">Localização Escolhida!</b><br>
@@ -185,23 +232,19 @@
     async atualizarCamposCoordenadas(lat, lng) {
         const inputLat = document.getElementById('lat');
         const inputLng = document.getElementById('lng');
-        const inputEndereco = document.getElementById('Endereco'); // ID padrão gerado pelo ASP.NET para asp-for="Endereco"
+        const inputEndereco = document.getElementById('Endereco'); 
 
-        // 1. Atualiza as coordenadas (formato C#)
         if (inputLat) inputLat.value = lat.toString().replace('.', ',');
         if (inputLng) inputLng.value = lng.toString().replace('.', ',');
 
-        // 2. Feedback visual no campo de endereço enquanto busca
         if (inputEndereco) {
-            inputEndereco.value = "Buscando endereço...";
+            inputEndereco.value = "A procurar endereço...";
 
-            // 3. Chamada à API de Geocodificação Reversa
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
                 const data = await response.json();
 
                 if (data && data.display_name) {
-                    // Formatamos para não ficar um texto gigante (ex: pegando rua, número e bairro)
                     const addr = data.address;
                     const rua = addr.road || addr.pedestrian || "";
                     const numero = addr.house_number ? `, ${addr.house_number}` : "";
@@ -209,12 +252,11 @@
 
                     const enderecoFormatado = `${rua}${numero}${bairro ? ' - ' + bairro : ''}`;
 
-                    // Se a API não retornar rua, usamos o display_name completo como fallback
                     inputEndereco.value = enderecoFormatado || data.display_name;
                 }
             } catch (error) {
-                console.error("Erro ao buscar endereço:", error);
-                inputEndereco.value = ""; // Limpa se der erro para o usuário digitar manualmente
+                console.error("Erro ao procurar endereço:", error);
+                inputEndereco.value = ""; 
             }
         }
     }
@@ -232,17 +274,13 @@ function abrirModalCriacao() {
     }
 }
 
-// Função global para destacar o card ao clicar no mapa ou interagir com ele
 function focusCard(id) {
-    // Busca o card correspondente (pode ser da lista ou do carrossel/feed)
     const card = document.querySelector(`.case-card[data-id="${id}"], .animal-card[data-id="${id}"]`);
     const painel = document.getElementById('painel-detalhes');
 
     if (card && painel) {
-        // Sincroniza o ID global para o sistema de comentários e ações
         ocorrenciaSelecionadaId = id;
 
-        // 1. Destaque Visual (apenas para cards que estão na lista lateral esquerda)
         document.querySelectorAll('.case-card').forEach(c => c.classList.remove('border', 'border-success', 'bg-light', 'active-card'));
         const cardLista = document.querySelector(`.case-card[data-id="${id}"]`);
         if (cardLista) {
@@ -250,10 +288,8 @@ function focusCard(id) {
             cardLista.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // 2. Exibir Painel Lateral
         painel.style.display = 'flex';
 
-        // 3. Preencher Dados de Texto
         document.getElementById('sidebar-titulo-id').innerText = `Cão: ${card.dataset.codigo || '---'}`;
         document.getElementById('sidebar-sexo').innerText = card.dataset.sexo || '---';
         document.getElementById('sidebar-cor').innerText = card.dataset.cor || '---';
@@ -263,11 +299,8 @@ function focusCard(id) {
         const elSociabilidade = document.getElementById('sidebar-estadosaude');
         if (elSociabilidade) elSociabilidade.innerText = card.dataset.estadosaude || '---';
 
-        // 4. Lógica de Imagem
         const imgElement = document.getElementById('sidebar-foto');
         const avisoSemFoto = document.querySelector('.aviso-sem-foto');
-
-        // Tenta pegar do atributo data-foto ou da tag img interna do card
         const fotoUrl = card.dataset.foto || (card.querySelector('img') ? card.querySelector('img').src : '');
 
         if (imgElement && avisoSemFoto) {
@@ -282,21 +315,17 @@ function focusCard(id) {
             }
         }
 
-        // 5. Ações e Histórico de Registros
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registro';
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registo';
         document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || card.getAttribute('data-agua') || '--:--';
         document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || card.getAttribute('data-comida') || '--:--';
 
-        // 6. LÓGICA UNIFICADA DE EXCLUSÃO (BOTÃO DELETAR)
         const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
         const containerAcoes = document.getElementById('header-acoes-ocorrencia') || document.querySelector('.dashboard-container');
 
         if (btnDeletar && containerAcoes) {
-            // Mapeamento resiliente para aceitar as variações que você usou no HTML
             const usuarioLogadoId = containerAcoes.dataset.usuarioLogado || containerAcoes.dataset.userId;
             const idCriadorOcorrencia = card.dataset.idUsuario || card.dataset.usuario;
 
-            // Se o usuário logado for o criador, exibe o botão da lixeira
             if (usuarioLogadoId && idCriadorOcorrencia && String(idCriadorOcorrencia) === String(usuarioLogadoId)) {
                 btnDeletar.style.display = 'inline-block';
             } else {
@@ -304,7 +333,6 @@ function focusCard(id) {
             }
         }
 
-        // 7. Lógica do Formulário de Comentários
         const hiddenId = document.getElementById('comentario-id-ocorrencia');
         if (hiddenId) hiddenId.value = id;
 
@@ -312,7 +340,6 @@ function focusCard(id) {
             window.carregarComentarios(id);
         }
 
-        // 8. Movimentação do Mapa (Ajuste Leaflet)
         if (window.sosDogMap && window.sosDogMap.map) {
             const latStr = card.dataset.lat ? card.dataset.lat.toString().replace(',', '.') : "";
             const lngStr = card.dataset.lng ? card.dataset.lng.toString().replace(',', '.') : "";
@@ -326,9 +353,6 @@ function focusCard(id) {
     }
 }
 
-// ==========================================
-// INICIALIZAÇÃO DO MAPA AO CARREGAR A PÁGINA
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     window.sosDogMap = new SosDogMap();
 });

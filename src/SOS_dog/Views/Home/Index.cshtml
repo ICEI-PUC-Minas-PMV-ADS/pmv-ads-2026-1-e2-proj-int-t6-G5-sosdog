@@ -19,22 +19,34 @@
     .favoritar-btn.favoritado {
         color: #e63946 !important;
     }
+    #btn-filtro-favoritos {
+        margin-left: 10px;
+        transition: all 0.3s ease;
+    }
+    #btn-filtro-favoritos.ativo {
+        background-color: #e63946 !important;
+        color: #ffffff !important;
+        border-color: #e63946 !important;
+    }
 </style>
 
 <main class="dashboard-container">
     <aside class="left-sidebar">
-        @* BARRA DE FILTRO: botão + contador (FEITO PELA EQUIPE) *@
-        <div class="filtro-barra">
+        <div class="filtro-barra d-flex align-items-center">
             <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
                 <i class="fa-solid fa-filter"></i>
                 Filtrar
                 <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
                 <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
             </button>
-            <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
+            
+            <button class="btn-filtro-toggle" id="btn-filtro-favoritos" onclick="toggleFiltroFavoritos()" title="Ver apenas os meus favoritos">
+                <i class="fa-solid fa-heart"></i> Favoritos
+            </button>
+
+            <span id="filtro-contador" class="filtro-contador ms-auto">@(Model?.Count() ?? 0) resultados</span>
         </div>
 
-        @* DROPDOWN COM OS SELECTS (FEITO PELA EQUIPE) *@
         <div class="filtro-dropdown" id="filtro-dropdown">
             <div class="filtro-grid">
                 <div class="filtro-campo">
@@ -98,7 +110,6 @@
         <div class="cases-list">
             @if (Model != null && Model.Any())
             {
-                // 2. LÓGICA DO CORAÇÃO VERMELHO RESTAURADA
                 var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
 
                 foreach (var item in Model)
@@ -118,9 +129,10 @@
                          data-estadoSaude="@item.EstadoSaude"
                          data-idade="@item.FaixaEtaria"
                          data-usuario="@item.IdUsuario"
+                         data-endereco="@item.Endereco" 
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                          data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
+                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registo" : item.NomeUsuarioUltimaAcao)">
 
                         @if (!string.IsNullOrEmpty(item.FotoAnimal))
                         {
@@ -217,9 +229,10 @@
                                      data-estadoSaude="@item.EstadoSaude"
                                      data-idade="@item.FaixaEtaria"
                                      data-usuario="@item.IdUsuario"
+                                     data-endereco="@item.Endereco"
                                      data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                                      data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
+                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registo" : item.NomeUsuarioUltimaAcao)">
 
                                     <div class="animal-card-img-wrapper">
                                         <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
@@ -304,7 +317,7 @@
         </div>
 
         <div class="profile-section action-card-container">
-            <h3 class="section-title">Registro de Ações</h3>
+            <h3 class="section-title">Registo de Ações</h3>
             <div class="action-layout">
                 <div class="action-buttons-modern">
                     <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
@@ -350,27 +363,26 @@
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
 
     <script>
-        // SCRIPT DA EQUIPE (Filtros Dropdown)
+        window.filtroFavoritosAtivo = false;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Garante que a digitação filtra o MAPA e os CARDS instantaneamente
+            const inputBuscaGlobal = document.getElementById('input-busca-global');
+            if (inputBuscaGlobal) {
+                inputBuscaGlobal.addEventListener('input', function() {
+                    if(window.sosDogMap) window.sosDogMap.aplicarFiltros();
+                });
+            }
+        });
+
         function toggleFiltroDropdown() {
             const dropdown = document.getElementById('filtro-dropdown');
             const chevron  = document.getElementById('filtro-chevron');
             const btn      = document.getElementById('btn-filtro-toggle');
             const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
-            chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
-            btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
+            if(chevron) chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
+            if(btn) btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
         }
-
-        document.addEventListener('click', function(e) {
-            const barra    = document.getElementById('btn-filtro-toggle');
-            const dropdown = document.getElementById('filtro-dropdown');
-            if (!barra?.contains(e.target) && !dropdown?.contains(e.target)) {
-                dropdown?.classList.remove('filtro-dropdown--aberto');
-                if (document.getElementById('filtro-chevron')) {
-                    document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
-                }
-                barra?.classList.remove('btn-filtro-toggle--ativo');
-            }
-        });
 
         function atualizarBadge() {
             const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
@@ -382,31 +394,20 @@
             }
         }
 
-        // 4. SEU SCRIPT RESTAURADO (Busca Topo e Favoritos)
-        let inputBuscaGlobal;
-
-        document.addEventListener("DOMContentLoaded", function() {
-            inputBuscaGlobal = document.querySelector('input[placeholder="Busca..."]');
-            if (inputBuscaGlobal) {
-                inputBuscaGlobal.addEventListener('keyup', realizarBuscaGlobal);
+        function toggleFiltroFavoritos() {
+            window.filtroFavoritosAtivo = !window.filtroFavoritosAtivo;
+            const btn = document.getElementById('btn-filtro-favoritos');
+            
+            if (window.filtroFavoritosAtivo) {
+                btn.classList.add('ativo');
+            } else {
+                btn.classList.remove('ativo');
             }
-        });
+            if(window.sosDogMap) window.sosDogMap.aplicarFiltros(); 
+        }
 
-        function realizarBuscaGlobal() {
-            if (!inputBuscaGlobal) return;
-            const termoBusca = inputBuscaGlobal.value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.case-card');
-
-            cards.forEach(card => {
-                const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
-                const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
-
-                if (!termoBusca || codigoCard.includes(termoBusca) || corCard.includes(termoBusca)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        function realizarBuscaGlobal(termoExterno) {
+            if(window.sosDogMap) window.sosDogMap.aplicarFiltros(); 
         }
 
         async function alternarFavorito(event, idOcorrencia) {
@@ -421,7 +422,7 @@
                 });
 
                 if (response.status === 401) {
-                    alert("Você precisa estar logado para favoritar um animal.");
+                    alert("Precisas de ter sessão iniciada para favoritar um animal.");
                     return;
                 }
 
@@ -431,9 +432,9 @@
                         icone.classList.add('favoritado');
                     } else {
                         icone.classList.remove('favoritado');
+                        // Se remover dos favoritos com o filtro ativo, atualiza o mapa
+                        if(window.filtroFavoritosAtivo && window.sosDogMap) window.sosDogMap.aplicarFiltros();
                     }
-                } else {
-                    console.error("Erro no Controller de Favoritos.");
                 }
             } catch (error) {
                 console.error("Erro ao favoritar:", error);
