@@ -5,6 +5,7 @@
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="~/css/filtro-mapa.css" asp-append-version="true" />
 
 <style>
     .favoritar-btn {
@@ -32,82 +33,7 @@
 
 <main class="dashboard-container">
     <aside class="left-sidebar">
-        <div class="filtro-barra d-flex align-items-center">
-            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
-                <i class="fa-solid fa-filter"></i>
-                Filtrar
-                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
-                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
-            </button>
-            
-            <button class="btn-filtro-toggle" id="btn-filtro-favoritos" onclick="toggleFiltroFavoritos()" title="Ver apenas os meus favoritos">
-                <i class="fa-solid fa-heart"></i> Favoritos
-            </button>
-
-            <span id="filtro-contador" class="filtro-contador ms-auto">@(Model?.Count() ?? 0) resultados</span>
-        </div>
-
-        <div class="filtro-dropdown" id="filtro-dropdown">
-            <div class="filtro-grid">
-                <div class="filtro-campo">
-                    <label class="filtro-label">Tipo de Ocorrência</label>
-                    <select class="filtro-select" id="filtro-tipo" onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia)).Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
-                        {
-                            <option value="@tipo.ToLower()">@tipo</option>
-                        }
-                    </select>
-                </div>
-                <div class="filtro-campo">
-                    <label class="filtro-label">Estado de Saúde</label>
-                    <select class="filtro-select" id="filtro-estadosaude" onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.EstadoSaude)).Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
-                        {
-                            <option value="@estado.ToLower()">@estado</option>
-                        }
-                    </select>
-                </div>
-                <div class="filtro-campo">
-                    <label class="filtro-label">Porte</label>
-                    <select class="filtro-select" id="filtro-porte" onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.Porte)).Select(o => o.Porte).Distinct().OrderBy(p => p))
-                        {
-                            <option value="@porte.ToLower()">@porte</option>
-                        }
-                    </select>
-                </div>
-                <div class="filtro-campo">
-                    <label class="filtro-label">Sexo</label>
-                    <select class="filtro-select" id="filtro-sexo" onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.Sexo)).Select(o => o.Sexo).Distinct().OrderBy(s => s))
-                        {
-                            <option value="@sexo.ToLower()">@sexo</option>
-                        }
-                    </select>
-                </div>
-                <div class="filtro-campo">
-                    <label class="filtro-label">Faixa Etária</label>
-                    <select class="filtro-select" id="filtro-faixaetaria" onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
-                        <option value="">Todas</option>
-                        @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>()).Where(o => !string.IsNullOrEmpty(o.FaixaEtaria)).Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
-                        {
-                            <option value="@idade.ToLower()">@idade</option>
-                        }
-                    </select>
-                </div>
-                <div class="filtro-campo filtro-campo-limpar">
-                    <button class="btn-limpar-filtros" onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
-                        <i class="fa-solid fa-xmark"></i> Limpar filtros
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="cases-list">
+        <div class="cases-list mt-3">
             @if (Model != null && Model.Any())
             {
                 var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
@@ -149,13 +75,16 @@
                                     <span>Id: @item.CodigoCachorro</span>
                                     <span class="badge badge-green">@item.EstadoSaude</span>
                                 </div>
-                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")" 
+                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")"
                                    id="coracao-@item.IdOcorrencia"
-                                   onclick="alternarFavorito(event, @item.IdOcorrencia)" 
+                                   onclick="alternarFavorito(event, @item.IdOcorrencia)"
                                    title="Favoritar"></i>
                             </div>
 
-                            <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
+                            <p>
+                                <strong>Tipo:</strong>
+                                @(item.TipoOcorrencia == "Rua" ? "Animal na Rua" : "Meu Pet Sumiu")
+                            </p>
 
                             <p class="text-truncate" title="@item.Descricao">
                                 <strong>Status:</strong> @item.EstadoSaude - @item.Porte - @item.Sexo
@@ -196,6 +125,100 @@
     </aside>
 
     <section class="main-map-area">
+        @* FILTRO FLUTUANTE NO MAPA (FEITO PELA EQUIPE) *@
+        <div class="filtro-mapa-wrapper">
+            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
+                <i class="fa-solid fa-filter"></i>
+                Filtrar
+                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
+                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
+            </button>
+            
+            <button class="btn-filtro-toggle ms-2" id="btn-filtro-favoritos" onclick="toggleFiltroFavoritos()" title="Ver apenas os meus favoritos">
+                <i class="fa-solid fa-heart"></i> Favoritos
+            </button>
+
+            <div class="filtro-mapa-painel" id="filtro-mapa-painel">
+                <div class="filtro-mapa-header">
+                    <span class="filtro-mapa-titulo">Filtros</span>
+                    <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
+                </div>
+                <div class="filtro-grid">
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Tipo</label>
+                        <select class="filtro-select" id="filtro-tipo"
+                                onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia))
+                                .Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
+                            {
+                                <option value="@tipo.ToLower()">@tipo</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Saúde</label>
+                        <select class="filtro-select" id="filtro-estadosaude"
+                                onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.EstadoSaude))
+                                .Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
+                            {
+                                <option value="@estado.ToLower()">@estado</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Porte</label>
+                        <select class="filtro-select" id="filtro-porte"
+                                onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.Porte))
+                                .Select(o => o.Porte).Distinct().OrderBy(p => p))
+                            {
+                                <option value="@porte.ToLower()">@porte</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Sexo</label>
+                        <select class="filtro-select" id="filtro-sexo"
+                                onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.Sexo))
+                                .Select(o => o.Sexo).Distinct().OrderBy(s => s))
+                            {
+                                <option value="@sexo.ToLower()">@sexo</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Idade</label>
+                        <select class="filtro-select" id="filtro-faixaetaria"
+                                onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
+                            <option value="">Todas</option>
+                            @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.FaixaEtaria))
+                                .Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
+                            {
+                                <option value="@idade.ToLower()">@idade</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo filtro-campo-limpar">
+                        <button class="btn-limpar-filtros"
+                                onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
+                            <i class="fa-solid fa-xmark"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="map">
             <button onclick="window.sosDogMap.ativarModoCriacao()"
                     class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
@@ -278,6 +301,50 @@
         </div>
     </section>
 
+    <section id="section-tutores" class="container-fluid py-4 d-none">
+        <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
+            <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
+                <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
+            </h2>
+        </div>
+
+        <div class="tutores-grid px-md-4 px-2 pb-5">
+            @foreach (var item in Model.Where(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="animal-card mx-auto shadow-lg" data-id="@item.IdOcorrencia">
+                    <div class="animal-card-img-wrapper">
+                        <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                             class="animal-card-img" alt="Foto do pet perdido" />
+
+                        <div class="badge-desaparecido shadow-sm">
+                            <i class="fa-solid fa-circle-exclamation fa-fade"></i> PROCURA-SE
+                        </div>
+
+                        <div class="animal-card-overlay text-start">
+                            <h3 class="mb-1 fw-bold text-white">@(string.IsNullOrEmpty(item.CodigoCachorro) ? "Sem Nome" : item.CodigoCachorro)</h3>
+
+                            <p class="mb-2 text-light" style="font-size: 0.9rem;">
+                                <i class="fa-solid fa-phone text-warning"></i> Contato: @(item.Usuario?.Telefone ?? "Não informado")
+                            </p>
+
+                            <button class="btn-gerar-cartaz w-100" onclick="gerarCartazPdf(@item.IdOcorrencia)">
+                                <i class="fa-solid fa-print"></i> Gerar Cartaz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!Model.Any(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">
+                    <i class="fa-solid fa-check-circle fa-3x mb-3" style="color: var(--light-green);"></i>
+                    <h5>Nenhum pet perdido registrado no momento.</h5>
+                </div>
+            }
+        </div>
+    </section>
+
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap" id="container-foto-sidebar">
             <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -330,8 +397,16 @@
                         </div>
                     </div>
                     <div class="user-card-body">
-                        <div class="status-row"><i class="fa-solid fa-droplet icon-agua"></i><span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span></div>
-                        <div class="status-row"><i class="fa-solid fa-bowl-food icon-comida"></i><span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span></div>
+                        <div class="status-row">
+                            <i class="fa-solid fa-droplet icon-agua"></i>
+                            <span class="status-label-text">Última Água:</span>
+                            <strong id="sidebar-last-agua" class="status-value">--:--</strong>
+                        </div>
+                        <div class="status-row">
+                            <i class="fa-solid fa-bowl-food icon-comida"></i>
+                            <span class="status-label-text">Última Comida:</span>
+                            <strong id="sidebar-last-comida" class="status-value">--:--</strong>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -361,12 +436,13 @@
     <script src="~/js/map-handler.js" asp-append-version="true"></script>
     <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
+    <script src="~/js/filtro-mapa.js" asp-append-version="true"></script>
+    <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
 
     <script>
         window.filtroFavoritosAtivo = false;
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Garante que a digitação filtra o MAPA e os CARDS instantaneamente
             const inputBuscaGlobal = document.getElementById('input-busca-global');
             if (inputBuscaGlobal) {
                 inputBuscaGlobal.addEventListener('input', function() {
@@ -422,7 +498,7 @@
                 });
 
                 if (response.status === 401) {
-                    alert("Precisas de ter sessão iniciada para favoritar um animal.");
+                    alert("Você precisa estar logado para favoritar um animal.");
                     return;
                 }
 
@@ -432,9 +508,10 @@
                         icone.classList.add('favoritado');
                     } else {
                         icone.classList.remove('favoritado');
-                        // Se remover dos favoritos com o filtro ativo, atualiza o mapa
                         if(window.filtroFavoritosAtivo && window.sosDogMap) window.sosDogMap.aplicarFiltros();
                     }
+                } else {
+                    console.error("Erro no Controller de Favoritos.");
                 }
             } catch (error) {
                 console.error("Erro ao favoritar:", error);

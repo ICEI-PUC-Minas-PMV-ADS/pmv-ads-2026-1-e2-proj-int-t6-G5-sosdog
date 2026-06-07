@@ -1,8 +1,7 @@
 ﻿class SosDogMap {
     constructor() {
         this.map = null;
-        this.userLocation = [-15.7801, -47.9292]; // Default: Brasília
-        // Filtro: array de marcadores e filtros ativos
+        this.userLocation = [-15.7801, -47.9292]; 
         this.markers = [];
         this.activeFilters = {
             tipo: '',
@@ -15,14 +14,13 @@
     }
 
     init() {
-        // 1. Tentar obter localização do utilizador
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     this.userLocation = [pos.coords.latitude, pos.coords.longitude];
                     this.renderMap(13);
                 },
-                () => this.renderMap(4) // Fallback se negar
+                () => this.renderMap(4) 
             );
         } else {
             this.renderMap(4);
@@ -30,7 +28,8 @@
     }
 
     renderMap(zoom) {
-        this.map = L.map('map').setView(this.userLocation, zoom);
+        this.map = L.map('map', { zoomControl: false }).setView(this.userLocation, zoom);
+        L.control.zoom({ position: 'topright' }).addTo(this.map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
@@ -38,38 +37,28 @@
 
         this.loadMarkersFromList();
 
-        // Correção de renderização
         setTimeout(() => this.map.invalidateSize(), 300);
     }
 
     loadMarkersFromList() {
-        // Pega todos os cards da lista lateral que possuem coordenadas
         const cards = document.querySelectorAll('.case-card');
-
-        // Limpa array antes de recarregar
         this.markers = [];
 
         cards.forEach(card => {
-
             const lat = parseFloat(card.dataset.lat.replace(',', '.'));
             const lng = parseFloat(card.dataset.lng.replace(',', '.'));
             const id = card.dataset.id;
             const codigo = card.dataset.codigo;
 
             if (!isNaN(lat) && !isNaN(lng)) {
-                // Cria o marcador
                 const marker = L.marker([lat, lng]).addTo(this.map);
-
-                // 1. Tooltip flutuante com o código do cachorro
                 marker.bindTooltip(`Cão: ${codigo}`);
 
-                // 2. Lógica de clique no PIN
                 marker.on('click', () => {
-                    this.map.setView([lat, lng], 15); // Dá zoom no local
-                    focusCard(id); // Chama a função para abrir o card
+                    this.map.setView([lat, lng], 15); 
+                    focusCard(id); 
                 });
 
-                // 3. Guarda referência do marcador + dados do card para o filtro
                 this.markers.push({
                     marker,
                     card,
@@ -89,31 +78,23 @@
         });
     }
 
-    // ==========================================
-    // MÉTODOS DE FILTRO
-    // ==========================================
-
     aplicarFiltros() {
         let visiveis = 0;
         
-        // Pega os dados da nossa barra de pesquisa e do filtro de favoritos
         const inputBusca = document.getElementById('input-busca-global');
         const termoBusca = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
         const filtroFavoritosAtivo = window.filtroFavoritosAtivo || false;
 
-        // 1. CRIAR UM ARRAY PARA GUARDAR AS COORDENADAS:
         const posicoesVisiveis = [];
 
         this.markers.forEach(({ marker, card, data }) => {
-            // Regra dos Dropdowns da equipa
             const passaDropdown =
                 (!this.activeFilters.tipo || data.tipo === this.activeFilters.tipo) &&
                 (!this.activeFilters.estadoSaude || data.estadoSaude === this.activeFilters.estadoSaude) &&
-                (!this.activeFilters.porte || data.porte === this.activeFilters.porte) && // Corrigido
+                (!this.activeFilters.porte || data.porte === this.activeFilters.porte) && 
                 (!this.activeFilters.sexo || data.sexo === this.activeFilters.sexo) &&
                 (!this.activeFilters.faixaEtaria || data.faixaEtaria === this.activeFilters.faixaEtaria);
 
-            // Regra da Pesquisa Global
             const passaBusca = !termoBusca || 
                                data.codigo.includes(termoBusca) || 
                                data.cor.includes(termoBusca) ||
@@ -122,46 +103,36 @@
                                data.endereco.includes(termoBusca) ||
                                data.cuidador.includes(termoBusca); 
                                
-            // Regra dos Favoritos
             const iconeCoracao = card.querySelector('.favoritar-btn');
             const ehFavorito = iconeCoracao ? iconeCoracao.classList.contains('favoritado') : false;
             const passaFavorito = !filtroFavoritosAtivo || ehFavorito;
 
-            // Resultado Final: Mostra ou esconde o Card E o Pino!
             if (passaDropdown && passaBusca && passaFavorito) {
                 card.style.display = 'flex';
-                if (!this.map.hasLayer(marker)) marker.addTo(this.map); // Volta a colocar no mapa
+                if (!this.map.hasLayer(marker)) marker.addTo(this.map); 
                 visiveis++;
 
-                // 2. SALVAR A POSIÇÃO DO PINO QUE FICOU NA TELA:
                 posicoesVisiveis.push(marker.getLatLng());
             } else {
                 card.style.display = 'none';
-                if (this.map.hasLayer(marker)) marker.remove(); // Remove o pino do mapa corretamente
+                if (this.map.hasLayer(marker)) marker.remove(); 
             }
         });
 
-        // Atualiza contador 
         const contador = document.getElementById('filtro-contador');
         if (contador) contador.textContent = `${visiveis} resultado${visiveis !== 1 ? 's' : ''}`;
         
-        // Mensagem de nenhum resultado
         const semResultado = document.getElementById('sem-resultado-filtro');
         if (semResultado) semResultado.style.display = visiveis === 0 ? 'block' : 'none';
 
-        // 3. A MÁGICA DA CÂMERA ACONTECE AQUI:
         if (posicoesVisiveis.length > 0) {
-            // Cria uma "caixa" imaginária envolvendo todos os pinos que restaram
             const bounds = L.latLngBounds(posicoesVisiveis);
-
-            // Faz a câmera "voar" suavemente para essa caixa
             this.map.flyToBounds(bounds, {
-                padding: [50, 50], // Dá um respiro nas bordas para os pinos não colarem na tela
-                maxZoom: 15,       // Evita dar um zoom exagerado na cara de um cachorro só
-                duration: 0.5      // Velocidade da animação em segundos
+                padding: [50, 50], 
+                maxZoom: 15,       
+                duration: 0.5      
             });
         }
-
     }
 
     setFiltro(campo, valor) {
@@ -173,7 +144,6 @@
         this.activeFilters = { tipo: '', estadoSaude: '', porte: '', sexo: '', faixaEtaria: '' };
         document.querySelectorAll('.filtro-select').forEach(el => el.value = '');
         
-        // Limpa também a barra de busca e desativa favoritos
         const inputBusca = document.getElementById('input-busca-global');
         if(inputBusca) inputBusca.value = '';
         if(typeof window.filtroFavoritosAtivo !== 'undefined') window.filtroFavoritosAtivo = false;
@@ -262,10 +232,6 @@
     }
 }
 
-// ==========================================
-// FUNÇÕES GLOBAIS
-// ==========================================
-
 function abrirModalCriacao() {
     const modalEl = document.getElementById('modalOcorrencia');
     if (modalEl) {
@@ -315,9 +281,16 @@ function focusCard(id) {
             }
         }
 
-        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registo';
-        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || card.getAttribute('data-agua') || '--:--';
-        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || card.getAttribute('data-comida') || '--:--';
+        document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registro';
+        
+        // A MELHORIA DELES AQUI!
+        if (typeof formatarDataAcao === 'function') {
+            document.getElementById('sidebar-last-agua').innerText = formatarDataAcao(card.dataset.agua) || '--:--';
+            document.getElementById('sidebar-last-comida').innerText = formatarDataAcao(card.dataset.comida) || '--:--';
+        } else {
+            document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || '--:--';
+            document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || '--:--';
+        }
 
         const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
         const containerAcoes = document.getElementById('header-acoes-ocorrencia') || document.querySelector('.dashboard-container');

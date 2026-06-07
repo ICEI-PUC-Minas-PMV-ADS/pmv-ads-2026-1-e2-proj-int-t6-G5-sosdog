@@ -42,10 +42,13 @@
             <a id="btn-feed" class="nav-btn-transparent" asp-controller="Home" asp-action="Feed">
                 <i class="fa-solid fa-folder-open"></i> Feed de Casos
             </a>
+
+            <a id="btn-tutores" class="nav-btn-transparent" asp-controller="Tutores" asp-action="Index">
+                <i class="fa-solid fa-magnifying-glass"></i> Pets Perdidos
+            </a>
         </nav>
         <div class="header-right">
             
-            <!-- ====== BARRA DE BUSCA UNIVERSAL ====== -->
             <div class="search-bar" style="background: transparent; padding: 0;">
                 <div class="input-group" style="max-width: 300px; background-color: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #ccc;">
                     <input type="text" class="form-control border-0 text-dark" placeholder="Busca..." id="input-busca-global"
@@ -56,8 +59,6 @@
                     </button>
                 </div>
             </div>
-            <!-- ======================================= -->
-
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <div class="user-menu-logged">
@@ -97,7 +98,10 @@
     <main>
         @if (TempData["Sucesso"] != null)
         {
-            <div class="alert alert-success text-center m-3">@TempData["Sucesso"]</div>
+            <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
+                @TempData["Sucesso"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
         }
         @if (TempData["ErroLogin"] != null)
         {
@@ -109,11 +113,17 @@
         }
         @if (TempData["ErroReset"] != null)
         {
-            <div class="alert alert-danger text-center m-3">@TempData["ErroReset"]</div>
+            <div class="alert alert-danger alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
+                @TempData["ErroReset"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
         }
         @if (TempData["SucessoReset"] != null)
         {
-            <div class="alert alert-success text-center m-3">@TempData["SucessoReset"]</div>
+            <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
+                @TempData["SucessoReset"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
         }
 
         @RenderBody()
@@ -141,8 +151,8 @@
 
     <script src="~/js/usuario.js" asp-append-version="true"></script>
     <script src="~/js/feedCasos.js" asp-append-version="true"></script>
+    <script src="~/js/alertsScript.js"></script>
 
-    <!-- SCRIPT UNIVERSAL DA BUSCA -->
     <script>
         function acionarBusca() {
             const input = document.getElementById('input-busca-global');

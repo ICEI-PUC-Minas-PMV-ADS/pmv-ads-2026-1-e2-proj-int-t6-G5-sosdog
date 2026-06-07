@@ -1,0 +1,89 @@
+﻿@model SosDog.Models.Ocorrencia
+@{
+    Layout = null; // Mantém sem o layout padrão para não herdar barras de navegação externas
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartaz de Utilidade Pública - @Model.CodigoCachorro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="~/css/cartaz.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="container text-center my-3 no-print">
+        <button class="btn btn-dark btn-lg" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> Imprimir / Salvar como PDF
+        </button>
+        <button class="btn btn-secondary btn-lg" onclick="window.close()">
+            <i class="fa-solid fa-xmark"></i> Fechar Janela
+        </button>
+    </div>
+
+    <div class="poster-container">
+        <div class="poster-header">
+            <h1 class="display-4 fw-bold m-0">ALERTA: ANIMAL EM RISCO</h1>
+            <p class="lead m-0 mt-2">SOS DOG - Sistema de Apoio e Rastreamento Canino</p>
+        </div>
+
+        <div class="poster-image-wrapper">
+            @if (!string.IsNullOrEmpty(Model.FotoAnimal))
+            {
+                <img src="@Model.FotoAnimal" class="poster-img" alt="Foto do Animal Registrado" />
+            }
+            else
+            {
+                <div class="p-5 bg-light text-muted border rounded">
+                    <i class="fa-solid fa-dog fa-5x mb-3"></i>
+                    <p>Sem foto disponível para este registro.</p>
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5 class="fw-bold text-uppercase"><i class="fa-solid fa-circle-info"></i> Detalhes do Animal</h5>
+                    <p class="mb-1"><strong>Código de Busca:</strong> @Model.CodigoCachorro</p>
+                    <p class="mb-1"><strong>Tipo de Caso:</strong> @Model.TipoOcorrencia</p>
+                    <p class="mb-1"><strong>Estado de Saúde:</strong> @Model.EstadoSaude</p>
+                    <p class="mb-0"><strong>Características:</strong> Porte @Model.Porte, Pelagem @Model.CorPelagem</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5 class="fw-bold text-uppercase"><i class="fa-solid fa-location-dot"></i> Último Local Visto</h5>
+                    <p class="mb-0">@Model.Endereco</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3 px-2">
+            <h5 class="fw-bold text-uppercase">Descrição do Caso:</h5>
+            <p class="lead" style="font-size: 1.1rem; text-align: justify;">@Model.Descricao</p>
+        </div>
+
+        <div class="poster-footer">
+            <h3 class="fw-bold text-muted">Viu este animal ou sabe o paradeiro? Entre em contato imediato:</h3>
+            <div class="contact-phone my-2">
+                <i class="fa-solid fa-phone"></i> @(Model.Usuario?.Telefone ?? "Não Informado")
+            </div>
+            <p class="text-muted m-0">Anjo Protetor Responsável: <strong>@(Model.Usuario?.Nome ?? "Comunidade SOS Dog")</strong></p>
+        </div>
+    </div>
+
+    <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+            });
+    </script>
+</body>
+</html>

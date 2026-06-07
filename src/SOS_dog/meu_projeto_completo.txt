@@ -115,12 +115,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SosDog.Models;
-using System.Security.Claims; // NecessÃ¡rio para usar Claims
-using Microsoft.AspNetCore.Authorization; // NecessÃ¡rio para [Authorize]
+using System.Security.Claims; 
+using Microsoft.AspNetCore.Authorization; 
 
 namespace SosDog.Controllers
 {
-    [Authorize] // Garante que o usuÃ¡rio esteja logado para qualquer aÃ§Ã£o neste Controller
+    [Authorize] 
     public class FavoritosController : Controller
     {
         private readonly AppDbContext _context;
@@ -130,17 +130,60 @@ namespace SosDog.Controllers
             _context = context;
         }
 
-        // POST: Favoritar
+        // ========================================================
+        // 1. MÃ‰TODO NOVO PARA O MAPA (AJAX)
+        // ========================================================
+        [HttpPost]
+        public async Task<IActionResult> Alternar(int idOcorrencia)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+            
+            int idUsuario = int.Parse(userId);
+
+            // Procura se esse usuÃ¡rio jÃ¡ curtiu esse cachorro
+            var favorito = _context.Favoritos
+                .FirstOrDefault(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);
+
+            bool isFavoritado;
+
+            if (favorito != null)
+            {
+                // Se achou, significa que jÃ¡ estava favoritado. EntÃ£o a gente remove.
+                _context.Favoritos.Remove(favorito);
+                isFavoritado = false;
+            }
+            else
+            {
+                // Se nÃ£o achou, a gente cria o favorito.
+                var novoFavorito = new Favorito
+                {
+                    IdUsuario = idUsuario,
+                    IdOcorrencia = idOcorrencia
+                };
+                _context.Favoritos.Add(novoFavorito);
+                isFavoritado = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Responde para o JavaScript com um JSON simples, sem recarregar a pÃ¡gina
+            return Json(new { favoritado = isFavoritado });
+        }
+
+
+        // ========================================================
+        // 2. MÃ‰TODOS ORIGINAIS DA EQUIPE (Mantidos para nÃ£o quebrar)
+        // ========================================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int idOcorrencia)
         {
-            // RECUPERANDO O ID DO USUÃRIO LOGADO
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
             int idUsuario = int.Parse(userId);
 
-            // Verifica se jÃ¡ existe para evitar duplicados no banco
             var existe = _context.Favoritos
                 .Any(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);
 
@@ -159,12 +202,10 @@ namespace SosDog.Controllers
             return RedirectToAction("Details", "Ocorrencias", new { id = idOcorrencia });
         }
 
-        // POST: Remover favorito
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int idOcorrencia)
         {
-            // RECUPERANDO O ID DO USUÃRIO LOGADO
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
             int idUsuario = int.Parse(userId);
@@ -205,23 +246,23 @@ namespace SOS_dog.Controllers
 
         public IActionResult Index()
         {
-            var listaOcorrencias = _context.Ocorrencias.ToList();
+            var listaOcorrencias = _context.Ocorrencias
+                 .Include(o => o.Usuario) 
+                 .ToList();
             return View(listaOcorrencias);
         }
 
-        // ADICIONE ESTE MÃ‰TODO EXPLICITAMENTE:
         public IActionResult Feed()
         {
             try
             {
-                // Tenta buscar do banco
-                var listaOcorrencias = _context.Ocorrencias.ToList();
+                var listaOcorrencias = _context.Ocorrencias
+                     .Include(o => o.Usuario) // <--- Garante o carregamento no Feed tambÃ©m
+                     .ToList();
                 return View("Index", listaOcorrencias);
             }
             catch (Exception)
             {
-                // Se o banco der erro (como o erro de login que vimos), 
-                // ele retorna uma lista vazia para a pÃ¡gina NÃƒO dar 404 nem tela preta.
                 return View("Index", new List<Ocorrencia>());
             }
         }
@@ -568,33 +609,85 @@ namespace SosDog.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // 1. Buscar a ocorrência no banco
             var ocorrencia = await _context.Ocorrencias.FindAsync(id);
-            if (ocorrencia == null) return NotFound();
+            if (ocorrencia == null)
+                return NotFound();
 
-            // 1. Verificar permissão PRIMEIRO
-            var usuarioLogadoId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (ocorrencia.IdUsuario.ToString() != usuarioLogadoId)
-                return Forbid();
-
-            // 2. Deletar foto do servidor
-            if (!string.IsNullOrEmpty(ocorrencia.FotoAnimal))
+            // 2. Verificar permissão de forma segura (Tipagem forte)
+            var claimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(claimId, out int usuarioLogadoId) || ocorrencia.IdUsuario != usuarioLogadoId)
             {
-                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath,
-                                             ocorrencia.FotoAnimal.TrimStart('/'));
-                if (System.IO.File.Exists(imagePath))
-                {
-                    try { System.IO.File.Delete(imagePath); }
-                    catch (Exception ex) { Console.WriteLine("Erro ao deletar arquivo: " + ex.Message); }
-                }
+                return Forbid();
             }
 
-            // 3. Só então deletar do banco (uma única vez)
-            _context.Ocorrencias.Remove(ocorrencia);
-            await _context.SaveChangesAsync();
+            // 3. Limpar dependentes PRIMEIRO (Evita o erro de FK enquanto você não altera o banco)
+            var favoritos = _context.Favoritos.Where(f => f.IdOcorrencia == id);
+            _context.Favoritos.RemoveRange(favoritos);
 
+            var comentarios = _context.Comentarios.Where(c => c.IdOcorrencia == id);
+            _context.Comentarios.RemoveRange(comentarios);
+
+            // 4. Deletar do banco e salvar
+            _context.Ocorrencias.Remove(ocorrencia);
+            await _context.SaveChangesAsync(); // Se der erro aqui, ele para e não deleta a foto à toa.
+
+            // 5. Deletar foto do servidor apenas se a exclusão no banco for um sucesso
+            RemoverFotoDoServidor(ocorrencia.FotoAnimal);
+
+            // 6. Retornar feedback ao usuário
             TempData["Sucesso"] = "Ocorrência removida com sucesso!";
             return RedirectToAction("Index", "Home");
         }
+
+        // GET: Ocorrencias/Cartaz/5
+        public async Task<IActionResult> Cartaz(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Busca a ocorrência trazendo os dados do usuário anexados (Eager Loading)
+            var ocorrencia = await _context.Ocorrencias
+                .Include(o => o.Usuario)
+                .FirstOrDefaultAsync(m => m.IdOcorrencia == id);
+
+            if (ocorrencia == null)
+            {
+                return NotFound();
+            }
+
+            // Retorna a view especializada do cartaz
+            return View(ocorrencia);
+        }
+
+        // ==========================================
+        // MÉTODOS AUXILIARES
+        // ==========================================
+
+        /// <summary>
+        /// Apaga o arquivo físico da imagem do servidor para economizar espaço
+        /// </summary>
+        private void RemoverFotoDoServidor(string caminhoFoto)
+        {
+            if (string.IsNullOrEmpty(caminhoFoto)) return;
+
+            try
+            {
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, caminhoFoto.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Em um ambiente de produção real, você usaria o ILogger aqui.
+                Console.WriteLine($"Aviso: Não foi possível deletar a imagem do disco. Erro: {ex.Message}");
+            }
+        }
+
 
         private bool OcorrenciaExists(int id)
         {
@@ -2378,7 +2471,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33fa1901d8d6c9dc476ada0030bbd2cb45ce3bdb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54c8ee0fd6f675eebd25b751959ec32ebdfbec2d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2436,19 +2529,18 @@ using System.Reflection;
 
 //------------------------------------------------------------------------------
 // <auto-generated>
-//     O cÃ³digo foi gerado por uma ferramenta.
-//     VersÃ£o de Tempo de ExecuÃ§Ã£o:4.0.30319.42000
+//     This code was generated by a tool.
 //
-//     As alteraÃ§Ãµes ao arquivo poderÃ£o causar comportamento incorreto e serÃ£o perdidas se
-//     o cÃ³digo for gerado novamente.
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
 
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Mvc.ApplicationParts.ProvideApplicationPartFactoryAttribute("Microsoft.AspNetCore.Mvc.ApplicationParts.ConsolidatedAssemblyApplicationPartFact" +
-    "ory, Microsoft.AspNetCore.Mvc.Razor")]
+[assembly: Microsoft.AspNetCore.Mvc.ApplicationParts.ProvideApplicationPartFactoryAttribute(("Microsoft.AspNetCore.Mvc.ApplicationParts.ConsolidatedAssemblyApplicationPartFact" +
+    "ory, Microsoft.AspNetCore.Mvc.Razor"))]
 [assembly: Microsoft.AspNetCore.Razor.Hosting.RazorLanguageVersionAttribute("10.0")]
 [assembly: Microsoft.AspNetCore.Razor.Hosting.RazorConfigurationNameAttribute("MVC-3.0")]
 [assembly: Microsoft.AspNetCore.Razor.Hosting.RazorExtensionAssemblyNameAttribute("MVC-3.0", "Microsoft.CodeAnalysis.Razor.Compiler")]
@@ -2464,155 +2556,149 @@ using System.Reflection;
     ViewData["Title"] = "Contatos de Emergência";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
 <style>
-   
-    body, main, .dashboard-container {
+    /* CSS Isolado e Blindado para a Tela de Emergência */
+    #sosdog-emergencia {
         background-color: #f2f2f2 !important;
+        width: 100% !important;
+        min-height: calc(100vh - 120px) !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 40px 20px !important;
+        box-sizing: border-box !important;
     }
 
-    .body-emergencia {
-        background-color: #f2f2f2 !important; 
-        color: #ffffff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 78vh;
-        padding: 20px;
-        width: 100%;
+    #sosdog-emergencia .container-emergencia {
+        background-color: #2b443b !important;
+        width: 100% !important;
+        max-width: 650px !important;
+        padding: 40px 35px !important;
+        border-radius: 15px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+        text-align: center !important;
+        margin: auto !important;
     }
 
-    .container-emergencia {
-        background-color: #2b443b !important; 
-        width: 100%;
-        max-width: 650px;
-        padding: 40px 35px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        text-align: center;
+    #sosdog-emergencia .header-emergencia i {
+        font-size: 3.5rem !important;
+        color: #e57357 !important;
+        margin-bottom: 20px !important;
+        display: inline-block !important;
     }
 
-    .header-emergencia i {
-        font-size: 3.5rem;
-        color: #e57357;
-        margin-bottom: 20px;
+    #sosdog-emergencia .container-emergencia h1 {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+        color: #ffffff !important;
     }
 
-    .container-emergencia h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 12px;
-        color: #ffffff;
-        font-family: 'Montserrat', sans-serif;
+    #sosdog-emergencia .container-emergencia p {
+        font-size: 0.95rem !important;
+        color: #cbd5e1 !important;
+        margin-bottom: 35px !important;
+        line-height: 1.6 !important;
     }
 
-    .container-emergencia p {
-        font-size: 0.95rem;
-        color: #cbd5e1;
-        margin-bottom: 35px;
-        line-height: 1.6;
+    #sosdog-emergencia .lista-contatos {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        margin-bottom: 35px !important;
+        padding: 0 !important;
     }
 
-    .lista-contatos {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin-bottom: 35px;
+    #sosdog-emergencia .card-contato {
+        background-color: #1f322b !important;
+        border-left: 4px solid #e57357 !important;
+        padding: 18px 22px !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        text-align: left !important;
+        transition: transform 0.2s, background-color 0.2s !important;
+        text-decoration: none !important;
     }
 
-    .card-contato {
-        background-color: #1f322b !important; 
-        border-left: 4px solid #e57357;
-        padding: 18px 22px;
-        border-radius: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-align: left;
-        transition: transform 0.2s;
+    #sosdog-emergencia .card-contato:hover {
+        transform: translateY(-2px) !important;
+        background-color: #253b33 !important;
     }
 
-        .card-contato:hover {
-            transform: translateY(-2px);
-            background-color: #253b33 !important;
-        }
-
-    .info-contato h3 {
-        font-size: 1.15rem;
-        font-weight: 600;
-        color: #ffffff;
-        margin-bottom: 4px;
+    #sosdog-emergencia .info-contato h3 {
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        margin-bottom: 4px !important;
     }
 
-    .info-contato p {
-        margin-bottom: 0;
-        font-size: 0.88rem;
-        color: #a3b8cc;
-        line-height: 1.4;
+    #sosdog-emergencia .info-contato p {
+        margin-bottom: 0 !important;
+        font-size: 0.88rem !important;
+        color: #a3b8cc !important;
+        line-height: 1.4 !important;
     }
 
-    .btn-ligar {
+    #sosdog-emergencia .btn-ligar {
         background-color: #e57357 !important;
         color: white !important;
         text-decoration: none !important;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        padding: 12px 20px !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: background-color 0.2s !important;
     }
 
-        .btn-ligar:hover {
-            background-color: #cf5f44 !important;
-        }
+    #sosdog-emergencia .btn-ligar:hover {
+        background-color: #cf5f44 !important;
+    }
 
-    .btn-voltar {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: #cbd5e1;
+    #sosdog-emergencia .btn-voltar {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        color: #cbd5e1 !important;
         text-decoration: none !important;
-        font-size: 0.95rem;
-        font-weight: 600;
-        transition: color 0.2s;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        transition: color 0.2s !important;
+        margin-top: 15px !important;
     }
 
-        .btn-voltar:hover {
-            color: #e57357;
-        }
+    #sosdog-emergencia .btn-voltar:hover {
+        color: #e57357 !important;
+    }
 </style>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const bodyElement = document.body;
-        if (bodyElement) {
-            bodyElement.style.setProperty("background-color", "#f2f2f2", "important");
-        }
-        // Se houver uma tag <main> genérica no _Layout, ajusta ela também
-        const mainElement = document.querySelector("main");
-        if (mainElement) {
-            mainElement.style.setProperty("background-color", "#f2f2f2", "important");
-        }
-    });
-</script>
-<div class="body-emergencia">
+<div id="sosdog-emergencia">
     <div class="container-emergencia">
+
         <div class="header-emergencia">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <h1>Contatos de Emergência</h1>
-            <p>Se você presenciou um caso de maus-tratos extremos, acidente grave ou risco iminente à vida de um animal, entre em contato com as autoridades pelos canais abaixo.</p>
         </div>
 
+        <p>Se você presenciou um caso de maus-tratos extremes, acidente grave ou risco iminente à vida de um animal, entre em contato com as autoridades pelos canais abaixo.</p>
+
         <div class="lista-contatos">
+
             <div class="card-contato">
                 <div class="info-contato">
                     <h3>Polícia Militar (Flagrantes)</h3>
                     <p>Para casos de agressão ou abandono acontecendo agora.</p>
                 </div>
-                <a href="tel:190" class="btn-ligar"><i class="fa-solid fa-phone"></i> 190</a>
+                <a href="#" class="btn-ligar" data-numero="190">
+                    <i class="fa-solid fa-copy"></i> Copiar 190
+                </a>
             </div>
 
             <div class="card-contato">
@@ -2620,7 +2706,9 @@ using System.Reflection;
                     <h3>Corpo de Bombeiros (Resgate)</h3>
                     <p>Para animais presos, em locais de risco ou atropelados.</p>
                 </div>
-                <a href="tel:193" class="btn-ligar"><i class="fa-solid fa-phone"></i> 193</a>
+                <a href="#" class="btn-ligar" data-numero="193">
+                    <i class="fa-solid fa-copy"></i> Copiar 193
+                </a>
             </div>
 
             <div class="card-contato">
@@ -2628,15 +2716,23 @@ using System.Reflection;
                     <h3>Disque Denúncia / Polícia Civil</h3>
                     <p>Para registrar denúncias anônimas e investigações.</p>
                 </div>
-                <a href="tel:181" class="btn-ligar"><i class="fa-solid fa-phone"></i> 181</a>
+                <a href="#" class="btn-ligar" data-numero="181">
+                    <i class="fa-solid fa-copy"></i> Copiar 181
+                </a>
             </div>
+
         </div>
 
-        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn-voltar">
-            <i class="fa-solid fa-arrow-left"></i> Voltar para o Mapa
+        <a href="/Home/Index" class="btn-voltar">
+            <i class="fa-solid fa-arrow-left"></i> Voltar para o Início
         </a>
+
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/emergencia.js" asp-append-version="true"></script>
+}
 
 
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\Views\Home\Feed.cshtml ---
@@ -2773,112 +2869,41 @@ using System.Reflection;
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="~/css/filtro-mapa.css" asp-append-version="true" />
+
+<style>
+    .favoritar-btn {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+
+        .favoritar-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .favoritar-btn.favoritado {
+            color: #e63946 !important;
+        }
+</style>
 
 <main class="dashboard-container">
     <aside class="left-sidebar">
-        @* BARRA DE FILTRO: botão + contador *@
-        <div class="filtro-barra">
-            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
-                <i class="fa-solid fa-filter"></i>
-                Filtrar
-                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
-                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
-            </button>
-            <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
-        </div>
-
-        @* DROPDOWN COM OS SELECTS *@
-        <div class="filtro-dropdown" id="filtro-dropdown">
-            <div class="filtro-grid">
-
-                <div class="filtro-campo">
-                    <label class="filtro-label">Tipo de Ocorrência</label>
-                    <select class="filtro-select" id="filtro-tipo"
-                            onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia))
-                            .Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
-                        {
-                            <option value="@tipo.ToLower()">@tipo</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="filtro-campo">
-                    <label class="filtro-label">Estado de Saúde</label>
-                    <select class="filtro-select" id="filtro-estadosaude"
-                            onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.EstadoSaude))
-                            .Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
-                        {
-                            <option value="@estado.ToLower()">@estado</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="filtro-campo">
-                    <label class="filtro-label">Porte</label>
-                    <select class="filtro-select" id="filtro-porte"
-                            onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.Porte))
-                            .Select(o => o.Porte).Distinct().OrderBy(p => p))
-                        {
-                            <option value="@porte.ToLower()">@porte</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="filtro-campo">
-                    <label class="filtro-label">Sexo</label>
-                    <select class="filtro-select" id="filtro-sexo"
-                            onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
-                        <option value="">Todos</option>
-                        @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.Sexo))
-                            .Select(o => o.Sexo).Distinct().OrderBy(s => s))
-                        {
-                            <option value="@sexo.ToLower()">@sexo</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="filtro-campo">
-                    <label class="filtro-label">Faixa Etária</label>
-                    <select class="filtro-select" id="filtro-faixaetaria"
-                            onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
-                        <option value="">Todas</option>
-                        @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                            .Where(o => !string.IsNullOrEmpty(o.FaixaEtaria))
-                            .Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
-                        {
-                            <option value="@idade.ToLower()">@idade</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="filtro-campo filtro-campo-limpar">
-                    <button class="btn-limpar-filtros"
-                            onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
-                        <i class="fa-solid fa-xmark"></i> Limpar filtros
-                    </button>
-                </div>
-
-            </div>
-        </div>
         <div class="cases-list">
             @if (Model != null && Model.Any())
             {
+                // 2. LÓGICA DO CORAÇÃO VERMELHO RESTAURADA
+                var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
+
                 foreach (var item in Model)
                 {
+                    bool estaFavoritado = listafavoritosIds.Contains(item.IdOcorrencia);
+
                     <div class="case-card"
                          data-tipo="@item.TipoOcorrencia"
                          data-id="@item.IdOcorrencia"
-                         data-foto="@item.FotoAnimal" 
+                         data-foto="@item.FotoAnimal"
                          data-lat="@item.Latitude"
                          data-lng="@item.Longitude"
                          data-codigo="@item.CodigoCachorro"
@@ -2902,12 +2927,21 @@ using System.Reflection;
                         }
 
                         <div class="case-details">
-                            <div class="case-header">
-                                <span>Id: @item.CodigoCachorro</span>
-                                <span class="badge badge-green">@item.EstadoSaude</span>
+                            <div class="case-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span>Id: @item.CodigoCachorro</span>
+                                    <span class="badge badge-green">@item.EstadoSaude</span>
+                                </div>
+                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")"
+                                   id="coracao-@item.IdOcorrencia"
+                                   onclick="alternarFavorito(event, @item.IdOcorrencia)"
+                                   title="Favoritar"></i>
                             </div>
 
-                            <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
+                            <p>
+                                <strong>Tipo:</strong>
+                                @(item.TipoOcorrencia == "Rua" ? "Animal na Rua" : "Meu Pet Sumiu")
+                            </p>
 
                             <p class="text-truncate" title="@item.Descricao">
                                 <strong>Status:</strong> @item.EstadoSaude - @item.Porte - @item.Sexo
@@ -2925,9 +2959,9 @@ using System.Reflection;
             }
         </div>
 
-        <div class="sidebar-buttons">
+        <div class="sidebar-buttons" style="display: flex; gap: 10px; width: 100%;">
             <a asp-controller="Home" asp-action="Emergencia" style="text-decoration: none; flex: 1; display: block;">
-                <button class="btn-orange" >
+                <button class="btn-orange" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0;">
                     Urgente <i class="fa-solid fa-triangle-exclamation"></i>
                 </button>
             </a>
@@ -2948,6 +2982,96 @@ using System.Reflection;
     </aside>
 
     <section class="main-map-area">
+        @* FILTRO FLUTUANTE NO MAPA (FEITO PELA EQUIPE) *@
+        <div class="filtro-mapa-wrapper">
+            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
+                <i class="fa-solid fa-filter"></i>
+                Filtrar
+                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
+                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
+            </button>
+
+            <div class="filtro-mapa-painel" id="filtro-mapa-painel">
+                <div class="filtro-mapa-header">
+                    <span class="filtro-mapa-titulo">Filtros</span>
+                    <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
+                </div>
+                <div class="filtro-grid">
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Tipo</label>
+                        <select class="filtro-select" id="filtro-tipo"
+                                onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia))
+                                .Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
+                            {
+                                <option value="@tipo.ToLower()">@tipo</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Saúde</label>
+                        <select class="filtro-select" id="filtro-estadosaude"
+                                onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.EstadoSaude))
+                                .Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
+                            {
+                                <option value="@estado.ToLower()">@estado</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Porte</label>
+                        <select class="filtro-select" id="filtro-porte"
+                                onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.Porte))
+                                .Select(o => o.Porte).Distinct().OrderBy(p => p))
+                            {
+                                <option value="@porte.ToLower()">@porte</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Sexo</label>
+                        <select class="filtro-select" id="filtro-sexo"
+                                onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
+                            <option value="">Todos</option>
+                            @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.Sexo))
+                                .Select(o => o.Sexo).Distinct().OrderBy(s => s))
+                            {
+                                <option value="@sexo.ToLower()">@sexo</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo">
+                        <label class="filtro-label">Idade</label>
+                        <select class="filtro-select" id="filtro-faixaetaria"
+                                onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
+                            <option value="">Todas</option>
+                            @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
+                                .Where(o => !string.IsNullOrEmpty(o.FaixaEtaria))
+                                .Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
+                            {
+                                <option value="@idade.ToLower()">@idade</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="filtro-campo filtro-campo-limpar">
+                        <button class="btn-limpar-filtros"
+                                onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
+                            <i class="fa-solid fa-xmark"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="map">
             <button onclick="window.sosDogMap.ativarModoCriacao()"
                     class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
@@ -2956,88 +3080,130 @@ using System.Reflection;
         </div>
     </section>
 
-     <section id="section-feed" class="container-fluid py-4 d-none">
-     <div class="feed-wrapper row g-4">
+    <section id="section-feed" class="container-fluid py-4 d-none">
+        <div class="feed-wrapper row g-4">
+            <div class="col-12 col-md-8 carousel-section">
+                <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
+                    <div class="carousel-inner pb-4">
+                        @{
+                            var isFirst = true;
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <div class="carousel-item @(isFirst ? "active" : "")">
+                                <div class="mx-auto shadow-lg animal-card"
+                                     style="max-width: 400px; cursor: pointer;"
+                                     data-id="@item.IdOcorrencia"
+                                     data-tipo="@item.TipoOcorrencia"
+                                     data-foto="@item.FotoAnimal"
+                                     data-lat="@item.Latitude"
+                                     data-lng="@item.Longitude"
+                                     data-codigo="@item.CodigoCachorro"
+                                     data-sexo="@item.Sexo"
+                                     data-cor="@item.CorPelagem"
+                                     data-porte="@item.Porte"
+                                     data-estadoSaude="@item.EstadoSaude"
+                                     data-idade="@item.FaixaEtaria"
+                                     data-usuario="@item.IdUsuario"
+                                     data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
+                                     data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
+                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
 
-         <div class="col-12 col-md-8 carousel-section">
-
-             <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
-                 <div class="carousel-inner pb-4">
-                     @{
-                         var isFirst = true;
-                     }
-                     @foreach (var item in Model)
-                     {
-                         <div class="carousel-item @(isFirst ? "active" : "")">
-                            <div class="mx-auto shadow-lg animal-card"
-                                 style="max-width: 400px; cursor: pointer;"
-                                 data-id="@item.IdOcorrencia"
-                                 data-tipo="@item.TipoOcorrencia"
-                                 data-foto="@item.FotoAnimal" 
-                                 data-lat="@item.Latitude"
-                                 data-lng="@item.Longitude"
-                                 data-codigo="@item.CodigoCachorro"
-                                 data-sexo="@item.Sexo"
-                                 data-cor="@item.CorPelagem"
-                                 data-porte="@item.Porte"
-                                 data-estadoSaude="@item.EstadoSaude"
-                                 data-idade="@item.FaixaEtaria"
-                                 data-usuario="@item.IdUsuario"
-                                 data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
-                                 data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                                 data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
-
-                                <div class="animal-card-img-wrapper">
-                                    <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
-                                         class="animal-card-img" alt="Foto do animal" />
-                                    
-                                    <div class="distance-badge shadow-sm">
-                                        <i class="fa-solid fa-location-dot"></i> 15 Km
+                                    <div class="animal-card-img-wrapper">
+                                        <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                                             class="animal-card-img" alt="Foto do animal" />
+                                        <div class="distance-badge shadow-sm">
+                                            <i class="fa-solid fa-location-dot"></i> 15 Km
+                                        </div>
+                                        <div class="animal-card-overlay text-start">
+                                            <h3 class="mb-1 fw-bold text-white">@item.Sexo - @item.Porte</h3>
+                                            <p class="mb-0 text-light" style="font-size: 0.9rem;">
+                                                <i class="fa-solid fa-map-pin text-danger"></i> @item.Endereco
+                                            </p>
+                                        </div>
                                     </div>
 
-                                    <div class="animal-card-overlay text-start">
-                                        <h3 class="mb-1 fw-bold text-white">@item.Sexo - @item.Porte</h3>
-                                        <p class="mb-0 text-light" style="font-size: 0.9rem;">
-                                            <i class="fa-solid fa-map-pin text-danger"></i> @item.Endereco
+                                    <div class="p-4 text-start bg-white">
+                                        <h6 class="fw-bold text-secondary mb-2" style="font-size: 0.85rem; letter-spacing: 1px;">SOBRE</h6>
+                                        <p class="text-muted small mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                            @(string.IsNullOrEmpty(item.Descricao) ? "Nenhuma observação informada." : item.Descricao)
                                         </p>
+                                        <div class="d-flex flex-wrap gap-2 mb-4">
+                                            <span class="animal-tag">@item.CorPelagem</span>
+                                            <span class="animal-tag">@item.FaixaEtaria</span>
+                                            <span class="animal-tag">@item.EstadoSaude</span>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="p-4 text-start bg-white">
-                                    <h6 class="fw-bold text-secondary mb-2" style="font-size: 0.85rem; letter-spacing: 1px;">SOBRE</h6>
-                                    <p class="text-muted small mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                        @(string.IsNullOrEmpty(item.Descricao) ? "Nenhuma observação informada." : item.Descricao)
-                                    </p>
-                                    <div class="d-flex flex-wrap gap-2 mb-4">
-                                        <span class="animal-tag">@item.CorPelagem</span>
-                                        <span class="animal-tag">@item.FaixaEtaria</span>
-                                        <span class="animal-tag">@item.EstadoSaude</span>
-                                    </div>
-                                </div>
-
                             </div>
-                        </div>
-                        isFirst = false;
-                     }
-                 </div>
+                            isFirst = false;
+                        }
+                    </div>
 
-                 <button class="carousel-control-prev" type="button" data-bs-target="#dogCarousel" data-bs-slide="prev">
-                     <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-                     <span class="visually-hidden">Anterior</span>
-                 </button>
-                 <button class="carousel-control-next" type="button" data-bs-target="#dogCarousel" data-bs-slide="next">
-                     <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-                     <span class="visually-hidden">Próximo</span>
-                 </button>
-             </div>
-         </div>
-     </div>
- </section>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#dogCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#dogCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="section-tutores" class="container-fluid py-4 d-none">
+
+        <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
+            <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
+                <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
+            </h2>
+        </div>
+
+        <div class="tutores-grid px-md-4 px-2 pb-5">
+            @* Filtramos na própria View os pets marcados como 'Perdido' (ou o status que você definir no BD) *@
+            @foreach (var item in Model.Where(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="animal-card mx-auto shadow-lg" data-id="@item.IdOcorrencia">
+                    <div class="animal-card-img-wrapper">
+                        <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                             class="animal-card-img" alt="Foto do pet perdido" />
+
+                        <div class="badge-desaparecido shadow-sm">
+                            <i class="fa-solid fa-circle-exclamation fa-fade"></i> PROCURA-SE
+                        </div>
+
+                        <div class="animal-card-overlay text-start">
+                            <h3 class="mb-1 fw-bold text-white">@(string.IsNullOrEmpty(item.CodigoCachorro) ? "Sem Nome" : item.CodigoCachorro)</h3>
+
+                            <p class="mb-2 text-light" style="font-size: 0.9rem;">
+                                <i class="fa-solid fa-phone text-warning"></i> Contato: @(item.Usuario?.Telefone ?? "Não informado")
+                            </p>
+
+                            <button class="btn-gerar-cartaz w-100" onclick="gerarCartazPdf(@item.IdOcorrencia)">
+                                <i class="fa-solid fa-print"></i> Gerar Cartaz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Fallback caso não tenha nenhum cachorro perdido no momento *@
+            @if (!Model.Any(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">
+                    <i class="fa-solid fa-check-circle fa-3x mb-3" style="color: var(--light-green);"></i>
+                    <h5>Nenhum pet perdido registrado no momento.</h5>
+                </div>
+            }
+        </div>
+    </section>
+
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap" id="container-foto-sidebar">
             <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-    
             <div class="aviso-sem-foto" style="display:none; flex-direction:column; align-items:center; justify-content:center; background:#eee; height:200px;">
                 <i class="fa-solid fa-dog fa-3x text-secondary"></i>
                 <p class="text-secondary mt-2">Imagem não encontrada</p>
@@ -3046,22 +3212,11 @@ using System.Reflection;
 
         <div class="profile-header d-flex align-items-center justify-content-between">
             <h2 id="sidebar-titulo-id">ID do Cachorro</h2>
-            
-            <div class="header-actions d-flex align-items-center" 
-                 id="header-acoes-ocorrencia" 
-                 data-usuario-logado="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
-                
-                <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")"
-                   id="btn-editar-ocorrencia"
-                   style="cursor: pointer;"
-                   title="Editar Ocorrência"></i>
-
+            <div class="header-actions d-flex align-items-center" id="header-acoes-ocorrencia" data-usuario-logado="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")" id="btn-editar-ocorrencia" style="cursor: pointer;" title="Editar Ocorrência"></i>
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    <i class="fa-regular fa-trash-can delete-icon ms-3"
-                       id="btn-deletar-ocorrencia"
-                       style="cursor: pointer; color: var(--primary-orange); display: none;"
-                       title="Excluir Ocorrência"></i>
+                    <i class="fa-regular fa-trash-can delete-icon ms-3" id="btn-deletar-ocorrencia" style="cursor: pointer; color: var(--primary-orange); display: none;" title="Excluir Ocorrência"></i>
                 }
             </div>
         </div>
@@ -3075,70 +3230,38 @@ using System.Reflection;
 
         <div class="profile-section">
             <h3 class="section-title">Status do Animal</h3>
-
             <div class="status-box">
-                <div class="status-item">
-                    <span class="status-label">Sexo:</span>
-                    <span class="status-data" id="sidebar-sexo">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Cor:</span>
-                    <span class="status-data" id="sidebar-cor">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Porte:</span>
-                    <span class="status-data" id="sidebar-porte">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Estado de Saúde:</span>
-                    <span class="status-data" id="sidebar-estadosaude">---</span>
-                </div>
-
-                <div class="status-item">
-                    <span class="status-label">Faixa Etária:</span>
-                    <span class="status-data" id="sidebar-idade">---</span>
-                </div>
+                <div class="status-item"><span class="status-label">Sexo:</span><span class="status-data" id="sidebar-sexo">---</span></div>
+                <div class="status-item"><span class="status-label">Cor:</span><span class="status-data" id="sidebar-cor">---</span></div>
+                <div class="status-item"><span class="status-label">Porte:</span><span class="status-data" id="sidebar-porte">---</span></div>
+                <div class="status-item"><span class="status-label">Estado de Saúde:</span><span class="status-data" id="sidebar-estadosaude">---</span></div>
+                <div class="status-item"><span class="status-label">Faixa Etária:</span><span class="status-data" id="sidebar-idade">---</span></div>
             </div>
         </div>
 
         <div class="profile-section action-card-container">
             <h3 class="section-title">Registro de Ações</h3>
-
             <div class="action-layout">
                 <div class="action-buttons-modern">
-                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)">
-                        <i class="fa-solid fa-droplet"></i>
-                        <span>Água</span>
-                    </button>
-
-                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)">
-                        <i class="fa-solid fa-bowl-food"></i>
-                        <span>Comida</span>
-                    </button>
+                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
+                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)"><i class="fa-solid fa-bowl-food"></i><span>Comida</span></button>
                 </div>
-
                 <div class="user-status-card">
                     <div class="user-card-header">
                         <div class="user-card-info">
-                            <span class="user-label">
-                                Último cuidador:
-                                <strong id="sidebar-user-id" class="text-primary">Nenhum</strong>
-                            </span>
+                            <span class="user-label">Último cuidador:<strong id="sidebar-user-id" class="text-primary">Nenhum</strong></span>
                         </div>
                     </div>
-
                     <div class="user-card-body">
                         <div class="status-row">
                             <i class="fa-solid fa-droplet icon-agua"></i>
-                            <span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span>
+                            <span class="status-label-text">Última Água:</span>
+                            <strong id="sidebar-last-agua" class="status-value">--:--</strong>
                         </div>
-
                         <div class="status-row">
                             <i class="fa-solid fa-bowl-food icon-comida"></i>
-                            <span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span>
+                            <span class="status-label-text">Última Comida:</span>
+                            <strong id="sidebar-last-comida" class="status-value">--:--</strong>
                         </div>
                     </div>
                 </div>
@@ -3149,23 +3272,12 @@ using System.Reflection;
 
         <div class="profile-section comments-section">
             <h3 class="section-title">Comentários:</h3>
-
             <form id="form-comentario-sidebar" asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
                 @Html.AntiForgeryToken()
-
                 <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
-
-                <input type="text"
-                       name="texto"
-                       class="comment-input"
-                       placeholder="Adicionar comentário..."
-                       required>
-
-                <button type="submit" class="btn-send-comment" title="Enviar">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
+                <input type="text" name="texto" class="comment-input" placeholder="Adicionar comentário..." required>
+                <button type="submit" class="btn-send-comment" title="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
-
             <div class="comments-list" id="comentarios-container">
                 <p class="text-muted">Ainda não há nenhum comentário.</p>
             </div>
@@ -3180,34 +3292,65 @@ using System.Reflection;
     <script src="~/js/map-handler.js" asp-append-version="true"></script>
     <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
+    <script src="~/js/filtro-mapa.js" asp-append-version="true"></script>
+    <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
 
     <script>
-        function toggleFiltroDropdown() {
-        const dropdown = document.getElementById('filtro-dropdown');
-        const chevron  = document.getElementById('filtro-chevron');
-        const btn      = document.getElementById('btn-filtro-toggle');
-        const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
-        chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
-        btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
-        }
+        // 4. SEU SCRIPT RESTAURADO (Busca Topo e Favoritos)
+        let inputBuscaGlobal;
 
-        document.addEventListener('click', function(e) {
-        const barra    = document.getElementById('btn-filtro-toggle');
-        const dropdown = document.getElementById('filtro-dropdown');
-        if (!barra?.contains(e.target) && !dropdown?.contains(e.target)) {
-        dropdown?.classList.remove('filtro-dropdown--aberto');
-        document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
-        barra?.classList.remove('btn-filtro-toggle--ativo');
+        document.addEventListener("DOMContentLoaded", function() {
+        inputBuscaGlobal = document.querySelector('input[placeholder="Busca..."]');
+        if (inputBuscaGlobal) {
+        inputBuscaGlobal.addEventListener('keyup', realizarBuscaGlobal);
         }
         });
 
-        function atualizarBadge() {
-        const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
-        const ativos = ids.filter(id => document.getElementById(id)?.value !== '').length;
-        const badge = document.getElementById('filtro-badge');
-        if (badge) {
-        badge.textContent = ativos;
-        badge.style.display = ativos > 0 ? 'inline-flex' : 'none';
+        function realizarBuscaGlobal() {
+        if (!inputBuscaGlobal) return;
+        const termoBusca = inputBuscaGlobal.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.case-card');
+
+        cards.forEach(card => {
+        const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
+        const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
+
+        if (!termoBusca || codigoCard.includes(termoBusca) || corCard.includes(termoBusca)) {
+        card.style.display = 'flex';
+        } else {
+        card.style.display = 'none';
+        }
+        });
+        }
+
+        async function alternarFavorito(event, idOcorrencia) {
+        event.stopPropagation();
+        const icone = document.getElementById(`coracao-${idOcorrencia}`);
+
+        try {
+        const response = await fetch('/Favoritos/Alternar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `idOcorrencia=${idOcorrencia}`
+        });
+
+        if (response.status === 401) {
+        alert("Você precisa estar logado para favoritar um animal.");
+        return;
+        }
+
+        if (response.ok) {
+        const resultado = await response.json();
+        if (resultado.favoritado) {
+        icone.classList.add('favoritado');
+        } else {
+        icone.classList.remove('favoritado');
+        }
+        } else {
+        console.error("Erro no Controller de Favoritos.");
+        }
+        } catch (error) {
+        console.error("Erro ao favoritar:", error);
         }
         }
     </script>
@@ -3225,6 +3368,100 @@ using System.Reflection;
 <p>Use this page to detail your site's privacy policy.</p>
 
 
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\Views\Ocorrencias\Cartaz.cshtml ---
+
+
+@model SosDog.Models.Ocorrencia
+@{
+    Layout = null; // Mantém sem o layout padrão para não herdar barras de navegação externas
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartaz de Utilidade Pública - @Model.CodigoCachorro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="~/css/cartaz.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="container text-center my-3 no-print">
+        <button class="btn btn-dark btn-lg" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> Imprimir / Salvar como PDF
+        </button>
+        <button class="btn btn-secondary btn-lg" onclick="window.close()">
+            <i class="fa-solid fa-xmark"></i> Fechar Janela
+        </button>
+    </div>
+
+    <div class="poster-container">
+        <div class="poster-header">
+            <h1 class="display-4 fw-bold m-0">ALERTA: ANIMAL EM RISCO</h1>
+            <p class="lead m-0 mt-2">SOS DOG - Sistema de Apoio e Rastreamento Canino</p>
+        </div>
+
+        <div class="poster-image-wrapper">
+            @if (!string.IsNullOrEmpty(Model.FotoAnimal))
+            {
+                <img src="@Model.FotoAnimal" class="poster-img" alt="Foto do Animal Registrado" />
+            }
+            else
+            {
+                <div class="p-5 bg-light text-muted border rounded">
+                    <i class="fa-solid fa-dog fa-5x mb-3"></i>
+                    <p>Sem foto disponível para este registro.</p>
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5 class="fw-bold text-uppercase"><i class="fa-solid fa-circle-info"></i> Detalhes do Animal</h5>
+                    <p class="mb-1"><strong>Código de Busca:</strong> @Model.CodigoCachorro</p>
+                    <p class="mb-1"><strong>Tipo de Caso:</strong> @Model.TipoOcorrencia</p>
+                    <p class="mb-1"><strong>Estado de Saúde:</strong> @Model.EstadoSaude</p>
+                    <p class="mb-0"><strong>Características:</strong> Porte @Model.Porte, Pelagem @Model.CorPelagem</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5 class="fw-bold text-uppercase"><i class="fa-solid fa-location-dot"></i> Último Local Visto</h5>
+                    <p class="mb-0">@Model.Endereco</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3 px-2">
+            <h5 class="fw-bold text-uppercase">Descrição do Caso:</h5>
+            <p class="lead" style="font-size: 1.1rem; text-align: justify;">@Model.Descricao</p>
+        </div>
+
+        <div class="poster-footer">
+            <h3 class="fw-bold text-muted">Viu este animal ou sabe o paradeiro? Entre em contato imediato:</h3>
+            <div class="contact-phone my-2">
+                <i class="fa-solid fa-phone"></i> @(Model.Usuario?.Telefone ?? "Não Informado")
+            </div>
+            <p class="text-muted m-0">Anjo Protetor Responsável: <strong>@(Model.Usuario?.Nome ?? "Comunidade SOS Dog")</strong></p>
+        </div>
+    </div>
+
+    <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+            });
+    </script>
+</body>
+</html>
+
+
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\Views\Ocorrencias\_CriarOcorrenciaModal.cshtml ---
 
 
@@ -3232,31 +3469,32 @@ using System.Reflection;
 
 <div class="modal fade" id="modalOcorrencia" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div class="modal-content border-0 modal-reportar">
+
             <div class="modal-header border-0 pb-0 justify-content-center position-relative">
-                <h4 class="modal-title fw-bold text-dark w-100 text-center mt-2">Reportar Animal</h4>
-                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h4 class="modal-title fw-bold w-100 text-center mt-2 titulo-modal">Reportar Animal</h4>
+                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            
+
             <form asp-controller="Ocorrencias" asp-action="Create" method="post" enctype="multipart/form-data">
                 <div class="modal-body px-4 pt-4">
-                    
+
                     <div class="mb-3">
-                        <input asp-for="Endereco" id="Endereco" class="form-control bg-light text-secondary" placeholder="Localização / Nome da Rua" required style="border: 1px solid #ddd;" />
+                        <input asp-for="Endereco" id="Endereco" class="form-control form-custom" placeholder="Localização / Nome da Rua" required />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Tipo de Ocorrência:</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Tipo de Ocorrência:</label>
                     <div class="d-flex gap-2 mb-3">
                         <input type="radio" class="btn-check" name="TipoOcorrencia" id="tipoRua" value="Rua" checked>
-                        <label class="btn btn-outline-warning w-50 fw-semibold" for="tipoRua">Animal na Rua</label>
+                        <label class="btn btn-radio-custom w-50 fw-semibold" for="tipoRua">Animal na Rua</label>
 
                         <input type="radio" class="btn-check" name="TipoOcorrencia" id="tipoPerdido" value="Perdido">
-                        <label class="btn btn-outline-primary w-50 fw-semibold" for="tipoPerdido">Meu Pet Sumiu</label>
+                        <label class="btn btn-radio-custom btn-radio-orange w-50 fw-semibold" for="tipoPerdido">Meu Pet Sumiu</label>
                     </div>
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="Porte" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Porte" class="form-select form-custom">
                                 <option value="" disabled selected>Porte</option>
                                 <option value="Pequeno">Pequeno</option>
                                 <option value="Médio">Médio</option>
@@ -3264,7 +3502,7 @@ using System.Reflection;
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="Sexo" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Sexo" class="form-select form-custom">
                                 <option value="" disabled selected>Sexo</option>
                                 <option value="Macho">Macho</option>
                                 <option value="Fêmea">Fêmea</option>
@@ -3275,7 +3513,7 @@ using System.Reflection;
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="EstadoSaude" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="EstadoSaude" class="form-select form-custom">
                                 <option value="" disabled selected>Estado</option>
                                 <option value="Aparentemente Saudável">Aparentemente Saudável</option>
                                 <option value="Ferido / Machucado">Ferido / Machucado</option>
@@ -3284,7 +3522,7 @@ using System.Reflection;
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="FaixaEtaria" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="FaixaEtaria" class="form-select form-custom">
                                 <option value="" disabled selected>Idade</option>
                                 <option value="Filhote">Filhote</option>
                                 <option value="Adulto">Adulto</option>
@@ -3294,37 +3532,57 @@ using System.Reflection;
                     </div>
 
                     <div class="mb-3">
-                        <input asp-for="CorPelagem" class="form-control text-secondary" placeholder="Cor / Pelagem (Ex: Caramelo)" style="border: 1px solid #ddd;" />
+                        <input asp-for="CorPelagem" class="form-control form-custom" placeholder="Cor / Pelagem (Ex: Caramelo)" />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Cuidados fornecidos:</label>
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="form-check">
-                            <input asp-for="RecebeuAgua" class="form-check-input" type="checkbox" id="checkAgua">
-                            <label class="form-check-label text-secondary" for="checkAgua">Dei Água</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Cuidados fornecidos:</label>
+                    <div class="d-flex gap-3 mb-4">
+
+                        <div>
+                            <input asp-for="RecebeuAgua" type="checkbox" class="btn-check" id="checkAgua" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="checkAgua">
+                                <i class="fa-solid fa-droplet icon-agua"></i> Dei Água
+                            </label>
                         </div>
-                        <div class="form-check">
-                            <input asp-for="RecebeuComida" class="form-check-input" type="checkbox" id="checkComida">
-                            <label class="form-check-label text-secondary" for="checkComida">Dei Comida</label>
+
+                        <div>
+                            <input asp-for="RecebeuComida" type="checkbox" class="btn-check" id="checkComida" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="checkComida">
+                                <i class="fa-solid fa-bowl-food icon-comida"></i> Dei Comida
+                            </label>
                         </div>
+
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Adicionar Foto:</label>
-                    <div class="mb-3">
-                        <input type="file" name="FotoAnimal" class="form-control text-secondary" accept="image/*" style="border: 1px solid #ddd;" required />
+                    <label class="form-label fw-bold small mb-2 label-custom">Adicionar Foto:</label>
+                    <div class="mb-4">
+                        <input type="file" name="FotoAnimal" id="FotoAnimal" class="d-none" accept="image/*" required onchange="mostrarNomeArquivo(this)" />
+
+                        <label for="FotoAnimal" class="upload-box-custom">
+                            <div class="upload-content text-center">
+                                <i class="fa-solid fa-camera upload-icon mb-2"></i>
+                                <p class="mb-0 fw-semibold text-dark" id="upload-texto-principal">Clique para enviar uma foto</p>
+                                <span class="small text-muted" id="upload-texto-secundario">PNG, JPG ou WEBP</span>
+
+                                <div id="file-name-display" class="mt-2 text-success fw-bold d-none align-items-center justify-content-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span id="file-name-text" class="text-truncate" style="max-width: 200px; display: inline-block;"></span>
+                                </div>
+                            </div>
+                        </label>
                     </div>
 
                     <div class="mb-3">
-                        <textarea asp-for="Descricao" class="form-control text-secondary" placeholder="Observações e detalhes sobre o animal..." rows="3" required style="border: 1px solid #ddd;"></textarea>
+                        <textarea asp-for="Descricao" class="form-control form-custom" placeholder="Observações e detalhes sobre o animal..." rows="3" required></textarea>
                     </div>
 
                     <input type="hidden" asp-for="Latitude" id="lat" />
                     <input type="hidden" asp-for="Longitude" id="lng" />
 
                 </div>
-                
+
                 <div class="modal-footer border-0 px-4 pb-4 pt-0">
-                    <button type="submit" class="btn w-100 text-white fw-bold" style="background-color: #2ecc71; border-radius: 5px; padding: 12px 0; font-size: 16px;">
+                    <button type="submit" class="btn btn-submit-custom w-100 fw-bold">
                         Registrar Marcação
                     </button>
                 </div>
@@ -3341,15 +3599,15 @@ using System.Reflection;
 
 <div class="modal fade" id="modalEditarOcorrencia" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div class="modal-content border-0 modal-reportar">
             <div class="modal-header border-0 pb-0 justify-content-center position-relative">
-                <h4 class="modal-title fw-bold text-dark w-100 text-center mt-2">Editar: @Model.CodigoCachorro</h4>
-                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h4 class="modal-title fw-bold w-100 text-center mt-2 titulo-modal">Editar: @Model.CodigoCachorro</h4>
+                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            
+
             <form asp-controller="Ocorrencias" asp-action="Edit" method="post" enctype="multipart/form-data">
                 <div class="modal-body px-4 pt-4">
-                    
+
                     <input type="hidden" asp-for="IdOcorrencia" />
                     <input type="hidden" asp-for="IdUsuario" />
                     <input type="hidden" asp-for="DataRegistro" />
@@ -3357,23 +3615,23 @@ using System.Reflection;
                     <input type="hidden" asp-for="FotoAnimal" />
                     <input type="hidden" asp-for="Latitude" />
                     <input type="hidden" asp-for="Longitude" />
-                    
+
                     <div class="mb-3">
-                        <input asp-for="Endereco" class="form-control bg-light text-secondary" placeholder="Localização / Nome da Rua" required style="border: 1px solid #ddd;" />
+                        <input asp-for="Endereco" class="form-control form-custom" placeholder="Localização / Nome da Rua" required />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Tipo de Ocorrência:</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Tipo de Ocorrência:</label>
                     <div class="d-flex gap-2 mb-3">
                         <input type="radio" asp-for="TipoOcorrencia" class="btn-check" id="editTipoRua" value="Rua">
-                        <label class="btn btn-outline-warning w-50 fw-semibold" for="editTipoRua">Animal na Rua</label>
+                        <label class="btn btn-radio-custom w-50 fw-semibold" for="editTipoRua">Animal na Rua</label>
 
                         <input type="radio" asp-for="TipoOcorrencia" class="btn-check" id="editTipoPerdido" value="Perdido">
-                        <label class="btn btn-outline-primary w-50 fw-semibold" for="editTipoPerdido">Meu Pet Sumiu</label>
+                        <label class="btn btn-radio-custom btn-radio-orange w-50 fw-semibold" for="editTipoPerdido">Meu Pet Sumiu</label>
                     </div>
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="Porte" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Porte" class="form-select form-custom">
                                 <option value="" disabled>Porte</option>
                                 <option value="Pequeno">Pequeno</option>
                                 <option value="Médio">Médio</option>
@@ -3381,7 +3639,7 @@ using System.Reflection;
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="Sexo" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Sexo" class="form-select form-custom">
                                 <option value="" disabled>Sexo</option>
                                 <option value="Macho">Macho</option>
                                 <option value="Fêmea">Fêmea</option>
@@ -3392,7 +3650,7 @@ using System.Reflection;
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="EstadoSaude" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="EstadoSaude" class="form-select form-custom">
                                 <option value="" disabled>Estado</option>
                                 <option value="Aparentemente Saudável">Aparentemente Saudável</option>
                                 <option value="Ferido / Machucado">Ferido / Machucado</option>
@@ -3401,7 +3659,7 @@ using System.Reflection;
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="FaixaEtaria" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="FaixaEtaria" class="form-select form-custom">
                                 <option value="" disabled>Idade</option>
                                 <option value="Filhote">Filhote</option>
                                 <option value="Adulto">Adulto</option>
@@ -3411,47 +3669,69 @@ using System.Reflection;
                     </div>
 
                     <div class="mb-3">
-                        <input asp-for="CorPelagem" class="form-control text-secondary" placeholder="Cor / Pelagem (Ex: Caramelo)" style="border: 1px solid #ddd;" />
+                        <input asp-for="CorPelagem" class="form-control form-custom" placeholder="Cor / Pelagem (Ex: Caramelo)" />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Cuidados fornecidos:</label>
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="form-check">
-                            <input asp-for="RecebeuAgua" class="form-check-input" type="checkbox">
-                            <label class="form-check-label text-secondary" for="RecebeuAgua">Dei Água</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Cuidados fornecidos:</label>
+                    <div class="d-flex gap-3 mb-4">
+                        <div>
+                            <input asp-for="RecebeuAgua" type="checkbox" class="btn-check" id="editCheckAgua" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="editCheckAgua">
+                                <i class="fa-solid fa-droplet icon-agua"></i> Dei Água
+                            </label>
                         </div>
-                        <div class="form-check">
-                            <input asp-for="RecebeuComida" class="form-check-input" type="checkbox">
-                            <label class="form-check-label text-secondary" for="RecebeuComida">Dei Comida</label>
+                        <div>
+                            <input asp-for="RecebeuComida" type="checkbox" class="btn-check" id="editCheckComida" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="editCheckComida">
+                                <i class="fa-solid fa-bowl-food icon-comida"></i> Dei Comida
+                            </label>
                         </div>
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Atualizar Foto (Opcional):</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Atualizar Foto (Opcional):</label>
+
                     @if (!string.IsNullOrEmpty(Model.FotoAnimal))
                     {
-                        <div class="mb-2 text-center">
-                            <img src="@Model.FotoAnimal" alt="Foto atual" style="height: 100px; border-radius: 10px; object-fit: cover; border: 1px solid #eee;" />
+                        <div class="mb-3 d-flex align-items-center gap-3 p-2 foto-atual-card">
+                            <img src="@Model.FotoAnimal" alt="Foto atual" class="foto-atual-img" />
+                            <div class="text-start">
+                                <span class="d-block fw-bold text-dark" style="font-size: 0.9rem;">Foto Atual</span>
+                                <span class="text-muted" style="font-size: 0.8rem;">Envie uma nova abaixo para substituir</span>
+                            </div>
                         </div>
                     }
+
                     <div class="mb-3">
-                        <input type="file" name="NovaFoto" class="form-control text-secondary" accept="image/*" style="border: 1px solid #ddd;" />
+                        <input type="file" name="NovaFoto" id="NovaFoto" class="d-none" accept="image/*" onchange="mostrarNomeArquivoEdit(this)" />
+                        <label for="NovaFoto" class="upload-box-custom py-3">
+                            <div class="upload-content text-center">
+                                <i class="fa-solid fa-camera upload-icon mb-2"></i>
+                                <p class="mb-0 fw-semibold text-dark" id="upload-texto-principal-edit">Cique para trocar a foto</p>
+                                <span class="small text-muted" id="upload-texto-secundario-edit">PNG, JPG ou WEBP</span>
+
+                                <div id="file-name-display-edit" class="mt-2 text-success fw-bold d-none align-items-center justify-content-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span id="file-name-text-edit" class="text-truncate" style="max-width: 200px; display: inline-block;"></span>
+                                </div>
+                            </div>
+                        </label>
                     </div>
 
                     <div class="mb-3">
-                        <textarea asp-for="Descricao" class="form-control text-secondary" placeholder="Observações e detalhes..." rows="2" required style="border: 1px solid #ddd;"></textarea>
+                        <textarea asp-for="Descricao" class="form-control form-custom" placeholder="Observações e detalhes..." rows="2" required></textarea>
                     </div>
 
                 </div>
-                
+
                 <div class="modal-footer border-0 px-4 pb-4 pt-0">
-                    <button type="submit" class="btn w-100 text-white fw-bold" style="background-color: #f39c12; border-radius: 5px; padding: 12px 0; font-size: 16px;">
+                    <button type="submit" class="btn btn-submit-orange w-100 fw-bold">
                         Salvar Alterações <i class="fa-solid fa-floppy-disk ms-1"></i>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-</div>
+</div>v
 
 
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\Views\Shared\Error.cshtml ---
@@ -3534,6 +3814,10 @@ using System.Reflection;
             <a id="btn-feed" class="nav-btn-transparent" asp-controller="Home" asp-action="Feed">
                 <i class="fa-solid fa-folder-open"></i> Feed de Casos
             </a>
+
+            <a id="btn-tutores" class="nav-btn-transparent" asp-controller="Tutores" asp-action="Index">
+                <i class="fa-solid fa-magnifying-glass"></i> Pets Perdidos
+            </a>
         </nav>
         <div class="header-right">
             <div class="search-bar">
@@ -3580,8 +3864,9 @@ using System.Reflection;
     <main>
         @if (TempData["Sucesso"] != null)
         {
-            <div class="alert alert-success text-center m-3">
+            <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
                 @TempData["Sucesso"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
 
@@ -3601,15 +3886,17 @@ using System.Reflection;
 
         @if (TempData["ErroReset"] != null)
         {
-            <div class="alert alert-danger text-center m-3">
+            <div class="alert alert-danger alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
                 @TempData["ErroReset"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
 
         @if (TempData["SucessoReset"] != null)
         {
-            <div class="alert alert-success text-center m-3">
+            <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
                 @TempData["SucessoReset"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
 
@@ -3639,6 +3926,7 @@ using System.Reflection;
 
     <script src="~/js/usuario.js" asp-append-version="true"></script>
     <script src="~/js/feedCasos.js" asp-append-version="true"></script>
+    <script src="~/js/alertsScript.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
@@ -4314,6 +4602,335 @@ button.accept-policy {
 }
 
 
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\css\cartaz.css ---
+
+
+/* wwwroot/css/cartaz.css */
+
+/* ConfiguraÃ§Ãµes Globais da Tela de VisualizaÃ§Ã£o */
+body {
+    background-color: #f4f6f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    margin: 0;
+    padding: 0;
+}
+
+.poster-container {
+    background-color: #ffffff;
+    border: 5px solid #df7860; /* Laranja SOSDog */
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 750px;
+    margin: 20px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.poster-header {
+    background-color: #df7860;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.poster-image-wrapper {
+    text-align: center;
+    margin-bottom: 15px;
+    background-color: #fdfdfd;
+}
+
+/* ReduÃ§Ã£o da altura mÃ¡xima para evitar que empurre o rodapÃ© */
+.poster-img {
+    max-width: 100%;
+    max-height: 280px; /* Reduzido de 400px para garantir o encaixe no A4 */
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.info-box {
+    background-color: #f8f9fa;
+    border-left: 5px solid #3a5e56; /* Verde SOSDog */
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 0 8px 8px 0;
+    height: 100%; /* Garante alinhamento parelho entre as colunas */
+}
+
+    .info-box p {
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
+
+.poster-footer {
+    margin-top: 20px;
+    text-align: center;
+    border-top: 3px dashed #df7860;
+    padding-top: 15px;
+}
+
+.contact-phone {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #df7860;
+}
+
+/* ==========================================================================
+   âš¡ REGRAS CRÃTICAS DE IMPRESSÃƒO (A4 PAGE LOCK)
+   ========================================================================== */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 0.8cm; /* Define margens limpas na folha */
+    }
+
+    body {
+        background-color: #ffffff !important;
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact; /* ForÃ§a o Chrome/Edge a imprimir as cores de fundo */
+        print-color-adjust: exact;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    /* Trava o container para nunca gerar uma segunda pÃ¡gina */
+    .poster-container {
+        border: 4px solid #df7860 !important;
+        box-shadow: none !important;
+        margin: 0 auto !important;
+        padding: 15px !important;
+        max-width: 100% !important;
+        page-break-inside: avoid; /* Impede quebras internas */
+        break-inside: avoid;
+    }
+
+    .poster-header {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .poster-img {
+        max-height: 260px !important; /* Ajuste fino e seguro para a folha fÃ­sica */
+    }
+
+    .info-box {
+        padding: 10px !important;
+        background-color: #f8f9fa !important; /* Garante visibilidade do fundo cinza */
+    }
+
+    .poster-footer {
+        margin-top: 15px !important;
+        padding-top: 12px !important;
+    }
+}
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\css\filtro-mapa.css ---
+
+
+/* ==========================================
+   FILTRO FLUTUANTE DENTRO DO MAPA
+   ========================================== */
+
+/* Container flutuante no topo-esquerdo do mapa */
+.filtro-mapa-wrapper {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 260px;
+}
+
+/* Botão "Filtrar" flutuante */
+.btn-filtro-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 20px;
+    background: var(--primary-orange);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(223, 120, 96, 0.45);
+    transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    align-self: flex-start;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+    .btn-filtro-toggle:hover {
+        background: var(--primary-orange-dark);
+        box-shadow: 0 6px 20px rgba(223, 120, 96, 0.55);
+        transform: translateY(-1px);
+    }
+
+.btn-filtro-toggle--ativo {
+    background: var(--primary-green);
+    box-shadow: 0 4px 14px rgba(58, 94, 86, 0.4);
+}
+
+    .btn-filtro-toggle--ativo:hover {
+        background: var(--primary-green-dark);
+    }
+
+.filtro-chevron {
+    font-size: 0.65rem;
+    transition: transform 0.25s ease;
+}
+
+/* Badge de filtros ativos */
+.filtro-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.7);
+    line-height: 1;
+}
+
+/* Painel dropdown — fechado por padrão */
+.filtro-mapa-painel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.25s ease, transform 0.25s ease;
+    transform: translateY(-6px);
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(30, 50, 45, 0.18);
+    margin-top: 8px;
+    backdrop-filter: blur(8px);
+}
+
+.filtro-mapa-painel--aberto {
+    max-height: 400px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Cabeçalho do painel */
+.filtro-mapa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 6px;
+    border-bottom: 1px solid rgba(58, 94, 86, 0.08);
+}
+
+.filtro-mapa-titulo {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.filtro-contador {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    background: rgba(58, 94, 86, 0.08);
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+/* Grid dos selects — 3 colunas para não quebrar labels */
+.filtro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    padding: 8px 10px 10px;
+}
+
+.filtro-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.filtro-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filtro-select {
+    width: 100%;
+    padding: 4px 20px 4px 7px;
+    font-size: 0.74rem;
+    border: 1.5px solid rgba(58, 94, 86, 0.15);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%237a8c88'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+}
+
+    .filtro-select:focus {
+        outline: none;
+        border-color: var(--primary-orange);
+        box-shadow: 0 0 0 2px rgba(223, 120, 96, 0.12);
+    }
+
+/* Limpar filtros — ocupa as 3 colunas */
+.filtro-campo-limpar {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 2px;
+}
+
+.btn-limpar-filtros {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: 1.5px solid rgba(58, 94, 86, 0.15);
+    border-radius: 20px;
+    background: #fff;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+    .btn-limpar-filtros:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
+
+
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\css\site.css ---
 
 
@@ -4578,17 +5195,19 @@ main[role="main"] {
     flex-direction: column;
     height: 100%;
     min-height: 0;
+    contain: layout style;
 }
 
 /* Lista de casos com scroll interno */
 .cases-list {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: 6px;
+    padding-inline-end: 6px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-height: 0;
+    contain: layout style;
 }
 
 /* Card de caso */
@@ -4603,6 +5222,10 @@ main[role="main"] {
     box-shadow: var(--shadow-xs);
     transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base), background-color var(--transition-base);
     cursor: pointer;
+    isolation: isolate;
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    margin: 4px 2px 2px;
 }
 
     .case-card:hover {
@@ -4616,7 +5239,7 @@ main[role="main"] {
         border: 2px solid var(--primary-orange) !important;
         background-color: rgba(223, 120, 96, 0.04);
         transform: scale(1.015);
-        box-shadow: 0 4px 18px rgba(223, 120, 96, 0.18);
+        box-shadow: 0 4px 18px rgba(223, 120, 96, 0.18), 0 1px 4px rgba(223, 120, 96, 0.10);
     }
 
     .case-card img {
@@ -4628,6 +5251,7 @@ main[role="main"] {
         box-shadow: var(--shadow-xs);
         flex-shrink: 0;
         transition: border-color var(--transition-base);
+        will-change: border-color;
     }
 
     .case-card:hover img {
@@ -4641,6 +5265,7 @@ main[role="main"] {
     flex-direction: column;
     gap: 3px;
     overflow: hidden;
+    min-width: 0;
 }
 
 .case-header {
@@ -4652,6 +5277,7 @@ main[role="main"] {
     color: var(--primary-green);
     margin-bottom: 3px;
     letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
 }
 
 .case-details p {
@@ -4670,6 +5296,7 @@ main[role="main"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .badge-green {
@@ -4681,6 +5308,8 @@ main[role="main"] {
     font-size: 10.5px;
     font-weight: 700;
     letter-spacing: 0.4px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* BotÃµes inferiores da sidebar esquerda */
@@ -4708,18 +5337,21 @@ main[role="main"] {
     gap: 8px;
     letter-spacing: 0.02em;
     box-shadow: var(--shadow-orange);
-    transition: filter var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
     .btn-orange:hover {
-        filter: brightness(1.06);
+        background-color: var(--primary-orange-light);
         transform: translateY(-1px);
         box-shadow: 0 6px 20px rgba(223, 120, 96, 0.38);
     }
 
     .btn-orange:active {
+        background-color: var(--primary-orange-dark);
         transform: scale(0.98);
-        filter: brightness(0.95);
+        box-shadow: var(--shadow-orange);
     }
 
 /* ==================== ÃREA DO MAPA ==================== */
@@ -4731,6 +5363,8 @@ main[role="main"] {
     overflow: hidden;
     border: var(--border-main);
     box-shadow: var(--shadow-sm);
+    contain: layout paint;
+    isolation: isolate;
 }
 
 #map {
@@ -4763,7 +5397,8 @@ main[role="main"] {
     font-weight: 600;
     width: 100%;
     cursor: pointer;
-    transition: background var(--transition-fast);
+    transition: background-color var(--transition-fast);
+    will-change: background-color;
 }
 
     .leaflet-popup-content button:hover {
@@ -4790,7 +5425,9 @@ main[role="main"] {
     align-items: center;
     gap: 10px;
     box-shadow: var(--shadow-orange);
-    transition: all var(--transition-base);
+    transition: background-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
     .btn-reportar-flutuante:hover {
@@ -4800,24 +5437,119 @@ main[role="main"] {
     }
 
     .btn-reportar-flutuante:active {
+        background-color: var(--primary-orange-dark);
         transform: translateX(-50%) translateY(0px) scale(0.98);
+        box-shadow: var(--shadow-orange);
     }
 
+/* ==========================================
+   SEÃ‡ÃƒO TUTORES (PETS PERDIDOS)
+   ========================================== */
+#section-tutores {
+    grid-column: 2; /* MantÃ©m o alinhamento caso use CSS grid global */
+    height: 100%;
+    width: 100%;
+    overflow-y: auto; /* Permite rolar a lista de pets */
+}
+
+/* Grid Inteligente e Responsivo */
+.tutores-grid {
+    display: grid;
+    /* Cria colunas automÃ¡ticas de no mÃ­nimo 280px (largura do seu card) */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: start;
+}
+
+/* Badge Vermelho Pulsante para Procura-se */
+.badge-desaparecido {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    background-color: rgba(220, 53, 69, 0.90); /* Vermelho Bootstrap */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.05em;
+    z-index: 4;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.45);
+}
+
+/* BotÃ£o Topo: Registrar Pet */
+.btn-registrar-perdido {
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-base);
+}
+
+    .btn-registrar-perdido:hover {
+        background-color: var(--primary-green-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: var(--white);
+    }
+
+/* BotÃ£o Base do Card: Gerar Cartaz (Glassmorphism) */
+.btn-gerar-cartaz {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-gerar-cartaz:hover {
+        background-color: var(--primary-orange);
+        border-color: var(--primary-orange);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(223, 120, 96, 0.4);
+    }
 /* AnimaÃ§Ã£o de bounce para marcadores */
 @keyframes bounce {
     0%, 100% {
         transform: translateY(0);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     }
 
     50% {
         transform: translateY(-10px);
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
     }
 }
 
 .marker-bounce {
-    animation: bounce 0.55s ease infinite;
+    animation: bounce 0.55s infinite;
+    will-change: transform;
 }
-
 /* ==================== SIDEBAR DIREITA â€” PERFIL DO ANIMAL ==================== */
 .right-sidebar,
 .dog-profile-sidebar {
@@ -4830,6 +5562,7 @@ main[role="main"] {
     overflow-y: auto;
     height: 100%;
     scrollbar-gutter: stable;
+    contain: layout style;
 }
 
     /* Placeholder quando nenhum animal estÃ¡ selecionado */
@@ -4853,13 +5586,20 @@ main[role="main"] {
     border: 3px solid var(--white);
     margin-bottom: 13px;
     box-shadow: var(--shadow-sm);
+    display: block;
+    transition: box-shadow var(--transition-base);
 }
+
+    .profile-img-wrap img:hover {
+        box-shadow: var(--shadow-md);
+    }
 
 /* CabeÃ§alho do perfil */
 .profile-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
     .profile-header h2 {
@@ -4868,6 +5608,10 @@ main[role="main"] {
         font-weight: 800;
         letter-spacing: -0.01em;
         line-height: 1.2;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
 .edit-icon {
@@ -4876,18 +5620,21 @@ main[role="main"] {
     cursor: pointer;
     padding: 5px;
     border-radius: var(--border-radius-sm);
-    transition: color var(--transition-fast), background var(--transition-fast);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+    flex-shrink: 0;
+    line-height: 1;
 }
 
     .edit-icon:hover {
         color: var(--primary-green);
-        background: rgba(58, 94, 86, 0.08);
+        background-color: rgba(58, 94, 86, 0.08);
     }
 
 .profile-divider {
     border: none;
     border-top: 1px solid rgba(90, 120, 115, 0.2);
     margin: 2px 0;
+    flex-shrink: 0;
 }
 
 /* TÃ­tulos de seÃ§Ã£o */
@@ -4917,6 +5664,7 @@ main[role="main"] {
     align-items: center;
     border-bottom: 1px solid rgba(58, 94, 86, 0.07);
     padding-bottom: 5px;
+    gap: 8px;
 }
 
     .status-item:last-child {
@@ -4930,12 +5678,15 @@ main[role="main"] {
     color: var(--primary-green);
     text-transform: uppercase;
     letter-spacing: 0.6px;
+    flex-shrink: 0;
 }
 
 .status-data {
     font-size: 12px;
     font-weight: 600;
     color: var(--text-dark);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 .status-col p {
@@ -4972,16 +5723,21 @@ main[role="main"] {
     font-weight: 700;
     cursor: pointer;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    will-change: transform;
+    backface-visibility: hidden;
+    isolation: isolate;
 }
 
     .btn-modern i {
         font-size: 22px;
         margin-bottom: 4px;
+        pointer-events: none;
     }
 
     .btn-modern span {
         font-size: 11.5px;
         letter-spacing: 0.02em;
+        pointer-events: none;
     }
 
     .btn-modern:hover {
@@ -5015,14 +5771,14 @@ main[role="main"] {
     background: linear-gradient(145deg, #5aade6, #3498db) !important;
     box-shadow: 0 0 16px rgba(52, 152, 219, 0.65) !important;
     transform: scale(1.07);
-    transition: all 0.28s ease-in-out;
+    transition: background var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
 .btn-animacao-comida {
     background: linear-gradient(145deg, #f0a060, #e67e22) !important;
     box-shadow: 0 0 16px rgba(230, 126, 34, 0.65) !important;
     transform: scale(1.07);
-    transition: all 0.28s ease-in-out;
+    transition: background var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
 
 /* Card de registro de Ã¡gua/comida */
@@ -5050,6 +5806,8 @@ main[role="main"] {
 .user-card-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    flex-grow: 1;
 }
 
 .user-label {
@@ -5059,11 +5817,15 @@ main[role="main"] {
     justify-content: space-between;
     align-items: center;
     line-height: 1.4;
+    gap: 6px;
 }
 
     .user-label strong {
         color: var(--primary-green);
         font-size: 13.5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
 .user-card-body {
@@ -5075,13 +5837,27 @@ main[role="main"] {
 
 .status-row {
     display: flex;
-    align-items: center;
-    gap: 9px;
+    flex-direction: column; /* empilha label em cima, valor embaixo */
+    align-items: flex-start;
+    gap: 2px;
     background-color: var(--bg-main);
     padding: 8px 10px;
     border-radius: var(--border-radius-sm);
-    transition: background var(--transition-fast);
+    transition: background-color var(--transition-fast);
+    min-width: 0;
+    overflow: hidden;
 }
+
+    .status-row i {
+        display: none; /* ou reposicione conforme o design â€” veja abaixo */
+    }
+
+    .status-row > span,
+    .status-row > strong {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+    }
 
     .status-row:hover {
         background-color: #e5ebe9;
@@ -5093,22 +5869,52 @@ main[role="main"] {
         font-size: 10.5px;
         color: var(--text-muted);
         line-height: 1.4;
+        min-width: 0;
+        overflow: hidden;
+        flex: 1;
     }
 
-    .status-row strong {
-        font-size: 12.5px;
-        color: var(--text-dark);
-        font-weight: 600;
-    }
+        .status-row span strong {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12.5px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            display: block; /* garante que o ellipsis funcione */
+        }
+
+.status-value {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    min-width: 0;
+    width: 100%;
+}
+
+.status-label-text {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    line-height: 1.4;
+}
 
 .icon-agua {
     color: #3498db;
     font-size: 17px;
+    flex-shrink: 0;
 }
 
 .icon-comida {
     color: #e67e22;
     font-size: 17px;
+    flex-shrink: 0;
 }
 
 .animal-name {
@@ -5122,6 +5928,8 @@ main[role="main"] {
     height: 42px;
     border-radius: 50%;
     background: #dde4e2;
+    flex-shrink: 0;
+    object-fit: cover;
 }
 
 .avatar-sm {
@@ -5129,6 +5937,7 @@ main[role="main"] {
     height: 28px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
 /* MantÃ©m datas de Ã¡gua/comida alinhadas e sem quebra de linha */
@@ -5136,6 +5945,9 @@ main[role="main"] {
 #sidebar-last-comida {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 /* ==================== SEÃ‡ÃƒO DE COMENTÃRIOS ==================== */
@@ -5162,7 +5974,8 @@ main[role="main"] {
     background-color: rgba(255, 255, 255, 0.65);
     color: var(--text-dark);
     line-height: 1.4;
-    transition: all var(--transition-base);
+    transition: background-color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+    min-width: 0;
 }
 
     .comment-input::placeholder {
@@ -5190,11 +6003,14 @@ main[role="main"] {
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(157, 191, 160, 0.35);
     transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
     .btn-send-comment i {
         font-size: 13px;
         margin-left: -1px;
+        pointer-events: none;
     }
 
     .btn-send-comment:hover {
@@ -5205,17 +6021,19 @@ main[role="main"] {
 
     .btn-send-comment:active {
         transform: scale(0.94);
+        box-shadow: 0 1px 4px rgba(58, 94, 86, 0.2);
     }
 
 /* Lista de comentÃ¡rios com scroll interno */
 .comments-list {
     max-height: 240px;
     overflow-y: auto;
-    padding-right: 4px;
+    padding-inline-end: 4px;
     margin-top: 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    contain: layout style;
 }
 
 /* Item individual de comentÃ¡rio */
@@ -5226,7 +6044,7 @@ main[role="main"] {
     background: rgba(255, 255, 255, 0.38);
     padding: 9px 10px;
     border-radius: var(--border-radius-md);
-    transition: background var(--transition-fast);
+    transition: background-color var(--transition-fast);
 }
 
     .comment-item:hover {
@@ -5237,6 +6055,7 @@ main[role="main"] {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    min-width: 0;
 }
 
     .comment-content p {
@@ -5244,6 +6063,8 @@ main[role="main"] {
         margin: 0;
         color: var(--text-dark);
         line-height: 1.5;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .comment-content strong {
@@ -5265,7 +6086,247 @@ main[role="main"] {
     font-size: 17px;
 }
 
+
+/* =========================================
+   MODAL DE REPORTAR OCORRÃŠNCIA
+   ========================================= */
+
+/* Estrutura do Modal */
+.modal-reportar {
+    border-radius: var(--border-radius-lg, 18px); /* Fallback caso a variÃ¡vel nÃ£o exista neste escopo */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: var(--white, #fff);
+}
+
+    .modal-reportar .titulo-modal {
+        color: var(--text-dark, #2a2f2e);
+    }
+
+    .modal-reportar .label-custom {
+        color: var(--text-dark, #2a2f2e);
+    }
+
+    /* Inputs, Selects e Textareas */
+    .modal-reportar .form-custom {
+        background-color: var(--surface, #f7f9f8);
+        border: var(--border-subtle, 1px solid rgba(58, 94, 86, 0.12));
+        border-radius: var(--border-radius-sm, 6px);
+        color: var(--text-medium, #4a5552);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .modal-reportar .form-custom:focus {
+            background-color: var(--white, #fff);
+            border-color: var(--primary-green, #3a5e56);
+            box-shadow: 0 0 0 3px rgba(58, 94, 86, 0.15); /* Efeito de foco acessÃ­vel */
+            outline: none;
+        }
+
+        .modal-reportar .form-custom::placeholder {
+            color: var(--text-muted, #7a8c88);
+        }
+
+    /* Checkboxes customizados */
+    .modal-reportar .check-custom .form-check-input {
+        border-color: var(--text-muted, #7a8c88);
+        cursor: pointer;
+    }
+
+        .modal-reportar .check-custom .form-check-input:checked {
+            background-color: var(--primary-green, #3a5e56);
+            border-color: var(--primary-green, #3a5e56);
+        }
+
+    .modal-reportar .check-custom .form-check-label {
+        color: var(--text-medium, #4a5552);
+        cursor: pointer;
+    }
+
+    /* BotÃµes Radio Customizados (Animal na Rua / Meu Pet Sumiu) */
+    .modal-reportar .btn-radio-custom {
+        border: 1px solid var(--border-subtle, rgba(58, 94, 86, 0.12));
+        color: var(--text-medium, #4a5552);
+        background-color: var(--surface, #f7f9f8);
+        transition: all 0.2s ease-in-out;
+        border-radius: var(--border-radius-sm, 6px);
+    }
+
+        .modal-reportar .btn-radio-custom:hover {
+            background-color: #eef1f0; /* bg-main */
+        }
+
+/* Estado Ativo: Animal na Rua (Verde) */
+.btn-check:checked + .btn-radio-custom:not(.btn-radio-orange) {
+    background-color: var(--primary-green, #3a5e56);
+    color: var(--white, #ffffff);
+    border-color: var(--primary-green, #3a5e56);
+}
+
+/* Estado Ativo: Meu Pet Sumiu (Laranja) - Para dar urgÃªncia */
+.btn-check:checked + .btn-radio-orange {
+    background-color: var(--primary-orange, #df7860);
+    color: var(--white, #ffffff);
+    border-color: var(--primary-orange, #df7860);
+}
+
+/* BotÃ£o de Submit (Registrar MarcaÃ§Ã£o) */
+.modal-reportar .btn-submit-custom {
+    background-color: var(--primary-green, #3a5e56);
+    color: var(--white, #ffffff);
+    border-radius: var(--border-radius-md, 12px);
+    padding: 14px 0;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+    .modal-reportar .btn-submit-custom:hover {
+        background-color: var(--primary-green-dark, #2e4c45);
+        color: var(--white, #ffffff);
+    }
+
+    .modal-reportar .btn-submit-custom:active {
+        transform: scale(0.98); /* MicrointeraÃ§Ã£o de clique */
+    }
+
+/* =========================================
+   CHIPS DE CUIDADOS (Ãgua / Comida)
+   ========================================= */
+
+.modal-reportar .btn-chip-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--surface, #f7f9f8);
+    border: 1px solid var(--border-subtle, rgba(58, 94, 86, 0.12));
+    color: var(--text-medium, #4a5552);
+    border-radius: 50px; /* Formato de pÃ­lula arredondada */
+    padding: 8px 18px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+    /* Efeito de Hover suave */
+    .modal-reportar .btn-chip-custom:hover {
+        background-color: #eef1f0; /* var(--bg-main) */
+        transform: translateY(-1px);
+    }
+
+    /* Cores Iniciais dos Ãcones */
+    .modal-reportar .btn-chip-custom i {
+        font-size: 1.1rem;
+        transition: color 0.2s ease;
+    }
+
+.modal-reportar .icon-agua {
+    color: #5bc0de;
+}
+/* Azul claro/Ã¡gua */
+.modal-reportar .icon-comida {
+    color: #f0ad4e;
+}
+/* Laranja/amarelo */
+
+/* * Estado Selecionado (Checked)
+ * Quando o checkbox invisÃ­vel estiver marcado, o label ao lado dele muda de estilo
+ */
+.btn-check:checked + .btn-chip-custom {
+    background-color: var(--primary-green, #3a5e56);
+    color: var(--white, #ffffff);
+    border-color: var(--primary-green, #3a5e56);
+    box-shadow: 0 4px 12px rgba(58, 94, 86, 0.25);
+}
+
+    /* Deixa os Ã­cones brancos quando selecionado para dar contraste */
+    .btn-check:checked + .btn-chip-custom i {
+        color: var(--white, #ffffff);
+    }
+
+/* =========================================
+   UPLOAD DE FOTO CUSTOMIZADO
+   ========================================= */
+
+.modal-reportar .upload-box-custom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 24px 16px;
+    background-color: var(--surface, #f7f9f8);
+    border: 2px dashed var(--text-muted, #7a8c88);
+    border-radius: var(--border-radius-md, 12px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    /* Efeito ao passar o mouse */
+    .modal-reportar .upload-box-custom:hover {
+        background-color: #eef1f0; /* var(--bg-main) */
+        border-color: var(--primary-green, #3a5e56);
+    }
+
+        .modal-reportar .upload-box-custom:hover .upload-icon {
+            color: var(--primary-green, #3a5e56);
+            transform: scale(1.1);
+        }
+
+/* Ãcone da CÃ¢mera */
+.modal-reportar .upload-icon {
+    font-size: 2.2rem;
+    color: var(--text-muted, #7a8c88);
+    transition: all 0.3s ease;
+}
+
+/* Estado de Sucesso (Quando hÃ¡ arquivo) */
+.modal-reportar .upload-box-custom.has-file {
+    border-color: var(--primary-green, #3a5e56);
+    background-color: rgba(58, 94, 86, 0.05); /* Fundo verde super clarinho */
+}
+
+/* =========================================
+   COMPLEMENTOS - MODAL DE EDIÃ‡ÃƒO
+   ========================================= */
+
+/* BotÃ£o Salvar (Laranja) */
+.modal-reportar .btn-submit-orange {
+    background-color: var(--primary-orange, #df7860);
+    color: var(--white, #ffffff);
+    border-radius: var(--border-radius-md, 12px);
+    padding: 14px 0;
+    font-size: 1rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+}
+
+    .modal-reportar .btn-submit-orange:hover {
+        background-color: var(--primary-orange-dark, #c96a52);
+        color: var(--white, #ffffff);
+    }
+
+    .modal-reportar .btn-submit-orange:active {
+        transform: scale(0.98);
+    }
+
+/* Card demonstrativo da foto atual */
+.modal-reportar .foto-atual-card {
+    background-color: var(--surface, #f7f9f8);
+    border-radius: var(--border-radius-sm, 6px);
+    border: 1px solid var(--border-subtle, rgba(58, 94, 86, 0.12));
+}
+
+.modal-reportar .foto-atual-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid rgba(0,0,0,0.1);
+}
 /* ==================== MODAIS ==================== */
+
+
 .nav-btn-transparent {
     background-color: transparent;
     border: none;
@@ -5355,194 +6416,21 @@ footer.footer {
         }
 
 /* ==========================================
-   FILTRO DROPDOWN DO MAPA
-   ========================================== */
-
-.filtro-barra {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 10px;
-    background: var(--white);
-    border-bottom: 1px solid rgba(0,0,0,0.07);
-    flex-shrink: 0;
-    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-    margin-bottom: 0;
-}
-
-.btn-filtro-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 12px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    border: 1.5px solid var(--primary-orange);
-    border-radius: 20px;
-    background: var(--white);
-    color: var(--primary-orange);
-    cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast);
-    white-space: nowrap;
-}
-
-    .btn-filtro-toggle:hover,
-    .btn-filtro-toggle--ativo {
-        background: var(--primary-orange);
-        color: var(--white);
-    }
-
-.filtro-chevron {
-    font-size: 0.65rem;
-    transition: transform 0.25s ease;
-}
-
-.filtro-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 3px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    border-radius: 50%;
-    background: var(--white);
-    color: var(--primary-orange);
-    border: 1.5px solid currentColor;
-    line-height: 1;
-}
-
-.btn-filtro-toggle--ativo .filtro-badge {
-    background: rgba(255,255,255,0.25);
-    color: var(--white);
-    border-color: rgba(255,255,255,0.6);
-}
-
-.filtro-contador {
-    font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    background: var(--bg-main);
-    padding: 3px 9px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-/* Dropdown â€” fechado por padrÃ£o */
-.filtro-dropdown {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.25s ease;
-    opacity: 0;
-    background: var(--surface);
-    border-bottom: 1px solid transparent;
-    flex-shrink: 0;
-}
-
-.filtro-dropdown--aberto {
-    max-height: 400px;
-    opacity: 1;
-    border-bottom-color: rgba(0,0,0,0.07);
-}
-
-/* Grid interno â€” 3 colunas para caber tudo em linha */
-.filtro-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    padding: 8px 10px 10px;
-}
-
-.filtro-campo {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.filtro-label {
-    font-size: 0.62rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.filtro-select {
-    width: 100%;
-    padding: 4px 20px 4px 7px;
-    font-size: 0.74rem;
-    border: 1.5px solid rgba(58, 94, 86, 0.15);
-    border-radius: var(--border-radius-sm);
-    background: var(--white);
-    color: var(--text-dark);
-    cursor: pointer;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%237a8c88'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 6px center;
-}
-
-    .filtro-select:focus {
-        outline: none;
-        border-color: var(--primary-orange);
-        box-shadow: 0 0 0 2px rgba(223, 120, 96, 0.12);
-    }
-
-/* Limpar filtros ocupa as 3 colunas, alinhado Ã  direita */
-.filtro-campo-limpar {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 2px;
-}
-
-.btn-limpar-filtros {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    border: 1.5px solid rgba(58, 94, 86, 0.15);
-    border-radius: 20px;
-    background: var(--white);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-    .btn-limpar-filtros:hover {
-        background: #fee2e2;
-        border-color: #fca5a5;
-        color: #dc2626;
-    }
-
-
-
-/* ==========================================
    CARROUSSEL
    ========================================== */
 /* ==================== SEÃ‡ÃƒO DO FEED / CAROUSEL ==================== */
 
-/* Ajuste do container para se encaixar perfeitamente na coluna central do dashboard grid */
 #section-feed:not(.d-none) {
     grid-column: 2;
     height: 100%;
     width: 100%;
-    overflow-y: auto;
-    padding: 0 !important; /* Sobrescreve o py-4 do Bootstrap para alinhar perfeitamente Ã  altura do mapa */
+    overflow: hidden;
+    padding: 0 !important;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Wrapper do Grid do Bootstrap adaptado ao comportamento interno */
 .feed-wrapper {
     width: 100%;
     margin: 0 !important;
@@ -5559,140 +6447,235 @@ footer.footer {
     width: 100%;
 }
 
-/* CustomizaÃ§Ã£o do container principal do Carrossel */
 #dogCarousel {
     width: 100%;
-    background-color: var(--white) !important;
-    border-radius: var(--border-radius-lg) !important; /* Alinhado ao padrÃ£o de 18px do projeto */
-    border: var(--border-subtle);
-    box-shadow: var(--shadow-lg) !important;
-    padding: 24px !important;
+    background-color: var(--bg-sidebar-right) !important;
+    border-radius: var(--border-radius-lg) !important;
+    border: var(--border-main);
+    box-shadow: var(--shadow-md) !important;
+    padding: 24px 48px !important;
     position: relative;
-    overflow: visible; /* Permite que os botÃµes flutuem para fora do card se desejado */
+    overflow: hidden;
 }
 
-/* Card individual do Animal dentro do Feed */
+    /* ---- Track com peek lateral ---- */
+    #dogCarousel .carousel-inner {
+        overflow: visible !important;
+        display: flex;
+        align-items: center;
+        padding: 16px 0 !important;
+    }
+
+    #dogCarousel .carousel-item {
+        display: block !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.82) translateY(12px);
+        opacity: 0.52;
+        filter: brightness(0.78);
+        transition: transform 0.38s cubic-bezier(.4,0,.2,1), opacity 0.38s ease, filter 0.38s ease, box-shadow 0.38s ease;
+        width: 280px;
+        pointer-events: none;
+        will-change: transform, opacity, filter;
+        z-index: 1;
+    }
+
+        #dogCarousel .carousel-item.active {
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            filter: none;
+            pointer-events: auto;
+            z-index: 3;
+            margin-inline: auto;
+        }
+
+        /* Vizinhos visÃ­veis (prev e next) */
+        #dogCarousel .carousel-item.carousel-item-next,
+        #dogCarousel .carousel-item.carousel-item-prev {
+            opacity: 0.52;
+            filter: brightness(0.78);
+            transform: translate(-50%, -50%) scale(0.82) translateY(12px);
+            z-index: 2;
+        }
+
+/* Card full-bleed */
 .animal-card {
-    background-color: var(--white);
-    border-radius: var(--border-radius-lg);
+    width: 280px;
+    border-radius: 22px !important;
     overflow: hidden;
-    border: var(--border-subtle);
+    border: none !important;
+    box-shadow: 0 12px 40px rgba(46, 76, 69, 0.28);
     transition: transform var(--transition-base), box-shadow var(--transition-base);
+    cursor: pointer;
+    position: relative;
+    isolation: isolate;
+    will-change: transform;
 }
 
     .animal-card:hover {
         transform: translateY(-4px);
-        box-shadow: var(--shadow-lg);
+        box-shadow: 0 18px 48px rgba(46, 76, 69, 0.34);
     }
 
-/* Wrapper da foto do animal para criar o efeito de aspecto e corte moderno */
+/* Foto ocupa tudo â€” sem Ã¡rea branca abaixo */
 .animal-card-img-wrapper {
     position: relative;
     width: 100%;
-    height: 280px; /* Altura ideal proporcional para fotos horizontais/verticais */
+    height: 340px;
     overflow: hidden;
     background-color: var(--bg-main);
+    border-radius: 22px;
 }
 
 .animal-card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
     transition: transform var(--transition-slow);
+    will-change: transform;
 }
 
 .animal-card:hover .animal-card-img {
-    transform: scale(1.04); /* Sutil zoom ao passar o mouse */
+    transform: scale(1.04);
 }
 
-/* Badge flutuante de distÃ¢ncia (Ex: 15 Km) */
+/* Badge flutuante de distÃ¢ncia */
 .distance-badge {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    background-color: rgba(46, 76, 69, 0.85); /* Baseado no seu var(--primary-green-dark) com opacidade */
-    backdrop-filter: blur(4px);
+    top: 13px;
+    right: 13px;
+    background-color: rgba(46, 76, 69, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: var(--white);
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 11.5px;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 10.5px;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 6px;
-    letter-spacing: 0.02em;
-    z-index: 2;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: var(--shadow-sm);
+    gap: 5px;
+    letter-spacing: 0.04em;
+    z-index: 4;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: var(--shadow-xs);
 }
 
     .distance-badge i {
-        color: var(--primary-orange); /* Destaque para o Ã­cone de localizaÃ§Ã£o */
+        color: var(--primary-orange);
     }
 
-/* Gradiente escuro na base da foto para garantir excelente legibilidade do Texto Branco */
+/* Overlay glassmorphism na base da foto */
 .animal-card-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 45px 20px 20px;
-    background: linear-gradient(to top, rgba(46, 76, 69, 0.95) 0%, rgba(46, 76, 69, 0.4) 65%, transparent 100%);
-    z-index: 1;
+    padding: 48px 18px 18px;
+    background: linear-gradient(to top, rgba(36, 60, 54, 0.90) 0%, rgba(36, 60, 54, 0.50) 55%, transparent 100%);
+    z-index: 3;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
 }
 
-    .animal-card-overlay h3 {
-        font-size: 1.3rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+/* Painel glass com info e tags dentro do overlay */
+.animal-card-glass {
+    background: rgba(36, 60, 54, 0.48);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px;
+    margin-top: 8px;
+}
+
+.animal-card-id {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.52);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.animal-card-overlay h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.25;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 3px;
+}
+
+.animal-card-addr {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+    .animal-card-addr i {
+        flex-shrink: 0;
+        font-size: 10px;
+        color: var(--primary-orange);
     }
 
-    .animal-card-overlay p {
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-        font-weight: 500;
-    }
-
-/* Tags de CaracterÃ­sticas (Cor, Faixa EtÃ¡ria, Estado de SaÃºde) */
+/* Tags de CaracterÃ­sticas */
 .animal-tag {
-    background-color: rgba(157, 191, 160, 0.15); /* Baseado na opacidade do var(--light-green) */
-    border: 1px solid rgba(157, 191, 160, 0.35);
-    color: var(--primary-green-dark);
-    padding: 5px 12px;
+    background-color: rgba(157, 191, 160, 0.22);
+    border: 1px solid rgba(157, 191, 160, 0.38);
+    color: #cde8d0;
+    padding: 3px 10px;
     border-radius: 30px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition: background var(--transition-fast), color var(--transition-fast);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    transition: background-color var(--transition-fast);
 }
 
     .animal-tag:hover {
-        background-color: var(--light-green);
-        color: var(--primary-green-dark);
+        background-color: rgba(157, 191, 160, 0.40);
     }
 
-/* CustomizaÃ§Ã£o dos BotÃµes Laterais (Setas do Bootstrap) */
-#dogCarousel .carousel-control-prev,
-#dogCarousel .carousel-control-next {
-    width: 44px;
-    height: 44px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0; /* InvisÃ­veis por padrÃ£o para um visual clean */
-    transition: opacity var(--transition-base), left var(--transition-base), right var(--transition-base);
-    z-index: 5;
+/* Remove a Ã¡rea branca inferior que existia antes */
+.animal-card .p-4,
+.animal-card .bg-white {
+    display: none !important;
 }
 
-/* Revela as setas suavemente flutuando para as laterais ao passar o mouse sobre o carrossel */
+/* BotÃµes de seta */
+#dogCarousel .carousel-control-prev,
+#dogCarousel .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity var(--transition-base), left var(--transition-base), right var(--transition-base);
+    z-index: 10;
+}
+
 #dogCarousel:hover .carousel-control-prev {
     opacity: 1;
-    left: -22px;
+    left: 6px;
 }
 
 #dogCarousel:hover .carousel-control-next {
     opacity: 1;
-    right: -22px;
+    right: 6px;
 }
 
-/* EstilizaÃ§Ã£o dos cÃ­rculos internos das setas seguindo sua identidade visual */
 #dogCarousel .carousel-control-prev-icon,
 #dogCarousel .carousel-control-next-icon {
     background-color: var(--primary-green) !important;
@@ -5703,24 +6686,17 @@ footer.footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-md);
-    transition: background-color var(--transition-fat), transform var(--transition-fast);
-    background-size: 40%; /* Ajusta a proporÃ§Ã£o interna do chevron nativo */
+    box-shadow: var(--shadow-sm);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    background-size: 40%;
 }
 
-    /* Hover das setas mudando para a cor secundÃ¡ria de alerta (Laranja) */
     #dogCarousel .carousel-control-prev-icon:hover,
     #dogCarousel .carousel-control-next-icon:hover {
         background-color: var(--primary-orange) !important;
         transform: scale(1.08);
     }
 
-/* Reset de padding desnecessÃ¡rio do Bootstrap */
-#dogCarousel .carousel-inner {
-    padding-bottom: 0 !important;
-}
-
-/* Media query preventiva caso o grid do dashboard colapse em telas menores */
 @media (max-width: 992px) {
     #section-feed:not(.d-none) {
         grid-column: span 3;
@@ -5736,6 +6712,283 @@ footer.footer {
         right: 10px;
     }
 }
+/* Media query preventiva caso o grid do dashboard colapse em telas menores */
+@media (max-width: 992px) {
+    #section-feed:not(.d-none) {
+        grid-column: span 3;
+        height: auto;
+        padding: 20px !important;
+    }
+
+    #dogCarousel:hover .carousel-control-prev {
+        left: 10px;
+    }
+
+    #dogCarousel:hover .carousel-control-next {
+        right: 10px;
+    }
+
+    /* ==========================================================================
+   ESTILOS TELA DE EMERGÃŠNCIA (SOS DOG)
+   ========================================================================== */
+
+    #sosdog-emergencia, .body-emergencia {
+        background-color: #f2f2f2 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: calc(100vh - 120px) !important; /* Desconta o Header/Footer do ASP.NET */
+        overflow-y: auto !important;
+        padding: 40px 20px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+        /* Container Verde Escuro Principal */
+        #sosdog-emergencia .container-emergencia,
+        .body-emergencia .container-emergencia {
+            background-color: #2b443b !important;
+            width: 100% !important;
+            max-width: 650px !important;
+            padding: 40px 35px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+            text-align: center !important;
+            margin: auto !important; /* ForÃ§a o alinhamento no centro perfeito */
+        }
+
+    /* Ãcone de Alerta */
+    .container-emergencia .header-emergencia i {
+        font-size: 3.5rem !important;
+        color: #e57357 !important;
+        margin-bottom: 20px !important;
+        display: inline-block !important;
+    }
+
+    /* TÃ­tulo */
+    .container-emergencia h1 {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+        color: #ffffff !important;
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* Texto de Apoio */
+    .container-emergencia p {
+        font-size: 0.95rem !important;
+        color: #cbd5e1 !important;
+        margin-bottom: 35px !important;
+        line-height: 1.6 !important;
+    }
+
+    /* Lista */
+    .container-emergencia .lista-contatos {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        margin-bottom: 35px !important;
+        padding: 0 !important;
+    }
+
+    /* Cards de Contato Internos */
+    .container-emergencia .card-contato {
+        background-color: #1f322b !important;
+        border-left: 4px solid #e57357 !important;
+        padding: 18px 22px !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        text-align: left !important;
+        transition: transform 0.2s, background-color 0.2s !important;
+        text-decoration: none !important;
+    }
+
+        .container-emergencia .card-contato:hover {
+            transform: translateY(-2px) !important;
+            background-color: #253b33 !important;
+        }
+
+    /* TÃ­tulos dos Cards */
+    .card-contato .info-contato h3 {
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        margin-bottom: 4px !important;
+    }
+
+    /* DescriÃ§Ãµes dos Cards */
+    .card-contato .info-contato p {
+        margin-bottom: 0 !important;
+        font-size: 0.88rem !important;
+        color: #a3b8cc !important;
+        line-height: 1.4 !important;
+    }
+
+    /* BotÃ£o Ligar */
+    .container-emergencia .btn-ligar {
+        background-color: #e57357 !important;
+        color: white !important;
+        text-decoration: none !important;
+        padding: 12px 20px !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        transition: background-color 0.2s !important;
+    }
+
+        .container-emergencia .btn-ligar:hover {
+            background-color: #cf5f44 !important;
+        }
+
+    /* BotÃ£o Voltar */
+    .container-emergencia .btn-voltar {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        color: #cbd5e1 !important;
+        text-decoration: none !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        transition: color 0.2s !important;
+        margin-top: 15px !important;
+    }
+
+        .container-emergencia .btn-voltar:hover {
+            color: #e57357 !important;
+        }
+}
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\alertsScript.js ---
+
+
+/**
+ * Script para fechamento automático de alertas do Bootstrap
+ * Proporciona uma experiência de usuário (UX) mais limpa removendo mensagens temporárias.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    // Seleciona todos os alertas que possuem a classe de fechamento automático
+    const alerts = document.querySelectorAll('.auto-close-alert');
+
+    alerts.forEach(function (alert) {
+        // Define o tempo de espera de 5000 milissegundos (5 segundos)
+        setTimeout(function () {
+            // Boa prática sênior: verifica se o Bootstrap está carregado antes de usar a API dele
+            if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            } else {
+                // Fallback: se o Bootstrap falhar por rede, remove o elemento nativamente
+                alert.remove();
+            }
+        }, 5000);
+    });
+});
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\carrusel.js ---
+
+
+// Inicialização do Swiper — adicione no final do @section Scripts no Index.cshtml
+// Requer: <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+// e:      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+document.addEventListener('DOMContentLoaded', function () {
+    const dogSwiper = new Swiper('.dogSwiper', {
+        centeredSlides: true,       // card ativo sempre ao centro
+        slidesPerView: 'auto',      // mostra quantos couberem + peek lateral
+        spaceBetween: 20,
+        loop: true,                 // volta ao início ao passar do último
+        speed: 420,
+        grabCursor: true,
+
+        navigation: {
+            prevEl: '#dogSwiperPrev',
+            nextEl: '#dogSwiperNext',
+        },
+
+        on: {
+            // Ao mudar de slide, dispara o focusCard do map-handler.js
+            slideChangeTransitionEnd: function () {
+                const activeSlide = this.slides[this.activeIndex];
+                const card = activeSlide?.querySelector('.animal-card');
+                if (card && typeof focusCard === 'function') {
+                    focusCard(card.dataset.id);
+                }
+            }
+        }
+    });
+
+    // Expõe para o map-handler.js poder sincronizar o slide ao clicar no mapa
+    window.dogSwiper = dogSwiper;
+});
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\emergencia.js ---
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Captura os elementos estruturais e o container da nossa página
+    const bodyElement = document.body;
+    const mainElement = document.querySelector("main");
+    const containerEmergencia = document.getElementById("sosdog-emergencia");
+
+    // 2. Se a div de emergência estiver presente na tela, ajustamos o layout
+    if (containerEmergencia) {
+
+        // Libera o body global para aceitar rolagem vertical
+        if (bodyElement) {
+            bodyElement.style.setProperty("overflow-y", "auto", "important");
+            bodyElement.style.setProperty("overflow-x", "hidden", "important");
+            bodyElement.style.setProperty("height", "auto", "important");
+        }
+
+        // Destranca o container <main> do ASP.NET Core para expandir com os cards
+        if (mainElement) {
+            mainElement.style.setProperty("overflow", "visible", "important");
+            mainElement.style.setProperty("height", "auto", "important");
+            mainElement.style.setProperty("min-height", "calc(100vh - 120px)", "important");
+            mainElement.style.setProperty("display", "block", "important");
+        }
+
+        console.log("SOS Dog: Rolagem e dimensões liberadas para a página de Emergência.");
+
+        // 3. Lógica para copiar o número ao invés de ligar
+        const botoesLigar = document.querySelectorAll(".btn-ligar");
+        botoesLigar.forEach(botao => {
+            botao.addEventListener("click", function (event) {
+                // Impede que a página pule para o topo por causa do href="#"
+                event.preventDefault();
+
+                // Pega o número do atributo data-numero
+                const numero = this.getAttribute("data-numero");
+
+                // Copia para a área de transferência do usuário
+                navigator.clipboard.writeText(numero).then(() => {
+                    console.log(`Número copiado: ${numero}`);
+
+                    // Feedback visual: Guarda o HTML original e mostra mensagem de sucesso
+                    const conteudoOriginal = this.innerHTML;
+                    this.innerHTML = `<i class="fa-solid fa-check"></i> Copiado!`;
+
+                    // Retorna ao botão original após 2 segundos
+                    setTimeout(() => {
+                        this.innerHTML = conteudoOriginal;
+                    }, 2000);
+
+                }).catch(err => {
+                    console.error("Falha ao copiar o número: ", err);
+                    alert("Não foi possível copiar o número. Tente manualmente.");
+                });
+            });
+        });
+    }
+});
 
 
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\feedCasos.js ---
@@ -5745,33 +6998,57 @@ document.addEventListener("DOMContentLoaded", function () {
     // Captura os botões da navbar (vindos do _Layout)
     const btnFeed = document.getElementById("btn-feed");
     const btnMapa = document.getElementById("btn-mapa");
+    const btnTutores = document.getElementById("btn-tutores");
 
     // Captura as seções da página (vindas do Index.cshtml)
     const mapSection = document.querySelector(".main-map-area");
     const feedSection = document.getElementById("section-feed");
+    const tutoresSection = document.getElementById("section-tutores");
 
+    // ==========================================
+    // FUNÇÕES DE EXIBIÇÃO
+    // ==========================================
     // Função para exibir a tela de Feed de Casos
     function ativarFeedView() {
-        if (mapSection && feedSection) {
-            mapSection.classList.add("d-none");       // Esconde o mapa
-            feedSection.classList.remove("d-none");   // Mostra o feed
+        if (mapSection && feedSection && tutoresSection) {
+            mapSection.classList.add("d-none");       // Esconde mapa
+            tutoresSection.classList.add("d-none");   // Esconde tutores
+            feedSection.classList.remove("d-none");   // Mostra feed
 
-            // (Opcional) Gerenciamento visual de abas ativas se desejar estilizar
             btnFeed?.classList.add("active");
             btnMapa?.classList.remove("active");
+            btnTutores?.classList.remove("active");
         }
     }
 
-    // Função para exibir a tela de Mapa de Casos
     function ativarMapaView() {
-        if (mapSection && feedSection) {
-            mapSection.classList.remove("d-none");    // Mostra o mapa
-            feedSection.classList.add("d-none");      // Esconde o feed
+        if (mapSection && feedSection && tutoresSection) {
+            feedSection.classList.add("d-none");      // Esconde feed
+            tutoresSection.classList.add("d-none");   // Esconde tutores
+            mapSection.classList.remove("d-none");    // Mostra mapa
 
             btnMapa?.classList.add("active");
             btnFeed?.classList.remove("active");
+            btnTutores?.classList.remove("active");
         }
     }
+
+
+    function ativarTutoresView() {
+        if (mapSection && feedSection && tutoresSection) {
+            mapSection.classList.add("d-none");       // Esconde mapa
+            feedSection.classList.add("d-none");      // Esconde feed
+            tutoresSection.classList.remove("d-none");// Mostra tutores
+
+            btnTutores?.classList.add("active");
+            btnMapa?.classList.remove("active");
+            btnFeed?.classList.remove("active");
+        }
+    }
+
+    // ==========================================
+    // OUVINTES DE CLIQUE (EVENT LISTENERS)
+    // ==========================================
 
     // Ouvinte de clique para o botão "Feed de Casos"
     if (btnFeed) {
@@ -5800,11 +7077,95 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // SUPORTE A RECARREGAMENTO: Se o usuário acessar diretamente ou atualizar a página em "/Home/Feed"
-    if (window.location.pathname.toLowerCase().includes("/home/feed")) {
+    if (btnTutores) {
+        btnTutores.addEventListener("click", function (e) {
+            if (mapSection && feedSection && tutoresSection) {
+                e.preventDefault();
+                ativarTutoresView();
+                // Atualiza a URL para combinar com o seu link do Layout
+                history.pushState(null, "", "/Tutores/Index");
+            }
+        });
+    }
+
+    // ==========================================
+    // SUPORTE A RECARREGAMENTO E NAVEGAÇÃO DIRETA
+    // ==========================================
+    const currentPath = window.location.pathname.toLowerCase();
+
+    if (currentPath.includes("/home/feed")) {
         ativarFeedView();
+    } else if (currentPath.includes("/tutores")) {
+        // Se acessar direto pela URL /Tutores ou /Tutores/Index
+        ativarTutoresView();
+    } else {
+        // Por padrão, se estiver na raiz ou /Home/Index, garante que o mapa apareça
+        // (Opcional, pois o HTML já vem com o mapa visível por padrão)
     }
 });
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\filtro-mapa.js ---
+
+
+// ==========================================
+// FILTRO FLUTUANTE NO MAPA — filtro-mapa.js
+// ==========================================
+
+function toggleFiltroDropdown() {
+    const painel = document.getElementById('filtro-mapa-painel');
+    const chevron = document.getElementById('filtro-chevron');
+    const btn = document.getElementById('btn-filtro-toggle');
+
+    const aberto = painel.classList.toggle('filtro-mapa-painel--aberto');
+    chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
+    btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
+}
+
+// Fecha ao clicar fora
+document.addEventListener('click', function (e) {
+    const btn = document.getElementById('btn-filtro-toggle');
+    const painel = document.getElementById('filtro-mapa-painel');
+    if (!btn?.contains(e.target) && !painel?.contains(e.target)) {
+        painel?.classList.remove('filtro-mapa-painel--aberto');
+        if (document.getElementById('filtro-chevron')) {
+            document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
+        }
+        btn?.classList.remove('btn-filtro-toggle--ativo');
+    }
+});
+
+// Atualiza badge com nº de filtros ativos
+function atualizarBadge() {
+    const ids = ['filtro-tipo', 'filtro-estadosaude', 'filtro-porte', 'filtro-sexo', 'filtro-faixaetaria'];
+    const ativos = ids.filter(id => document.getElementById(id)?.value !== '').length;
+    const badge = document.getElementById('filtro-badge');
+    if (badge) {
+        badge.textContent = ativos;
+        badge.style.display = ativos > 0 ? 'inline-flex' : 'none';
+    }
+}
+
+
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\geradorCartaz.js ---
+
+
+/**
+ * Abre a rota do cartaz em uma nova aba para visualização e impressão em PDF.
+ * @param {number} idOcorrencia - O ID único da ocorrência do animal.
+ */
+function gerarCartazPdf(idOcorrencia) {
+    if (!idOcorrencia) {
+        console.error("Erro: ID da ocorrência não fornecido.");
+        return;
+    }
+
+    // Define a rota do backend que renderiza o layout do cartaz
+    const url = `/Ocorrencias/Cartaz/${idOcorrencia}`;
+
+    // Abre em uma nova aba para não interromper a navegação do usuário na Dashboard
+    window.open(url, '_blank');
+}
 
 
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\map-handler.js ---
@@ -5842,7 +7203,8 @@ class SosDogMap {
     }
 
     renderMap(zoom) {
-        this.map = L.map('map').setView(this.userLocation, zoom);
+        this.map = L.map('map', { zoomControl: false }).setView(this.userLocation, zoom);
+        L.control.zoom({ position: 'topright' }).addTo(this.map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
@@ -6096,8 +7458,8 @@ function focusCard(id) {
 
         // 5. Ações e Histórico de Registros
         document.getElementById('sidebar-user-id').innerText = card.dataset.ultimoUser || card.getAttribute('data-ultimo-user') || 'Nenhum registro';
-        document.getElementById('sidebar-last-agua').innerText = card.dataset.agua || card.getAttribute('data-agua') || '--:--';
-        document.getElementById('sidebar-last-comida').innerText = card.dataset.comida || card.getAttribute('data-comida') || '--:--';
+        document.getElementById('sidebar-last-agua').innerText = formatarDataAcao(card.dataset.agua) || '--:--';
+        document.getElementById('sidebar-last-comida').innerText = formatarDataAcao(card.dataset.comida) || '--:--';
 
         // 6. LÓGICA UNIFICADA DE EXCLUSÃO (BOTÃO DELETAR)
         const btnDeletar = document.getElementById('btn-deletar-ocorrencia');
@@ -6152,6 +7514,34 @@ document.addEventListener('DOMContentLoaded', () => {
 // Variável global para rastrear qual ocorrência está aberta no painel lateral
 let ocorrenciaSelecionadaId = null;
 
+// Formato padrão: 01/06 19:14
+function formatarDataAcao(dataStr) {
+    if (!dataStr || dataStr === '--:--') return '--:--';
+
+    // Se já vier no formato curto (dd/MM/aa HH:mm), retorna direto
+    if (/^\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}$/.test(dataStr)) return dataStr;
+
+    // Tenta converter qualquer formato para dd/MM/aa HH:mm
+    const date = new Date(dataStr);
+    if (!isNaN(date)) {
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = String(date.getFullYear()).slice(-2);
+        const hora = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        return `${dia}/${mes}/${ano} ${hora}:${min}`;
+    }
+
+    // Se vier como "01/06/2026 19:14:22", extrai e converte
+    const match = dataStr.match(/(\d{2})\/(\d{2})\/(\d{2,4}) (\d{2}):(\d{2})/);
+    if (match) {
+        const ano = match[3].slice(-2);
+        return `${match[1]}/${match[2]}/${ano} ${match[4]}:${match[5]}`;
+    }
+
+    return dataStr;
+}
+
 // UNIFICAMOS A FUNÇÃO DE AÇÃO (Água/Comida)
 async function executarAcao(tipoAcao, btnElement) {
     if (!ocorrenciaSelecionadaId) {
@@ -6184,7 +7574,11 @@ async function executarAcao(tipoAcao, btnElement) {
             // Lógica isolada para ÁGUA
             if (tipoAcao === 'agua') {
                 const elAgua = document.getElementById('sidebar-last-agua');
-                if (elAgua) elAgua.innerText = result.dataStr;
+                if (elAgua) {
+                    elAgua.textContent = formatarDataAcao(result.dataStr);
+                    elAgua.style.cssText = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;';
+
+                }
 
                 if (btnElement) {
                     btnElement.classList.add('btn-animacao-agua');
@@ -6194,7 +7588,10 @@ async function executarAcao(tipoAcao, btnElement) {
             // Lógica isolada para COMIDA
             else if (tipoAcao === 'comida') {
                 const elComida = document.getElementById('sidebar-last-comida');
-                if (elComida) elComida.innerText = result.dataStr;
+                if (elComida) {
+                    elComida.textContent = formatarDataAcao(result.dataStr);
+                    elComida.style.cssText = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;';
+                }
 
                 if (btnElement) {
                     btnElement.classList.add('btn-animacao-comida');
@@ -6206,9 +7603,9 @@ async function executarAcao(tipoAcao, btnElement) {
             const cardOriginal = document.querySelector(`.case-card[data-id='${ocorrenciaSelecionadaId}']`);
             if (cardOriginal) {
                 if (tipoAcao === 'agua') {
-                    cardOriginal.setAttribute('data-agua', result.dataStr);
+                    cardOriginal.setAttribute('data-agua', formatarDataAcao(result.dataStr));
                 } else {
-                    cardOriginal.setAttribute('data-comida', result.dataStr);
+                    cardOriginal.setAttribute('data-comida', formatarDataAcao(result.dataStr));
                 }
                 cardOriginal.setAttribute('data-ultimo-user', result.nomeUsuario);
             }
@@ -6323,6 +7720,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
     // 4. LÓGICA DO BOTÃO EDITAR
     // ==========================================
+
+    // 👇 ADICIONE ESTA LINHA PARA CAPTURAR O BOTÃO 👇
+    const btnEditar = document.getElementById('btn-editar-ocorrencia');
+
     if (btnEditar) {
         btnEditar.addEventListener('click', function () {
             if (this.classList.contains('auth-required')) return;

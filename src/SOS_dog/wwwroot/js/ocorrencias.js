@@ -1,6 +1,34 @@
 ﻿// Variável global para rastrear qual ocorrência está aberta no painel lateral
 let ocorrenciaSelecionadaId = null;
 
+// Formato padrão: 01/06 19:14
+function formatarDataAcao(dataStr) {
+    if (!dataStr || dataStr === '--:--') return '--:--';
+
+    // Se já vier no formato curto (dd/MM/aa HH:mm), retorna direto
+    if (/^\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}$/.test(dataStr)) return dataStr;
+
+    // Tenta converter qualquer formato para dd/MM/aa HH:mm
+    const date = new Date(dataStr);
+    if (!isNaN(date)) {
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = String(date.getFullYear()).slice(-2);
+        const hora = String(date.getHours()).padStart(2, '0');
+        const min = String(date.getMinutes()).padStart(2, '0');
+        return `${dia}/${mes}/${ano} ${hora}:${min}`;
+    }
+
+    // Se vier como "01/06/2026 19:14:22", extrai e converte
+    const match = dataStr.match(/(\d{2})\/(\d{2})\/(\d{2,4}) (\d{2}):(\d{2})/);
+    if (match) {
+        const ano = match[3].slice(-2);
+        return `${match[1]}/${match[2]}/${ano} ${match[4]}:${match[5]}`;
+    }
+
+    return dataStr;
+}
+
 // UNIFICAMOS A FUNÇÃO DE AÇÃO (Água/Comida)
 async function executarAcao(tipoAcao, btnElement) {
     if (!ocorrenciaSelecionadaId) {
@@ -33,7 +61,11 @@ async function executarAcao(tipoAcao, btnElement) {
             // Lógica isolada para ÁGUA
             if (tipoAcao === 'agua') {
                 const elAgua = document.getElementById('sidebar-last-agua');
-                if (elAgua) elAgua.innerText = result.dataStr;
+                if (elAgua) {
+                    elAgua.textContent = formatarDataAcao(result.dataStr);
+                    elAgua.style.cssText = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;';
+
+                }
 
                 if (btnElement) {
                     btnElement.classList.add('btn-animacao-agua');
@@ -43,7 +75,10 @@ async function executarAcao(tipoAcao, btnElement) {
             // Lógica isolada para COMIDA
             else if (tipoAcao === 'comida') {
                 const elComida = document.getElementById('sidebar-last-comida');
-                if (elComida) elComida.innerText = result.dataStr;
+                if (elComida) {
+                    elComida.textContent = formatarDataAcao(result.dataStr);
+                    elComida.style.cssText = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;';
+                }
 
                 if (btnElement) {
                     btnElement.classList.add('btn-animacao-comida');
@@ -55,9 +90,9 @@ async function executarAcao(tipoAcao, btnElement) {
             const cardOriginal = document.querySelector(`.case-card[data-id='${ocorrenciaSelecionadaId}']`);
             if (cardOriginal) {
                 if (tipoAcao === 'agua') {
-                    cardOriginal.setAttribute('data-agua', result.dataStr);
+                    cardOriginal.setAttribute('data-agua', formatarDataAcao(result.dataStr));
                 } else {
-                    cardOriginal.setAttribute('data-comida', result.dataStr);
+                    cardOriginal.setAttribute('data-comida', formatarDataAcao(result.dataStr));
                 }
                 cardOriginal.setAttribute('data-ultimo-user', result.nomeUsuario);
             }
@@ -172,6 +207,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // ==========================================
     // 4. LÓGICA DO BOTÃO EDITAR
     // ==========================================
+
+    // 👇 ADICIONE ESTA LINHA PARA CAPTURAR O BOTÃO 👇
+    const btnEditar = document.getElementById('btn-editar-ocorrencia');
+
     if (btnEditar) {
         btnEditar.addEventListener('click', function () {
             if (this.classList.contains('auth-required')) return;

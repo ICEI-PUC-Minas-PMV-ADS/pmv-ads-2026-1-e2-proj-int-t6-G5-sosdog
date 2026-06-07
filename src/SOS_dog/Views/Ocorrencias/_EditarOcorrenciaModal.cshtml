@@ -2,15 +2,15 @@
 
 <div class="modal fade" id="modalEditarOcorrencia" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div class="modal-content border-0 modal-reportar">
             <div class="modal-header border-0 pb-0 justify-content-center position-relative">
-                <h4 class="modal-title fw-bold text-dark w-100 text-center mt-2">Editar: @Model.CodigoCachorro</h4>
-                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h4 class="modal-title fw-bold w-100 text-center mt-2 titulo-modal">Editar: @Model.CodigoCachorro</h4>
+                <button type="button" class="btn-close position-absolute end-0 top-0 mt-3 me-3" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            
+
             <form asp-controller="Ocorrencias" asp-action="Edit" method="post" enctype="multipart/form-data">
                 <div class="modal-body px-4 pt-4">
-                    
+
                     <input type="hidden" asp-for="IdOcorrencia" />
                     <input type="hidden" asp-for="IdUsuario" />
                     <input type="hidden" asp-for="DataRegistro" />
@@ -18,23 +18,23 @@
                     <input type="hidden" asp-for="FotoAnimal" />
                     <input type="hidden" asp-for="Latitude" />
                     <input type="hidden" asp-for="Longitude" />
-                    
+
                     <div class="mb-3">
-                        <input asp-for="Endereco" class="form-control bg-light text-secondary" placeholder="Localização / Nome da Rua" required style="border: 1px solid #ddd;" />
+                        <input asp-for="Endereco" class="form-control form-custom" placeholder="Localização / Nome da Rua" required />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Tipo de Ocorrência:</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Tipo de Ocorrência:</label>
                     <div class="d-flex gap-2 mb-3">
                         <input type="radio" asp-for="TipoOcorrencia" class="btn-check" id="editTipoRua" value="Rua">
-                        <label class="btn btn-outline-warning w-50 fw-semibold" for="editTipoRua">Animal na Rua</label>
+                        <label class="btn btn-radio-custom w-50 fw-semibold" for="editTipoRua">Animal na Rua</label>
 
                         <input type="radio" asp-for="TipoOcorrencia" class="btn-check" id="editTipoPerdido" value="Perdido">
-                        <label class="btn btn-outline-primary w-50 fw-semibold" for="editTipoPerdido">Meu Pet Sumiu</label>
+                        <label class="btn btn-radio-custom btn-radio-orange w-50 fw-semibold" for="editTipoPerdido">Meu Pet Sumiu</label>
                     </div>
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="Porte" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Porte" class="form-select form-custom">
                                 <option value="" disabled>Porte</option>
                                 <option value="Pequeno">Pequeno</option>
                                 <option value="Médio">Médio</option>
@@ -42,7 +42,7 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="Sexo" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="Sexo" class="form-select form-custom">
                                 <option value="" disabled>Sexo</option>
                                 <option value="Macho">Macho</option>
                                 <option value="Fêmea">Fêmea</option>
@@ -53,7 +53,7 @@
 
                     <div class="row mb-3 gx-2">
                         <div class="col-6">
-                            <select asp-for="EstadoSaude" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="EstadoSaude" class="form-select form-custom">
                                 <option value="" disabled>Estado</option>
                                 <option value="Aparentemente Saudável">Aparentemente Saudável</option>
                                 <option value="Ferido / Machucado">Ferido / Machucado</option>
@@ -62,7 +62,7 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <select asp-for="FaixaEtaria" class="form-select text-secondary" style="border: 1px solid #ddd;">
+                            <select asp-for="FaixaEtaria" class="form-select form-custom">
                                 <option value="" disabled>Idade</option>
                                 <option value="Filhote">Filhote</option>
                                 <option value="Adulto">Adulto</option>
@@ -72,44 +72,66 @@
                     </div>
 
                     <div class="mb-3">
-                        <input asp-for="CorPelagem" class="form-control text-secondary" placeholder="Cor / Pelagem (Ex: Caramelo)" style="border: 1px solid #ddd;" />
+                        <input asp-for="CorPelagem" class="form-control form-custom" placeholder="Cor / Pelagem (Ex: Caramelo)" />
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Cuidados fornecidos:</label>
-                    <div class="d-flex gap-3 mb-3">
-                        <div class="form-check">
-                            <input asp-for="RecebeuAgua" class="form-check-input" type="checkbox">
-                            <label class="form-check-label text-secondary" for="RecebeuAgua">Dei Água</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Cuidados fornecidos:</label>
+                    <div class="d-flex gap-3 mb-4">
+                        <div>
+                            <input asp-for="RecebeuAgua" type="checkbox" class="btn-check" id="editCheckAgua" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="editCheckAgua">
+                                <i class="fa-solid fa-droplet icon-agua"></i> Dei Água
+                            </label>
                         </div>
-                        <div class="form-check">
-                            <input asp-for="RecebeuComida" class="form-check-input" type="checkbox">
-                            <label class="form-check-label text-secondary" for="RecebeuComida">Dei Comida</label>
+                        <div>
+                            <input asp-for="RecebeuComida" type="checkbox" class="btn-check" id="editCheckComida" autocomplete="off">
+                            <label class="btn btn-chip-custom" for="editCheckComida">
+                                <i class="fa-solid fa-bowl-food icon-comida"></i> Dei Comida
+                            </label>
                         </div>
                     </div>
 
-                    <label class="form-label fw-bold text-dark small mb-2">Atualizar Foto (Opcional):</label>
+                    <label class="form-label fw-bold small mb-2 label-custom">Atualizar Foto (Opcional):</label>
+
                     @if (!string.IsNullOrEmpty(Model.FotoAnimal))
                     {
-                        <div class="mb-2 text-center">
-                            <img src="@Model.FotoAnimal" alt="Foto atual" style="height: 100px; border-radius: 10px; object-fit: cover; border: 1px solid #eee;" />
+                        <div class="mb-3 d-flex align-items-center gap-3 p-2 foto-atual-card">
+                            <img src="@Model.FotoAnimal" alt="Foto atual" class="foto-atual-img" />
+                            <div class="text-start">
+                                <span class="d-block fw-bold text-dark" style="font-size: 0.9rem;">Foto Atual</span>
+                                <span class="text-muted" style="font-size: 0.8rem;">Envie uma nova abaixo para substituir</span>
+                            </div>
                         </div>
                     }
+
                     <div class="mb-3">
-                        <input type="file" name="NovaFoto" class="form-control text-secondary" accept="image/*" style="border: 1px solid #ddd;" />
+                        <input type="file" name="NovaFoto" id="NovaFoto" class="d-none" accept="image/*" onchange="mostrarNomeArquivoEdit(this)" />
+                        <label for="NovaFoto" class="upload-box-custom py-3">
+                            <div class="upload-content text-center">
+                                <i class="fa-solid fa-camera upload-icon mb-2"></i>
+                                <p class="mb-0 fw-semibold text-dark" id="upload-texto-principal-edit">Cique para trocar a foto</p>
+                                <span class="small text-muted" id="upload-texto-secundario-edit">PNG, JPG ou WEBP</span>
+
+                                <div id="file-name-display-edit" class="mt-2 text-success fw-bold d-none align-items-center justify-content-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span id="file-name-text-edit" class="text-truncate" style="max-width: 200px; display: inline-block;"></span>
+                                </div>
+                            </div>
+                        </label>
                     </div>
 
                     <div class="mb-3">
-                        <textarea asp-for="Descricao" class="form-control text-secondary" placeholder="Observações e detalhes..." rows="2" required style="border: 1px solid #ddd;"></textarea>
+                        <textarea asp-for="Descricao" class="form-control form-custom" placeholder="Observações e detalhes..." rows="2" required></textarea>
                     </div>
 
                 </div>
-                
+
                 <div class="modal-footer border-0 px-4 pb-4 pt-0">
-                    <button type="submit" class="btn w-100 text-white fw-bold" style="background-color: #f39c12; border-radius: 5px; padding: 12px 0; font-size: 16px;">
+                    <button type="submit" class="btn btn-submit-orange w-100 fw-bold">
                         Salvar Alterações <i class="fa-solid fa-floppy-disk ms-1"></i>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-</div>
+</div>v

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SosDog.Models; 
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -17,53 +19,49 @@ namespace SOS_dog.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        private async Task PrepareViewDataAsync()
         {
-            var listaOcorrencias = _context.Ocorrencias.ToList();
-
             var listaFavoritosIds = new List<int>();
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userIdClaim != null)
+            if (int.TryParse(userIdClaim, out int idUsuario))
             {
-                int idUsuario = int.Parse(userIdClaim);
-                listaFavoritosIds = _context.Favoritos
+                listaFavoritosIds = await _context.Favoritos
                     .Where(f => f.IdUsuario == idUsuario)
                     .Select(f => f.IdOcorrencia)
-                    .ToList();
+                    .ToListAsync();
             }
 
-            ViewBag.FavoritosIds = listaFavoritosIds; 
+            ViewBag.FavoritosIds = listaFavoritosIds;
+        }
 
+        public async Task<IActionResult> Index()
+        {
+            var listaOcorrencias = await _context.Ocorrencias
+                 .Include(o => o.Usuario)
+                 .ToListAsync();
+
+            await PrepareViewDataAsync();
             return View(listaOcorrencias);
         }
 
-        public IActionResult Feed()
+        public async Task<IActionResult> Feed()
         {
             try
             {
-                var listaOcorrencias = _context.Ocorrencias.ToList();
-                
-                var listaFavoritosIds = new List<int>();
-                var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var listaOcorrencias = await _context.Ocorrencias
+                     .Include(o => o.Usuario)
+                     .ToListAsync();
 
-                if (userIdClaim != null)
-                {
-                    int idUsuario = int.Parse(userIdClaim);
-                    listaFavoritosIds = _context.Favoritos
-                        .Where(f => f.IdUsuario == idUsuario)
-                        .Select(f => f.IdOcorrencia)
-                        .ToList();
-                }
-
-                ViewBag.FavoritosIds = listaFavoritosIds;
-
-                return View(listaOcorrencias);
+                await PrepareViewDataAsync();
+                return View("Index", listaOcorrencias);
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
+                // Em uma aplicação real, é uma boa prática registrar o erro.
+                Console.WriteLine($"Erro ao carregar o feed: {ex.Message}");
                 ViewBag.FavoritosIds = new List<int>();
-                return View(new List<Ocorrencia>());
+                return View("Index", new List<Ocorrencia>());
             }
         }
 

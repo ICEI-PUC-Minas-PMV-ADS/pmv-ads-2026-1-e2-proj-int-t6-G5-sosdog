@@ -317,33 +317,85 @@ namespace SosDog.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // 1. Buscar a ocorrência no banco
             var ocorrencia = await _context.Ocorrencias.FindAsync(id);
-            if (ocorrencia == null) return NotFound();
+            if (ocorrencia == null)
+                return NotFound();
 
-            // 1. Verificar permissão PRIMEIRO
-            var usuarioLogadoId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (ocorrencia.IdUsuario.ToString() != usuarioLogadoId)
-                return Forbid();
-
-            // 2. Deletar foto do servidor
-            if (!string.IsNullOrEmpty(ocorrencia.FotoAnimal))
+            // 2. Verificar permissão de forma segura (Tipagem forte)
+            var claimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(claimId, out int usuarioLogadoId) || ocorrencia.IdUsuario != usuarioLogadoId)
             {
-                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath,
-                                             ocorrencia.FotoAnimal.TrimStart('/'));
-                if (System.IO.File.Exists(imagePath))
-                {
-                    try { System.IO.File.Delete(imagePath); }
-                    catch (Exception ex) { Console.WriteLine("Erro ao deletar arquivo: " + ex.Message); }
-                }
+                return Forbid();
             }
 
-            // 3. Só então deletar do banco (uma única vez)
-            _context.Ocorrencias.Remove(ocorrencia);
-            await _context.SaveChangesAsync();
+            // 3. Limpar dependentes PRIMEIRO (Evita o erro de FK enquanto você não altera o banco)
+            var favoritos = _context.Favoritos.Where(f => f.IdOcorrencia == id);
+            _context.Favoritos.RemoveRange(favoritos);
 
+            var comentarios = _context.Comentarios.Where(c => c.IdOcorrencia == id);
+            _context.Comentarios.RemoveRange(comentarios);
+
+            // 4. Deletar do banco e salvar
+            _context.Ocorrencias.Remove(ocorrencia);
+            await _context.SaveChangesAsync(); // Se der erro aqui, ele para e não deleta a foto à toa.
+
+            // 5. Deletar foto do servidor apenas se a exclusão no banco for um sucesso
+            RemoverFotoDoServidor(ocorrencia.FotoAnimal);
+
+            // 6. Retornar feedback ao usuário
             TempData["Sucesso"] = "Ocorrência removida com sucesso!";
             return RedirectToAction("Index", "Home");
         }
+
+        // GET: Ocorrencias/Cartaz/5
+        public async Task<IActionResult> Cartaz(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Busca a ocorrência trazendo os dados do usuário anexados (Eager Loading)
+            var ocorrencia = await _context.Ocorrencias
+                .Include(o => o.Usuario)
+                .FirstOrDefaultAsync(m => m.IdOcorrencia == id);
+
+            if (ocorrencia == null)
+            {
+                return NotFound();
+            }
+
+            // Retorna a view especializada do cartaz
+            return View(ocorrencia);
+        }
+
+        // ==========================================
+        // MÉTODOS AUXILIARES
+        // ==========================================
+
+        /// <summary>
+        /// Apaga o arquivo físico da imagem do servidor para economizar espaço
+        /// </summary>
+        private void RemoverFotoDoServidor(string caminhoFoto)
+        {
+            if (string.IsNullOrEmpty(caminhoFoto)) return;
+
+            try
+            {
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, caminhoFoto.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Em um ambiente de produção real, você usaria o ILogger aqui.
+                Console.WriteLine($"Aviso: Não foi possível deletar a imagem do disco. Erro: {ex.Message}");
+            }
+        }
+
 
         private bool OcorrenciaExists(int id)
         {
