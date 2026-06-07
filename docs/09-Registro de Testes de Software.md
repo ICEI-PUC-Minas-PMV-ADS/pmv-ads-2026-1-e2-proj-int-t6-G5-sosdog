@@ -42,7 +42,7 @@ https://github.com/user-attachments/assets/271a5997-a065-4348-95d6-c4fd88d6af1f
 
 | **Caso de Teste** | **CT07 – Favoritar e desfavoritar uma ocorrência** |
 |:---:|:---|
-| Requisito Associado | RF-008 - Consultar ocorrências de animais próximos à localização atual do usuário. |
+| Requisito Associado | RF-017 - Permitir que usuários autenticados favoritam ou desfavoritam uma ocorrência. |
 | Registro de evidência | _screencast a gravar: clicar no ícone de coração em um card, verificar a mudança de cor para vermelho e clicar novamente para desfavoritar_ |
 
 | **Caso de Teste** | **CT08 – Editar ocorrência própria** |
