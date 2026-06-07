@@ -51,10 +51,10 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-011** | Disponibilizar seção informativa com leis, contatos de emergência e instruções de resgate. | BAIXA |
 | **RF-012** | Editar os dados de perfil do usuário. | ALTA |
 | **RF-013** | Excluir permanentemente a conta e os dados pessoais do usuário. | ALTA |
-| **RF-021** | Cadastrar nova conta de usuário. | ALTA |
-| **RF-022** | Redefinir a senha de acesso da conta. | ALTA |
-| **RF-023** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
-| **RF-024** | Bloquear temporariamente a conta após sucessivas tentativas de login inválidas. | MÉDIA ||
+| **RF-014** | Cadastrar nova conta de usuário. | ALTA |
+| **RF-015** | Redefinir a senha de acesso da conta. | ALTA |
+| **RF-016** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
+| **RF-017** | Bloquear temporariamente a conta após sucessivas tentativas de login inválidas. | MÉDIA ||
 
 ### Requisitos não Funcionais
 
