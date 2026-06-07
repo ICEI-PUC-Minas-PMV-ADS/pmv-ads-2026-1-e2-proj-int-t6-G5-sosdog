@@ -1,4 +1,3 @@
-
 # Template Padrão da Aplicação
 
 <span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md"> Especificação do Projeto</a>, <a href="3-Projeto de Interface.md"> Projeto de Interface</a>, <a href="4-Metodologia.md"> Metodologia</a></span>
@@ -78,20 +77,14 @@ Os ícones utilizados na interface ajudam a guiar o usuário pelas ações princ
 Abaixo estão as versões oficiais do logotipo da SOSDOG, utilizadas no cabeçalho da aplicação (Navbar) e materiais de divulgação:
 
 <div align="center">
-<img width="53" height="45" alt="Captura de tela 2026-06-06 203900" src="https://github.com/user-attachments/assets/4bc8fc20-2bb9-4a48-a771-4a37355b6b65" />
+<img width="53" height="45" alt="Logotipo SosDog" src="https://github.com/user-attachments/assets/4bc8fc20-2bb9-4a48-a771-4a37355b6b65" />
 </div>
 
----
-Com certeza! Como o projeto adota uma abordagem Desktop-First, a folha de estilos foi construída definindo o comportamento ideal em telas grandes como a estrutura padrão (sem @media), e utiliza seletores max-width para ir "desconstruindo" e simplificando o layout conforme o espaço de tela diminui.
-
-Aqui está o trecho em Markdown focado exclusivamente na Arquitetura de Responsividade, pronto para você copiar e colar logo abaixo da seção de Logotipo do seu documento principal:
-
-Markdown
 ---
 
 ## 3. Arquitetura de Responsividade (Estratégia Desktop-First)
 
-A plataforma SOSDOG foi desenvolvida seguindo a estratégia **Desktop-First**. O layout base e estrutural foi projetado nativamente para resoluções de monitores e laptops (onde protetores e administradores gerenciam o sistema com visão analítica completa). 
+A plataforma SOSDOG foi desenvolvida seguindo a estratégia **Desktop-First**. O layout base e estrutural foi projetado nativamente para resoluções de monitores e laptops (onde protetores e administradores gerenciam o sistema com visão analítica completa).
 
 A adaptação para telas menores ocorre de forma regressiva através de Media Queries baseadas em `max-width`, reduzindo a complexidade visual e priorizando a usabilidade touch conforme o dispositivo diminui.
 
@@ -124,5 +117,3 @@ Nas propriedades dos painéis móveis, foi utilizada a unidade `height: 100dvh;`
 #### C. Simplificação de Elementos e Foco no Negócio
 * **Barra de Busca (`.search-bar`):** É completamente ocultada no mobile (`display: none` abaixo de 575px) para limpar o cabeçalho e dar destaque absoluto ao logotipo e às ações de urgência.
 * **Lista de Ocorrências (`.cases-list`):** Passa a ter uma altura máxima controlada por *Viewport Height* (`max-height: 30vh`) no mobile, garantindo que o usuário consiga visualizar o Mapa e a Lista na mesma tela sem precisar rolar a página inteira infinitamente.
-
-
