@@ -53,7 +53,9 @@ https://github.com/user-attachments/assets/37aa22fb-35d3-4f69-8abd-39f4fb56c3d6
 |:---:|:---|
 | Requisito Associado | RF-009 - Adicionar comentários nas marcações para atualizar o status do animal. |
 | Registro de evidência |
+
 https://github.com/user-attachments/assets/271a5997-a065-4348-95d6-c4fd88d6af1f
+
 |
 
 | **Caso de Teste** | **CT07 – Favoritar e desfavoritar uma ocorrência** |
