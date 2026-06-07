@@ -27,7 +27,7 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
 Visão geral e interativa da plataforma, exibindo o mapa central com a localização dos animais, opções de filtros rápidos para buscas específicas e acesso fácil aos menus de navegação do sistema.
 * **Requisitos Contemplados:**
   * **RF-002:** Alternar a visualização do mapa por camadas baseadas no status do animal.
-  * **RF-003:**Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal.
+  * **RF-003:** Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal.
   * **RF-008:** Consultar ocorrências de animais próximos à localização atual do usuário.
   * 
 <img width="1556" height="1011" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/e01e47ad-97cd-48d5-94be-1f4493175222" />
