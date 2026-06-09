@@ -50,11 +50,12 @@
         <div class="header-right">
             
             <div class="search-bar" style="background: transparent; padding: 0;">
-                <div class="input-group" style="max-width: 300px; background-color: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #ccc;">
-                    <input type="text" class="form-control border-0 text-dark" placeholder="Busca..." id="input-busca-global"
+                <!-- BARRA DE PESQUISA COM FUNDO BRANCO FORÇADO (AQUI QUE CORRIGE) -->
+                <div class="input-group shadow-sm" style="max-width: 300px; background-color: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #ccc;">
+                    <input type="text" class="form-control border-0 text-dark bg-white" placeholder="Busca..." id="input-busca-global"
                            onkeyup="if(event.key === 'Enter') acionarBusca()">
                     
-                    <button class="btn border-0 text-secondary" type="button" onclick="acionarBusca()">
+                    <button class="btn bg-white border-0 text-secondary" type="button" onclick="acionarBusca()">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>

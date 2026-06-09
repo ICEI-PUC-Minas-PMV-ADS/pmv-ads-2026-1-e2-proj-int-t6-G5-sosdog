@@ -20,20 +20,168 @@
     .favoritar-btn.favoritado {
         color: #e63946 !important;
     }
-    #btn-filtro-favoritos {
-        margin-left: 10px;
+    
+    /* ---------------------------------------------------
+       ESTILOS EXATOS DA FOTO (Pílulas e Painel) 
+       --------------------------------------------------- */
+    .filtro-barra {
+        padding: 15px;
+        background: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        flex-shrink: 0;
+    }
+    .btn-filtro-toggle {
+        background-color: #ffffff;
+        border: 1.5px solid #d97b66;
+        color: #d97b66;
+        border-radius: 50rem;
+        padding: 4px 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         transition: all 0.3s ease;
     }
+    .btn-filtro-toggle:hover {
+        background-color: #fff5f3;
+    }
+    .btn-filtro-toggle--ativo {
+        background-color: #fff5f3 !important;
+        border-color: #c46d5a !important;
+    }
+    #btn-filtro-favoritos {
+        margin-left: 8px;
+    }
     #btn-filtro-favoritos.ativo {
-        background-color: #e63946 !important;
+        background-color: #d97b66 !important;
         color: #ffffff !important;
-        border-color: #e63946 !important;
+        border-color: #d97b66 !important;
+    }
+    .filtro-badge {
+        background-color: #e63946;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+    .filtro-contador {
+        background-color: #f0f3f4;
+        color: #6c757d;
+        border-radius: 50rem;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    /* Grid do Painel de Filtros */
+    .filtro-dropdown {
+        display: none; 
+        margin: 10px 15px;
+    }
+    .filtro-dropdown--aberto {
+        display: block !important;
+    }
+    .filtro-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+    }
+    .filtro-label {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 4px;
+        display: block;
+    }
+    .filtro-select {
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 4px 8px;
+        font-size: 0.85rem;
+        color: #495057;
     }
 </style>
 
 <main class="dashboard-container">
-    <aside class="left-sidebar">
-        <div class="cases-list mt-3">
+    <aside class="left-sidebar" style="display: flex; flex-direction: column; height: 100%;">
+        
+        <!-- BARRA DE FILTROS SUPERIOR -->
+        <div class="filtro-barra d-flex align-items-center">
+            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
+                <i class="fa-solid fa-filter"></i> Filtrar
+                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
+                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron" style="transition: transform 0.3s;"></i>
+            </button>
+            
+            <button class="btn-filtro-toggle" id="btn-filtro-favoritos" onclick="toggleFiltroFavoritos()" title="Ver apenas meus favoritos">
+                <i class="fa-solid fa-heart"></i> Favoritos
+            </button>
+
+            <span id="filtro-contador" class="filtro-contador ms-auto">@(Model?.Count() ?? 0) resultados</span>
+        </div>
+
+        <!-- PAINEL DE DROPDOWN (Com opções fixas iguais ao Modal) -->
+        <div class="filtro-dropdown" id="filtro-dropdown">
+            <div class="filtro-grid">
+                <div class="filtro-campo">
+                    <label class="filtro-label">Tipo</label>
+                    <select class="filtro-select form-select form-select-sm" id="filtro-tipo" onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        <option value="Rua">Animal na Rua</option>
+                        <option value="Perdido">Meu Pet Sumiu</option>
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <label class="filtro-label">Saúde</label>
+                    <select class="filtro-select form-select form-select-sm" id="filtro-estadosaude" onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        <option value="Aparentemente Saudável">Aparentemente Saudável</option>
+                        <option value="Ferido / Machucado">Ferido / Machucado</option>
+                        <option value="Desnutrido">Desnutrido</option>
+                        <option value="Em Perigo">Em Perigo</option>
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <label class="filtro-label">Porte</label>
+                    <select class="filtro-select form-select form-select-sm" id="filtro-porte" onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        <option value="Pequeno">Pequeno</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Grande">Grande</option>
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <label class="filtro-label">Sexo</label>
+                    <select class="filtro-select form-select form-select-sm" id="filtro-sexo" onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
+                        <option value="">Todos</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Fêmea">Fêmea</option>
+                        <option value="Não sei">Não sei</option>
+                    </select>
+                </div>
+                <div class="filtro-campo">
+                    <label class="filtro-label">Faixa Etária</label>
+                    <select class="filtro-select form-select form-select-sm" id="filtro-faixaetaria" onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
+                        <option value="">Todas</option>
+                        <option value="Filhote">Filhote</option>
+                        <option value="Adulto">Adulto</option>
+                        <option value="Idoso">Idoso</option>
+                    </select>
+                </div>
+                <div class="filtro-campo filtro-campo-limpar" style="grid-column: span 2;">
+                    <!-- Adicionado reset visual direto no onclick para limpar os selects -->
+                    <button class="btn-limpar-filtros btn btn-sm w-100" onclick="document.querySelectorAll('.filtro-select').forEach(s => s.value=''); window.sosDogMap?.limparFiltros(); atualizarBadge();" style="background-color: #e9ecef; border: 1px solid #ced4da; color: #495057; font-weight: 600;">
+                        <i class="fa-solid fa-xmark"></i> Limpar filtros
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cases-list" style="flex-grow: 1; overflow-y: auto;">
             @if (Model != null && Model.Any())
             {
                 var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
@@ -58,7 +206,7 @@
                          data-endereco="@item.Endereco" 
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                          data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registo" : item.NomeUsuarioUltimaAcao)">
+                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
 
                         @if (!string.IsNullOrEmpty(item.FotoAnimal))
                         {
@@ -75,16 +223,13 @@
                                     <span>Id: @item.CodigoCachorro</span>
                                     <span class="badge badge-green">@item.EstadoSaude</span>
                                 </div>
-                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")"
+                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")" 
                                    id="coracao-@item.IdOcorrencia"
-                                   onclick="alternarFavorito(event, @item.IdOcorrencia)"
+                                   onclick="alternarFavorito(event, @item.IdOcorrencia)" 
                                    title="Favoritar"></i>
                             </div>
 
-                            <p>
-                                <strong>Tipo:</strong>
-                                @(item.TipoOcorrencia == "Rua" ? "Animal na Rua" : "Meu Pet Sumiu")
-                            </p>
+                            <p><strong>Tipo:</strong> @item.TipoOcorrencia</p>
 
                             <p class="text-truncate" title="@item.Descricao">
                                 <strong>Status:</strong> @item.EstadoSaude - @item.Porte - @item.Sexo
@@ -102,7 +247,7 @@
             }
         </div>
 
-        <div class="sidebar-buttons" style="display: flex; gap: 10px; width: 100%;">
+        <div class="sidebar-buttons" style="display: flex; gap: 10px; width: 100%; padding: 10px; background: white; border-top: 1px solid #e0e0e0;">
             <a asp-controller="Home" asp-action="Emergencia" style="text-decoration: none; flex: 1; display: block;">
                 <button class="btn-orange" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0;">
                     Urgente <i class="fa-solid fa-triangle-exclamation"></i>
@@ -125,100 +270,6 @@
     </aside>
 
     <section class="main-map-area">
-        @* FILTRO FLUTUANTE NO MAPA (FEITO PELA EQUIPE) *@
-        <div class="filtro-mapa-wrapper">
-            <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
-                <i class="fa-solid fa-filter"></i>
-                Filtrar
-                <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
-                <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
-            </button>
-            
-            <button class="btn-filtro-toggle ms-2" id="btn-filtro-favoritos" onclick="toggleFiltroFavoritos()" title="Ver apenas os meus favoritos">
-                <i class="fa-solid fa-heart"></i> Favoritos
-            </button>
-
-            <div class="filtro-mapa-painel" id="filtro-mapa-painel">
-                <div class="filtro-mapa-header">
-                    <span class="filtro-mapa-titulo">Filtros</span>
-                    <span id="filtro-contador" class="filtro-contador">@(Model?.Count() ?? 0) resultados</span>
-                </div>
-                <div class="filtro-grid">
-                    <div class="filtro-campo">
-                        <label class="filtro-label">Tipo</label>
-                        <select class="filtro-select" id="filtro-tipo"
-                                onchange="window.sosDogMap?.setFiltro('tipo', this.value); atualizarBadge()">
-                            <option value="">Todos</option>
-                            @foreach (var tipo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                                .Where(o => !string.IsNullOrEmpty(o.TipoOcorrencia))
-                                .Select(o => o.TipoOcorrencia).Distinct().OrderBy(t => t))
-                            {
-                                <option value="@tipo.ToLower()">@tipo</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="filtro-campo">
-                        <label class="filtro-label">Saúde</label>
-                        <select class="filtro-select" id="filtro-estadosaude"
-                                onchange="window.sosDogMap?.setFiltro('estadoSaude', this.value); atualizarBadge()">
-                            <option value="">Todos</option>
-                            @foreach (var estado in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                                .Where(o => !string.IsNullOrEmpty(o.EstadoSaude))
-                                .Select(o => o.EstadoSaude).Distinct().OrderBy(e => e))
-                            {
-                                <option value="@estado.ToLower()">@estado</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="filtro-campo">
-                        <label class="filtro-label">Porte</label>
-                        <select class="filtro-select" id="filtro-porte"
-                                onchange="window.sosDogMap?.setFiltro('porte', this.value); atualizarBadge()">
-                            <option value="">Todos</option>
-                            @foreach (var porte in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                                .Where(o => !string.IsNullOrEmpty(o.Porte))
-                                .Select(o => o.Porte).Distinct().OrderBy(p => p))
-                            {
-                                <option value="@porte.ToLower()">@porte</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="filtro-campo">
-                        <label class="filtro-label">Sexo</label>
-                        <select class="filtro-select" id="filtro-sexo"
-                                onchange="window.sosDogMap?.setFiltro('sexo', this.value); atualizarBadge()">
-                            <option value="">Todos</option>
-                            @foreach (var sexo in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                                .Where(o => !string.IsNullOrEmpty(o.Sexo))
-                                .Select(o => o.Sexo).Distinct().OrderBy(s => s))
-                            {
-                                <option value="@sexo.ToLower()">@sexo</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="filtro-campo">
-                        <label class="filtro-label">Idade</label>
-                        <select class="filtro-select" id="filtro-faixaetaria"
-                                onchange="window.sosDogMap?.setFiltro('faixaEtaria', this.value); atualizarBadge()">
-                            <option value="">Todas</option>
-                            @foreach (var idade in (Model ?? Enumerable.Empty<SosDog.Models.Ocorrencia>())
-                                .Where(o => !string.IsNullOrEmpty(o.FaixaEtaria))
-                                .Select(o => o.FaixaEtaria).Distinct().OrderBy(i => i))
-                            {
-                                <option value="@idade.ToLower()">@idade</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="filtro-campo filtro-campo-limpar">
-                        <button class="btn-limpar-filtros"
-                                onclick="window.sosDogMap?.limparFiltros(); atualizarBadge()">
-                            <i class="fa-solid fa-xmark"></i> Limpar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div id="map">
             <button onclick="window.sosDogMap.ativarModoCriacao()"
                     class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
@@ -255,7 +306,7 @@
                                      data-endereco="@item.Endereco"
                                      data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                                      data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registo" : item.NomeUsuarioUltimaAcao)">
+                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
 
                                     <div class="animal-card-img-wrapper">
                                         <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
@@ -384,7 +435,7 @@
         </div>
 
         <div class="profile-section action-card-container">
-            <h3 class="section-title">Registo de Ações</h3>
+            <h3 class="section-title">Registro de Ações</h3>
             <div class="action-layout">
                 <div class="action-buttons-modern">
                     <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
@@ -397,16 +448,8 @@
                         </div>
                     </div>
                     <div class="user-card-body">
-                        <div class="status-row">
-                            <i class="fa-solid fa-droplet icon-agua"></i>
-                            <span class="status-label-text">Última Água:</span>
-                            <strong id="sidebar-last-agua" class="status-value">--:--</strong>
-                        </div>
-                        <div class="status-row">
-                            <i class="fa-solid fa-bowl-food icon-comida"></i>
-                            <span class="status-label-text">Última Comida:</span>
-                            <strong id="sidebar-last-comida" class="status-value">--:--</strong>
-                        </div>
+                        <div class="status-row"><i class="fa-solid fa-droplet icon-agua"></i><span>Última Água: <strong id="sidebar-last-agua">--:--</strong></span></div>
+                        <div class="status-row"><i class="fa-solid fa-bowl-food icon-comida"></i><span>Última Comida: <strong id="sidebar-last-comida">--:--</strong></span></div>
                     </div>
                 </div>
             </div>
@@ -436,29 +479,28 @@
     <script src="~/js/map-handler.js" asp-append-version="true"></script>
     <script src="~/js/dog-api-handler.js" asp-append-version="true"></script>
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
-    <script src="~/js/filtro-mapa.js" asp-append-version="true"></script>
-    <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
 
     <script>
-        window.filtroFavoritosAtivo = false;
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const inputBuscaGlobal = document.getElementById('input-busca-global');
-            if (inputBuscaGlobal) {
-                inputBuscaGlobal.addEventListener('input', function() {
-                    if(window.sosDogMap) window.sosDogMap.aplicarFiltros();
-                });
-            }
-        });
-
         function toggleFiltroDropdown() {
             const dropdown = document.getElementById('filtro-dropdown');
             const chevron  = document.getElementById('filtro-chevron');
             const btn      = document.getElementById('btn-filtro-toggle');
             const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
-            if(chevron) chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
-            if(btn) btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
+            chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
+            btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
         }
+
+        document.addEventListener('click', function(e) {
+            const barra    = document.getElementById('btn-filtro-toggle');
+            const dropdown = document.getElementById('filtro-dropdown');
+            if (!barra?.contains(e.target) && !dropdown?.contains(e.target) && !document.getElementById('btn-filtro-favoritos')?.contains(e.target)) {
+                dropdown?.classList.remove('filtro-dropdown--aberto');
+                if (document.getElementById('filtro-chevron')) {
+                    document.getElementById('filtro-chevron').style.transform = 'rotate(0deg)';
+                }
+                barra?.classList.remove('btn-filtro-toggle--ativo');
+            }
+        });
 
         function atualizarBadge() {
             const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
@@ -470,20 +512,71 @@
             }
         }
 
+        let inputBuscaGlobal;
+        let filtroFavoritosAtivo = false; 
+
+        document.addEventListener("DOMContentLoaded", function() {
+            inputBuscaGlobal = document.getElementById('input-busca-global');
+            
+            if (inputBuscaGlobal) {
+                inputBuscaGlobal.addEventListener('keyup', aplicarFiltrosManuais);
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const termoURL = urlParams.get('busca');
+                if(termoURL) {
+                    inputBuscaGlobal.value = termoURL;
+                    aplicarFiltrosManuais();
+                }
+            }
+        });
+
         function toggleFiltroFavoritos() {
-            window.filtroFavoritosAtivo = !window.filtroFavoritosAtivo;
+            filtroFavoritosAtivo = !filtroFavoritosAtivo;
             const btn = document.getElementById('btn-filtro-favoritos');
             
-            if (window.filtroFavoritosAtivo) {
+            if (filtroFavoritosAtivo) {
                 btn.classList.add('ativo');
             } else {
                 btn.classList.remove('ativo');
             }
-            if(window.sosDogMap) window.sosDogMap.aplicarFiltros(); 
+            aplicarFiltrosManuais(); 
         }
 
         function realizarBuscaGlobal(termoExterno) {
-            if(window.sosDogMap) window.sosDogMap.aplicarFiltros(); 
+            aplicarFiltrosManuais(); 
+        }
+
+        function aplicarFiltrosManuais() {
+            const termoBusca = inputBuscaGlobal ? inputBuscaGlobal.value.toLowerCase().trim() : "";
+            const cards = document.querySelectorAll('.case-card');
+
+            cards.forEach(card => {
+                const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
+                const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
+                const tipoCard = (card.getAttribute('data-tipo') || '').toLowerCase();
+                const saudeCard = (card.getAttribute('data-estadoSaude') || '').toLowerCase();
+                const enderecoCard = (card.getAttribute('data-endereco') || '').toLowerCase();
+                const cuidadorCard = (card.getAttribute('data-ultimo-user') || '').toLowerCase(); 
+                
+                const iconeCoracao = card.querySelector('.favoritar-btn');
+                const ehFavorito = iconeCoracao ? iconeCoracao.classList.contains('favoritado') : false;
+
+                const bateuBusca = !termoBusca || 
+                                   codigoCard.includes(termoBusca) || 
+                                   corCard.includes(termoBusca) ||
+                                   tipoCard.includes(termoBusca) ||
+                                   saudeCard.includes(termoBusca) ||
+                                   enderecoCard.includes(termoBusca) ||
+                                   cuidadorCard.includes(termoBusca); 
+
+                const bateuFavorito = !filtroFavoritosAtivo || ehFavorito;
+
+                if (bateuBusca && bateuFavorito) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
 
         async function alternarFavorito(event, idOcorrencia) {
@@ -508,7 +601,7 @@
                         icone.classList.add('favoritado');
                     } else {
                         icone.classList.remove('favoritado');
-                        if(window.filtroFavoritosAtivo && window.sosDogMap) window.sosDogMap.aplicarFiltros();
+                        if(filtroFavoritosAtivo) aplicarFiltrosManuais();
                     }
                 } else {
                     console.error("Erro no Controller de Favoritos.");
