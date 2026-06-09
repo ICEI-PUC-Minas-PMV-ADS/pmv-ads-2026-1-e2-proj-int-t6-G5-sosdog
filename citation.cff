@@ -1,29 +1,22 @@
 message: Please cite this software using these metadata.
-title:
+title: SOS_DOG
 authors:
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
-  - family-names: 
-    given-names: 
+  - family-names: barros rigueira fernandes
+    given-names: Vitor 
+  - family-names: Bretas
+    given-names: Helena 
+  - family-names: Pedro da Silva
+    given-names: Andryw
+  - family-names: Ferreira Silva
+    given-names: Thalys
   - name-suffix: Professor
     affiliation: PUC Minas
-    family-names: 
-    given-names: 
-  - name-suffix: Professor
-    affiliation: PUC Minas
-    family-names: 
-    given-names: 
+    family-names: Jeunon de Alencar
+    given-names: Bernardo
+
 keywords:
-  - 
-  - 
+  - dogs
+  - Ajuda
 repository-code: 
 version: 1.0.0
 date-released: 2023-10-31

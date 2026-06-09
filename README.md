@@ -18,9 +18,8 @@ Além do mapeamento dinâmico, o sistema atua como uma rede de apoio logístico 
 * Vitor de barros rigueira fernandes
 * Thalys Ferreira Silva
 * Helena Bretas
-* Ozias de Souza
 * Andryw Pedro da Silva
-* Sérvulo Pereira de Oliveira
+
 
 ## Orientador
 

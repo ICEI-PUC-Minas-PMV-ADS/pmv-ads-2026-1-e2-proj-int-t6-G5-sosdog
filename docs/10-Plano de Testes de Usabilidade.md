@@ -2,15 +2,15 @@
 
 Os testes de usabilidade permitem avaliar a qualidade da interface com o usuário da aplicação interativa.
 
-Um plano de teste de usabilidade deverá conter: 
+Um plano de teste de usabilidade deverá conter:
 
 ## Definição do(s) objetivo(s)
 
 Os principais objetivos deste teste de usabilidade para o sistema SOS Dog são:
-- Verificar se os usuários conseguem registrar a ocorrência de um animal de forma rápida utilizando os atalhos da tela principal.
-- Avaliar a clareza da navegação entre as visualizações (Mapa vs. Feed) e a utilização de filtros de estado.
-- Identificar a facilidade com que o usuário consegue registrar ações de cuidado (fornecer água/comida) e validar a localização de um animal através do painel de detalhes.
-- Validar o fluxo de criação de conta, garantindo que a escolha de perfis (Adotante, Voluntário, ONG, etc.) seja compreendida.
+- Verificar se os usuários conseguem registrar a ocorrência de um animal de forma rápida utilizando os botões da tela principal.
+- Avaliar a clareza da navegação entre as visualizações (Mapa, Feed e Pets Perdidos) e a utilização do filtro do mapa.
+- Identificar a facilidade com que o usuário consegue registrar ações de cuidado (fornecer água/comida) através do painel de detalhes.
+- Validar o fluxo de criação de conta, garantindo que as etapas de preenchimento e confirmação por e-mail sejam compreendidas.
 
 ## Seleção dos participantes
 
@@ -29,56 +29,67 @@ Mínimo: 5 participantes. Ideal: Entre 8 e 12 para maior diversidade.
 ### Cenário 1: Registro de Ocorrência
 - **Objetivo:** Avaliar a facilidade e agilidade em iniciar o registro de um animal encontrado na rua.
 - **Contexto:** O usuário avista um cachorro abandonado e deseja reportá-lo rapidamente no sistema para que alguém possa ajudar.
-- **Tarefa(s):** - Acessar a tela principal do sistema.
-  - Localizar e clicar no botão "Reportar Cachorro" ou "Urgente" (localizados no canto inferior esquerdo da área de listagem).
-  - Preencher os dados solicitados na tela seguinte.
-- **Critério(s) de Sucesso(s):**
+- **Tarefa(s):**
+  - Acessar a tela principal do sistema.
+  - Localizar e clicar no botão "Reportar Animal" (flutuante no mapa) ou no botão "Urgente" (na barra inferior da sidebar).
+  - Arrastar o pin vermelho para a localização do animal no mapa.
+  - Preencher os dados solicitados na ficha de ocorrência.
+- **Critério(s) de Sucesso:**
   - O usuário identifica os botões de ação rapidamente na interface principal.
   - Compreende a diferença entre reportar uma ocorrência comum e uma urgente.
+  - Conclui o registro sem precisar de auxílio.
 
-### Cenário 2: Navegação e Filtros no Feed
-- **Objetivo:** Testar a usabilidade da alternância de visualizações e a clareza do botão de filtros.
-- **Contexto:** Uma protetora deseja visualizar apenas os animais de um estado/condição específica no formato de lista, em vez do mapa.
-- **Tarefa(s):** - Na barra superior central, alternar de "Mapa dos Casos" para "Feed de Casos".
-  - Clicar no botão "Selecionar Estado" (acima dos cards de animais).
-  - Aplicar um filtro e observar a mudança no feed de notícias.
-- **Critério(s) de Sucesso(s):**
-  - O usuário compreende que o menu central altera a forma de visualização da tela.
-  - Consegue aplicar um filtro com sucesso sem precisar de auxílio.
+### Cenário 2: Navegação entre visualizações e uso do filtro
+- **Objetivo:** Testar a usabilidade da alternância entre as seções da plataforma e a clareza do filtro do mapa.
+- **Contexto:** Uma protetora deseja visualizar apenas os animais com um estado de saúde específico no mapa, e depois navegar para o feed de casos.
+- **Tarefa(s):**
+  - Na tela principal, localizar o botão "Filtrar" no canto superior esquerdo do mapa.
+  - Expandir o painel de filtros e selecionar um critério (ex: Estado de Saúde).
+  - Observar a atualização dos marcadores no mapa e dos cards na lista lateral.
+  - Limpar os filtros e navegar para a visualização em "Feed de Casos" usando o menu superior.
+- **Critério(s) de Sucesso:**
+  - O usuário encontra e utiliza o botão de filtro sem auxílio.
+  - Compreende que o filtro atualiza simultaneamente o mapa e a lista lateral.
+  - Consegue alternar para o feed de casos pela navegação superior.
 
 ### Cenário 3: Interação e Cuidados Básicos (Painel de Detalhes)
-- **Objetivo:** Verificar se os usuários entendem como registrar interações e validar a localização de um animal já cadastrado.
-- **Contexto:** Um voluntário passa pelo local onde um cão comunitário vive. Ele dá água para o animal e quer registrar isso no sistema para que outros saibam que ele já foi alimentado hoje.
-- **Tarefa(s):** - Selecionar o card de um animal no "Feed de Notícias".
-  - Observar o painel lateral direito ("ID do Cachorro").
-  - Na seção "Registro de Ações", clicar no botão verde "Água".
-  - Logo abaixo, clicar em "Verificar localização" para confirmar que o animal continua ali.
-- **Critério(s) de Sucesso(s):**
-  - O usuário encontra facilmente as opções de "Água/Comida" no painel.
-  - Conclui as ações de validação de localização e registro de cuidados intuitivamente.
+- **Objetivo:** Verificar se os usuários entendem como registrar ações de cuidado em um animal já cadastrado.
+- **Contexto:** Um voluntário passa pelo local onde um cão comunitário vive. Ele dá água para o animal e quer registrar isso no sistema para que outros saibam que ele já foi atendido hoje.
+- **Tarefa(s):**
+  - Selecionar o card de um animal na lista lateral ou clicar no seu marcador no mapa.
+  - Observar o painel lateral direito com os detalhes do animal.
+  - Na seção "Registro de Ações", clicar no botão "Água".
+  - Verificar se a data, hora e nome do cuidador foram atualizados no painel.
+- **Critério(s) de Sucesso:**
+  - O usuário encontra facilmente as opções de "Água" e "Comida" no painel de detalhes.
+  - Conclui o registro de cuidado sem precisar de auxílio.
+  - Percebe o feedback visual de confirmação após a ação.
 
 ### Cenário 4: Busca por Animais Perdidos e Comentários
-- **Objetivo:** Avaliar o uso do carrossel inferior e a área de comentários da plataforma.
+- **Objetivo:** Avaliar o acesso à seção de pets perdidos e a área de comentários da plataforma.
 - **Contexto:** Um usuário viu um cartaz físico de um cão perdido e quer checar no sistema se há atualizações sobre o caso ou deixar um comentário dizendo que o viu pela região.
-- **Tarefa(s):** - Rolar a tela até o carrossel inferior intitulado "Procura-se".
-  - Utilizar as setas laterais para navegar entre os cães desaparecidos (ex: Zeus, Luke, Café, Totó).
-  - Clicar em um dos animais para abrir seus detalhes.
-  - Localizar a seção "Comentários" no painel direito e simular a inserção de uma mensagem.
-- **Critério(s) de Sucesso(s):**
-  - O usuário percebe que o carrossel inferior é dedicado a animais perdidos (diferente dos de rua).
-  - Encontra a área de comentários no fim do painel direito sem dificuldades.
+- **Tarefa(s):**
+  - Na navegação superior, acessar a seção "Pets Perdidos".
+  - Localizar um animal na listagem exibida.
+  - Voltar para o mapa, selecionar uma ocorrência qualquer e localizar a seção "Comentários" no painel lateral direito.
+  - Digitar e enviar um comentário.
+- **Critério(s) de Sucesso:**
+  - O usuário percebe que a seção de pets perdidos é dedicada a animais desaparecidos, diferente das ocorrências de rua.
+  - Encontra a área de comentários no painel direito sem dificuldades.
+  - Consegue enviar o comentário com sucesso.
 
-### Cenário 5: Criação de Nova Conta e Seleção de Perfil
-- **Objetivo:** Avaliar o fluxo de cadastro e o entendimento da categorização de perfis no modal de criação de conta.
-- **Contexto:** Um lojista decide se cadastrar como "Apoiador" para poder interagir com as ocorrências próximas ao seu comércio.
-- **Tarefa(s):** - Clicar no ícone "login/cadastrar" no canto superior direito.
-  - No modal "Entrar na sua conta", localizar e clicar no link "Cadastrar".
-  - No modal "Criar Conta", preencher Nome, E-mail, WhatsApp e Senhas.
-  - Clicar no botão verde "Apoiador" na seção "Selecione seu perfil".
-  - Clicar em "Finalizar Cadastro".
-- **Critério(s) de Sucesso(s):**
-  - O usuário não tenta fazer login na tela de entrada, indo direto para a opção de cadastro.
-  - Entende que os blocos coloridos (Adotante, Voluntário, Apoiador, ONG) são botões de seleção obrigatórios antes de finalizar.
+### Cenário 5: Criação de Nova Conta
+- **Objetivo:** Avaliar o fluxo de cadastro e a compreensão da etapa de confirmação por e-mail.
+- **Contexto:** Um morador de bairro decide criar uma conta para poder reportar e acompanhar ocorrências próximas à sua casa.
+- **Tarefa(s):**
+  - Clicar no ícone de login no canto superior direito do header.
+  - No modal, localizar e clicar no link "Cadastrar".
+  - Preencher os campos obrigatórios (Nome, E-mail, Telefone, Senha e Confirmação de Senha) e fazer upload de uma foto de perfil.
+  - Clicar em "Finalizar Cadastro" e identificar o próximo passo indicado pelo sistema.
+- **Critério(s) de Sucesso:**
+  - O usuário localiza o link de cadastro sem confundi-lo com o formulário de login.
+  - Compreende que precisa confirmar o e-mail antes de acessar a plataforma.
+  - Conclui o preenchimento do formulário sem dúvidas sobre os campos obrigatórios.
 
 ## Métodos de coleta de dados
 
@@ -91,9 +102,11 @@ Durante as sessões de teste (que podem ser moderadas remotamente via chamada de
   - Número de cliques extras ou caminhos errados tomados.
 - **Métricas Qualitativas (Questionário Pós-Teste):** Ao final das 5 tarefas, o usuário responderá a um breve questionário:
   - *Numa escala de 1 a 5, quão fácil foi navegar na interface e encontrar as funções?*
-  - *O painel de detalhes do animal ("ID do Cachorro") foi claro o suficiente?*
-  - *A etapa de selecionar o seu perfil no cadastro causou alguma dúvida?*
+  - *O botão de filtro no mapa foi fácil de localizar e utilizar?*
+  - *O painel de detalhes do animal foi claro o suficiente para registrar as ações de cuidado?*
+  - *O fluxo de cadastro e a etapa de confirmação por e-mail foram claros?*
   - *Você adicionaria, mudaria ou removeria alguma coisa na disposição da tela?*
+
 > **Links Úteis**:
 > - [Teste De Usabilidade: O Que É e Como Fazer Passo a Passo (neilpatel.com)](https://neilpatel.com/br/blog/teste-de-usabilidade/)
 > - [Teste de usabilidade: tudo o que você precisa saber! | by Jon Vieira | Aela.io | Medium](https://medium.com/aela/teste-de-usabilidade-o-que-voc%C3%AA-precisa-saber-39a36343d9a6/)

@@ -41,7 +41,7 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | :--- | :--- | :--- |
 | **RF-001** | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento. | ALTA |
 | **RF-002** | Alternar a visualização do mapa por camadas baseadas no status do animal.| MÉDIA |
-| **RF-003** | Filtrar os animais no mapa por estado de saúde, tempo de avistamento e porte. | MÉDIA |
+| **RF-003** | Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal. | MÉDIA |
 | **RF-005** | Exigir a seleção do estado atual do animal durante o registro de uma marcação. | ALTA |
 | **RF-006** | Registrar o fornecimento recente de cuidados básicos aos animais marcados. | MÉDIA |
 | **RF-007** | Anexar fotos para facilitar a identificação visual do animal. | ALTA |
@@ -51,10 +51,11 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-011** | Disponibilizar seção informativa com leis, contatos de emergência e instruções de resgate. | BAIXA |
 | **RF-012** | Editar os dados de perfil do usuário. | ALTA |
 | **RF-013** | Excluir permanentemente a conta e os dados pessoais do usuário. | ALTA |
-| **RF-021** | Cadastrar nova conta de usuário. | ALTA |
-| **RF-022** | Redefinir a senha de acesso da conta. | ALTA |
-| **RF-023** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
-| **RF-024** | Bloquear temporariamente a conta após sucessivas tentativas de login inválidas. | MÉDIA ||
+| **RF-014** | Cadastrar nova conta de usuário. | ALTA |
+| **RF-015** | Redefinir a senha de acesso da conta. | ALTA |
+| **RF-016** | Encerrar a sessão ativa do usuário de forma segura. | ALTA |
+| **RF-017** | Permitir que usuários autenticados favoritam ou desfavoritam uma ocorrência. | MÉDIA |
+
 
 ### Requisitos não Funcionais
 

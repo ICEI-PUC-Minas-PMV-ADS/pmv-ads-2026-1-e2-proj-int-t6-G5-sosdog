@@ -27,7 +27,7 @@ O diagrama ilustra os caminhos que o usuário pode percorrer no aplicativo, divi
 Visão geral e interativa da plataforma, exibindo o mapa central com a localização dos animais, opções de filtros rápidos para buscas específicas e acesso fácil aos menus de navegação do sistema.
 * **Requisitos Contemplados:**
   * **RF-002:** Alternar a visualização do mapa por camadas baseadas no status do animal.
-  * **RF-003:** Filtrar os animais no mapa por estado de saúde, tempo de avistamento e porte.
+  * **RF-003:** Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal.
   * **RF-008:** Consultar ocorrências de animais próximos à localização atual do usuário.
   * 
 <img width="1556" height="1011" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/e01e47ad-97cd-48d5-94be-1f4493175222" />
@@ -38,9 +38,8 @@ Visão geral e interativa da plataforma, exibindo o mapa central com a localiza�
 
 Interface de autenticação intuitiva com campos para e-mail e senha, garantindo o acesso seguro à plataforma. Inclui também opções para recuperação de senha e um link de redirecionamento para o cadastro de novos usuários.
 * **Requisitos Contemplados:**
-  * **RF-021:** Cadastrar nova conta de usuário (via link de acesso ao cadastro).
-  * **RF-022:** Redefinir a senha de acesso da conta.
-  * **RF-024:** Bloquear temporariamente a conta após sucessivas tentativas de login inválidas.
+  * **RF-014:** Cadastrar nova conta de usuário (via link de acesso ao cadastro).
+  * **RF-015:** Redefinir a senha de acesso da conta.
 
 <img width="1487" height="1058" alt="TelaDeLogin" src="https://github.com/user-attachments/assets/157bf4fe-b74f-46a3-adbd-1df9cbc3fb53" />
 
@@ -63,7 +62,7 @@ Formulário passo a passo para que o usuário possa registrar facilmente um anim
 
 Seção dedicada exclusivamente a casos críticos e que demandam atenção imediata (como animais feridos ou em situação de risco). O design destaca as informações essenciais para mobilizar ajuda e resgates de forma mais rápida.
 * **Requisitos Contemplados:**
-  * **RF-003:** Filtrar os animais (A tela atua como um filtro pré-aplicado para exibir urgências baseadas no estado de saúde).
+  * **RF-003:** Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal..
   * **RF-008:** Consultar ocorrências de animais próximos à localização atual (com foco nas urgências).
 
 <img width="1536" height="1024" alt="PaginaUrgencia" src="https://github.com/user-attachments/assets/2a970e18-dc61-47b6-b359-911c4a92adeb" />

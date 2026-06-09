@@ -2471,7 +2471,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54c8ee0fd6f675eebd25b751959ec32ebdfbec2d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6cabdbe6055782f4c05263f2507c0fbdd2ed0b86")]
 [assembly: System.Reflection.AssemblyProductAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2981,7 +2981,10 @@ using System.Reflection;
         </div>
     </aside>
 
+
+
     <section class="main-map-area">
+
         @* FILTRO FLUTUANTE NO MAPA (FEITO PELA EQUIPE) *@
         <div class="filtro-mapa-wrapper">
             <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
@@ -3081,6 +3084,13 @@ using System.Reflection;
     </section>
 
     <section id="section-feed" class="container-fluid py-4 d-none">
+@*         <div class="section-header px-md-4 px-2 mb-3">
+            <h2 class="section-page-title">
+                <i class="fa-solid fa-paw"></i> Animais em Destaque
+            </h2>
+            <p class="section-page-subtitle">Animais reportados recentemente na sua região</p>
+        </div> *@
+
         <div class="feed-wrapper row g-4">
             <div class="col-12 col-md-8 carousel-section">
                 <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
@@ -3155,11 +3165,12 @@ using System.Reflection;
 
     <section id="section-tutores" class="container-fluid py-4 d-none">
 
-        <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
-            <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
-                <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
+@*         <div class="section-header px-md-4 px-2 mb-3">
+            <h2 class="section-page-title">
+                <i class="fa-solid fa-circle-exclamation"></i> Pets Desaparecidos
             </h2>
-        </div>
+            <p class="section-page-subtitle">Ajude a encontrar esses animais — compartilhe o cartaz</p>
+        </div> *@
 
         <div class="tutores-grid px-md-4 px-2 pb-5">
             @* Filtramos na própria View os pets marcados como 'Perdido' (ou o status que você definir no BD) *@
@@ -5550,6 +5561,8 @@ main[role="main"] {
     animation: bounce 0.55s infinite;
     will-change: transform;
 }
+
+
 /* ==================== SIDEBAR DIREITA â€” PERFIL DO ANIMAL ==================== */
 .right-sidebar,
 .dog-profile-sidebar {
@@ -6697,171 +6710,478 @@ footer.footer {
         transform: scale(1.08);
     }
 
-@media (max-width: 992px) {
-    #section-feed:not(.d-none) {
-        grid-column: span 3;
-        height: auto;
-        padding: 20px !important;
+
+
+/* ==========================================================================
+   1. DESKTOP GRANDE (â‰¥ 1400px) â€” apenas ajustes finos
+   ========================================================================== */
+@media (min-width: 1400px) {
+    .dashboard-container {
+        grid-template-columns: 320px 1fr 340px;
     }
 
-    #dogCarousel:hover .carousel-control-prev {
-        left: 10px;
+    .top-header {
+        padding: 16px 48px;
     }
 
-    #dogCarousel:hover .carousel-control-next {
-        right: 10px;
+    .search-bar {
+        width: 300px;
     }
 }
-/* Media query preventiva caso o grid do dashboard colapse em telas menores */
-@media (max-width: 992px) {
-    #section-feed:not(.d-none) {
-        grid-column: span 3;
-        height: auto;
-        padding: 20px !important;
-    }
 
-    #dogCarousel:hover .carousel-control-prev {
-        left: 10px;
-    }
-
-    #dogCarousel:hover .carousel-control-next {
-        right: 10px;
-    }
-
-    /* ==========================================================================
-   ESTILOS TELA DE EMERGÃŠNCIA (SOS DOG)
+/* ==========================================================================
+   2. LAPTOP PEQUENO / TABLET LANDSCAPE (992px â€“ 1199px)
    ========================================================================== */
-
-    #sosdog-emergencia, .body-emergencia {
-        background-color: #f2f2f2 !important;
-        width: 100% !important;
-        height: 100% !important;
-        min-height: calc(100vh - 120px) !important; /* Desconta o Header/Footer do ASP.NET */
-        overflow-y: auto !important;
-        padding: 40px 20px !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+@media (max-width: 1199px) {
+    /* Header */
+    .top-header {
+        padding: 12px 20px;
     }
 
-        /* Container Verde Escuro Principal */
-        #sosdog-emergencia .container-emergencia,
-        .body-emergencia .container-emergencia {
-            background-color: #2b443b !important;
-            width: 100% !important;
-            max-width: 650px !important;
-            padding: 40px 35px !important;
-            border-radius: 15px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
-            text-align: center !important;
-            margin: auto !important; /* ForÃ§a o alinhamento no centro perfeito */
+    .search-bar {
+        width: 200px;
+    }
+
+    /* Dashboard: sidebar direita um pouco menor */
+    .dashboard-container {
+        grid-template-columns: 260px 1fr 280px;
+        gap: 10px;
+    }
+}
+
+/* ==========================================================================
+   3. TABLET LANDSCAPE / LAPTOP MÃNIMO (768px â€“ 991px)
+      Colapsa o grid para 2 colunas; sidebar direita vira drawer
+   ========================================================================== */
+@media (max-width: 991px) {
+
+    /* ---- Body / Layout geral ---- */
+    body {
+        overflow: auto; /* Permite scroll da pÃ¡gina inteira no tablet */
+        height: auto;
+        min-height: 100vh;
+    }
+
+    main[role="main"] {
+        overflow-y: visible;
+    }
+
+    /* ---- Header ---- */
+    .top-header {
+        padding: 10px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 12px;
+        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+    }
+
+    .main-nav {
+        gap: 18px;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .header-right {
+        gap: 12px;
+    }
+
+    .search-bar {
+        width: 180px;
+    }
+
+    /* ---- Dashboard: 2 colunas (lista | mapa), sidebar direita some do grid ---- */
+    .dashboard-container {
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: auto;
+        height: auto;
+        min-height: 70vh;
+        padding: 0 10px 10px;
+        gap: 10px;
+        position: relative;
+    }
+
+    /* Sidebar direita sai do fluxo do grid e vira drawer flutuante */
+    .right-sidebar,
+    .dog-profile-sidebar {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: min(340px, 90vw);
+        height: 100dvh;
+        z-index: 1100;
+        border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+        box-shadow: -6px 0 28px rgba(30, 50, 45, 0.22);
+        transition: right 0.3s cubic-bezier(.4,0,.2,1);
+        overflow-y: auto;
+    }
+
+        /* Classe adicionada via JS para abrir o drawer */
+        .right-sidebar.drawer-open,
+        .dog-profile-sidebar.drawer-open {
+            right: 0;
         }
 
-    /* Ãcone de Alerta */
-    .container-emergencia .header-emergencia i {
-        font-size: 3.5rem !important;
-        color: #e57357 !important;
-        margin-bottom: 20px !important;
-        display: inline-block !important;
+    /* Overlay escuro por baixo do drawer */
+    .drawer-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1099;
+        backdrop-filter: blur(2px);
     }
 
-    /* TÃ­tulo */
-    .container-emergencia h1 {
-        font-size: 2rem !important;
-        font-weight: 700 !important;
-        margin-bottom: 12px !important;
-        color: #ffffff !important;
-        font-family: 'Montserrat', sans-serif !important;
-    }
+        .drawer-overlay.active {
+            display: block;
+        }
 
-    /* Texto de Apoio */
-    .container-emergencia p {
-        font-size: 0.95rem !important;
-        color: #cbd5e1 !important;
-        margin-bottom: 35px !important;
-        line-height: 1.6 !important;
-    }
-
-    /* Lista */
-    .container-emergencia .lista-contatos {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 16px !important;
-        margin-bottom: 35px !important;
+    /* Mapa ocupa as 2 colunas quando o carrossel estÃ¡ ativo */
+    #section-feed:not(.d-none) {
+        grid-column: span 2;
+        height: 70vh;
         padding: 0 !important;
     }
 
-    /* Cards de Contato Internos */
-    .container-emergencia .card-contato {
-        background-color: #1f322b !important;
-        border-left: 4px solid #e57357 !important;
-        padding: 18px 22px !important;
-        border-radius: 10px !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        text-align: left !important;
-        transition: transform 0.2s, background-color 0.2s !important;
-        text-decoration: none !important;
+    /* Filtro do mapa */
+    .filtro-mapa-wrapper {
+        max-width: 220px;
     }
 
-        .container-emergencia .card-contato:hover {
-            transform: translateY(-2px) !important;
-            background-color: #253b33 !important;
-        }
-
-    /* TÃ­tulos dos Cards */
-    .card-contato .info-contato h3 {
-        font-size: 1.15rem !important;
-        font-weight: 600 !important;
-        color: #ffffff !important;
-        margin-bottom: 4px !important;
+    /* BotÃ£o flutuante do mapa */
+    .btn-reportar-flutuante {
+        font-size: 13px;
+        padding: 9px 18px;
+        gap: 8px;
     }
 
-    /* DescriÃ§Ãµes dos Cards */
-    .card-contato .info-contato p {
-        margin-bottom: 0 !important;
-        font-size: 0.88rem !important;
-        color: #a3b8cc !important;
-        line-height: 1.4 !important;
+    /* Carrossel Swiper */
+    .dogSwiper {
+        padding: 20px 0 !important;
     }
 
-    /* BotÃ£o Ligar */
-    .container-emergencia .btn-ligar {
-        background-color: #e57357 !important;
-        color: white !important;
-        text-decoration: none !important;
-        padding: 12px 20px !important;
-        border-radius: 8px !important;
-        font-weight: 700 !important;
-        font-size: 1rem !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-        transition: background-color 0.2s !important;
+    .swiper-btn {
+        opacity: 1 !important; /* Sempre visÃ­vel no touch */
     }
-
-        .container-emergencia .btn-ligar:hover {
-            background-color: #cf5f44 !important;
-        }
-
-    /* BotÃ£o Voltar */
-    .container-emergencia .btn-voltar {
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-        color: #cbd5e1 !important;
-        text-decoration: none !important;
-        font-size: 0.95rem !important;
-        font-weight: 600 !important;
-        transition: color 0.2s !important;
-        margin-top: 15px !important;
-    }
-
-        .container-emergencia .btn-voltar:hover {
-            color: #e57357 !important;
-        }
 }
+
+/* ==========================================================================
+   4. TABLET PORTRAIT (576px â€“ 767px)
+      Lista colapsa; layout vira stack vertical
+   ========================================================================== */
+@media (max-width: 767px) {
+
+    /* ---- Header ---- */
+    .top-header {
+        padding: 10px 12px;
+        margin-bottom: 8px;
+    }
+
+    .search-bar {
+        width: 150px;
+        padding: 5px 12px;
+    }
+
+    .main-nav {
+        gap: 12px;
+    }
+
+        .main-nav a {
+            font-size: 11px;
+            gap: 3px;
+        }
+
+        .main-nav i {
+            font-size: 18px;
+        }
+
+    /* ---- Dashboard: stack vertical ---- */
+    .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        padding: 0 8px 8px;
+        gap: 8px;
+    }
+
+    /* Lista de casos: altura fixa com scroll */
+    .left-sidebar {
+        height: auto;
+        max-height: 40vh;
+    }
+
+    .cases-list {
+        max-height: 30vh;
+    }
+
+    /* Mapa: altura fixa */
+    .main-map-area {
+        height: 50vw;
+        min-height: 280px;
+        max-height: 380px;
+    }
+
+    #map {
+        height: 100%;
+    }
+
+    /* Sidebar direita: drawer full-width */
+    .right-sidebar,
+    .dog-profile-sidebar {
+        width: 100vw;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        top: auto;
+        bottom: -100%;
+        right: 0;
+        height: 80dvh;
+        transition: bottom 0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+        .right-sidebar.drawer-open,
+        .dog-profile-sidebar.drawer-open {
+            bottom: 0;
+            right: 0;
+        }
+
+    /* BotÃµes da sidebar esquerda */
+    .sidebar-buttons {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .btn-orange {
+        font-size: 12px;
+        padding: 9px 8px;
+    }
+
+    /* BotÃ£o flutuante menor */
+    .btn-reportar-flutuante {
+        font-size: 12px;
+        padding: 8px 14px;
+        gap: 6px;
+        bottom: 16px;
+    }
+
+    /* SeÃ§Ã£o tutores */
+    .tutores-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 18px;
+    }
+
+    /* Feed/Carrossel */
+    #section-feed:not(.d-none) {
+        height: 60vh;
+    }
+
+    .animal-card-img-wrapper {
+        height: 280px;
+    }
+}
+
+/* ==========================================================================
+   5. MOBILE (< 576px)
+      Interface simplificada, foco em usabilidade touch
+   ========================================================================== */
+@media (max-width: 575px) {
+
+    /* ---- Header ---- */
+    .top-header {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    /* Oculta a busca no mobile â€” pode abrir com Ã­cone se desejar */
+    .search-bar {
+        display: none;
+    }
+
+    .main-nav {
+        gap: 16px;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        border-top: 1px solid rgba(255,255,255,0.12);
+        padding-top: 8px;
+        margin-top: 4px;
+    }
+
+    .header-right {
+        gap: 8px;
+    }
+
+    .user-info span {
+        font-size: 11px;
+    }
+
+    /* ---- Dashboard ---- */
+    .dashboard-container {
+        padding: 0 6px 6px;
+        gap: 6px;
+    }
+
+    /* Cards da lista: compactos */
+    .case-card {
+        padding: 9px 10px;
+        gap: 10px;
+    }
+
+        .case-card img {
+            width: 50px;
+            height: 50px;
+        }
+
+    .case-header {
+        font-size: 12.5px;
+    }
+
+    .case-details p {
+        font-size: 10.5px;
+    }
+
+    /* Mapa menor em mobile */
+    .main-map-area {
+        height: 44vw;
+        min-height: 220px;
+        max-height: 300px;
+    }
+
+    /* BotÃ£o flutuante do mapa: compacto */
+    .btn-reportar-flutuante {
+        font-size: 11.5px;
+        padding: 7px 12px;
+        gap: 5px;
+        bottom: 12px;
+        border-radius: 24px;
+    }
+
+    /* Filtro: painel mais estreito */
+    .filtro-mapa-wrapper {
+        max-width: 190px;
+    }
+
+    .filtro-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Sidebar direita no mobile: folha deslizando de baixo */
+    .right-sidebar,
+    .dog-profile-sidebar {
+        height: 88dvh;
+        padding: 14px;
+    }
+
+    .profile-img-wrap img {
+        height: 140px;
+    }
+
+    .profile-header h2 {
+        font-size: 16px;
+    }
+
+    .btn-modern {
+        width: 64px;
+        height: 64px;
+    }
+
+        .btn-modern i {
+            font-size: 18px;
+        }
+
+        .btn-modern span {
+            font-size: 10px;
+        }
+
+    /* BotÃµes da sidebar esquerda */
+    .btn-orange {
+        font-size: 11px;
+        padding: 8px 6px;
+    }
+
+    /* Carrossel */
+    #section-feed:not(.d-none) {
+        height: 55vh;
+    }
+
+    .animal-card {
+        width: 220px;
+    }
+
+    .animal-card-img-wrapper {
+        height: 240px;
+    }
+
+    .animal-card-overlay h3 {
+        font-size: 0.95rem;
+    }
+
+    /* Tutores grid: 1 coluna no mobile */
+    .tutores-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 0 4px;
+    }
+
+    /* Modal */
+    .modal-reportar .btn-chip-custom {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ==========================================================================
+   6. MOBILE PEQUENO (< 400px)
+      Ajustes mÃ­nimos para telas muito estreitas (iPhone SE, Galaxy A)
+   ========================================================================== */
+@media (max-width: 399px) {
+
+    .top-header {
+        padding: 7px 8px;
+    }
+
+    .main-nav {
+        gap: 10px;
+    }
+
+        .main-nav a {
+            font-size: 10px;
+        }
+
+        .main-nav i {
+            font-size: 16px;
+        }
+
+    .case-card {
+        padding: 8px 9px;
+        gap: 8px;
+    }
+
+        .case-card img {
+            width: 44px;
+            height: 44px;
+        }
+
+    .dashboard-container {
+        padding: 0 4px 4px;
+    }
+
+    .animal-card {
+        width: 190px;
+    }
+
+    .animal-card-img-wrapper {
+        height: 210px;
+    }
+
+    .btn-modern {
+        width: 56px;
+        height: 56px;
+    }
+
+    .profile-img-wrap img {
+        height: 120px;
+    }
+}
+
 
 
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\alertsScript.js ---

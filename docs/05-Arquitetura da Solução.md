@@ -8,6 +8,8 @@ Definição de como o software é estruturado em termos dos componentes que faze
 
 ## Diagrama de Classes
 
+<img width="785" height="696" alt="Captura de tela 2026-06-07 180135" src="https://github.com/user-attachments/assets/68e388df-5918-4de2-bd83-bed5e5c6c2fd" />
+
 O diagrama abaixo descreve a estrutura estática do sistema SosDog. As quatro entidades principais — `Usuario`, `Ocorrencia`, `Comentario` e `Favorito` 
 
 ```mermaid
@@ -86,6 +88,8 @@ classDiagram
 ---
 
 ## Modelo Entidade Relacionamento
+
+<img width="722" height="641" alt="Captura de tela 2026-06-07 175911" src="https://github.com/user-attachments/assets/6d7dd99b-07a0-4d92-be0e-f69044523dbe" />
 
 
 ```mermaid
@@ -174,6 +178,7 @@ erDiagram
 ## Projeto da Base de Dados
 
 
+<img width="661" height="702" alt="Captura de tela 2026-06-07 180408" src="https://github.com/user-attachments/assets/72ef79b6-598e-41b1-8e1f-fe4baccc84d1" />
 
 ```sql
 CREATE TABLE Usuarios (
