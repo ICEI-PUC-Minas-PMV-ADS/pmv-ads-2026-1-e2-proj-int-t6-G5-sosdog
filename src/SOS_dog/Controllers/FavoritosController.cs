@@ -18,6 +18,9 @@ namespace SosDog.Controllers
             _context = context;
         }
 
+        // ========================================================
+        // 1. MÉTODO NOVO PARA O MAPA (AJAX)
+        // ========================================================
         [HttpPost]
         public async Task<IActionResult> Alternar(int idOcorrencia)
         {
@@ -26,6 +29,7 @@ namespace SosDog.Controllers
             
             int idUsuario = int.Parse(userId);
 
+            // Procura se esse usuário já curtiu esse cachorro
             var favorito = _context.Favoritos
                 .FirstOrDefault(f => f.IdUsuario == idUsuario && f.IdOcorrencia == idOcorrencia);
 
@@ -33,11 +37,13 @@ namespace SosDog.Controllers
 
             if (favorito != null)
             {
+                // Se achou, significa que já estava favoritado. Então a gente remove.
                 _context.Favoritos.Remove(favorito);
                 isFavoritado = false;
             }
             else
             {
+                // Se não achou, a gente cria o favorito.
                 var novoFavorito = new Favorito
                 {
                     IdUsuario = idUsuario,
@@ -48,9 +54,16 @@ namespace SosDog.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            // Responde para o JavaScript com um JSON simples, sem recarregar a página
             return Json(new { favoritado = isFavoritado });
         }
 
+
+        // ========================================================
+        // 2. MÉTODOS ORIGINAIS DA EQUIPE (Mantidos para não quebrar)
+        // ========================================================
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int idOcorrencia)
@@ -69,6 +82,7 @@ namespace SosDog.Controllers
                     IdUsuario = idUsuario,
                     IdOcorrencia = idOcorrencia,
                 };
+
                 _context.Favoritos.Add(favorito);
                 await _context.SaveChangesAsync();
             }

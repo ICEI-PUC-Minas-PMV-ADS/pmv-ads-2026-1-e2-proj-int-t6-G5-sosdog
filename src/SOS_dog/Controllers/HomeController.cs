@@ -1,12 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; 
-using SosDog.Models; 
+using Microsoft.EntityFrameworkCore; // Necessário para o ToListAsync se for usar
+using SosDog.Models; // Usando o namespace que vimos no seu Ocorrencia.cs
 using System.Diagnostics;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace SOS_dog.Controllers
 {
@@ -19,52 +14,30 @@ namespace SOS_dog.Controllers
             _context = context;
         }
 
-        private async Task PrepareViewDataAsync()
+        public IActionResult Index()
         {
-            var listaFavoritosIds = new List<int>();
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (int.TryParse(userIdClaim, out int idUsuario))
-            {
-                listaFavoritosIds = await _context.Favoritos
-                    .Where(f => f.IdUsuario == idUsuario)
-                    .Select(f => f.IdOcorrencia)
-                    .ToListAsync();
-            }
-
-            ViewBag.FavoritosIds = listaFavoritosIds;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var listaOcorrencias = await _context.Ocorrencias
-                 .Include(o => o.Usuario)
-                 .ToListAsync();
-
-            await PrepareViewDataAsync();
+            var listaOcorrencias = _context.Ocorrencias
+                 .Include(o => o.Usuario) 
+                 .ToList();
             return View(listaOcorrencias);
         }
 
-        public async Task<IActionResult> Feed()
+        public IActionResult Feed()
         {
             try
             {
-                var listaOcorrencias = await _context.Ocorrencias
-                     .Include(o => o.Usuario)
-                     .ToListAsync();
-
-                await PrepareViewDataAsync();
+                var listaOcorrencias = _context.Ocorrencias
+                     .Include(o => o.Usuario) // <--- Garante o carregamento no Feed também
+                     .ToList();
                 return View("Index", listaOcorrencias);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Em uma aplicação real, é uma boa prática registrar o erro.
-                Console.WriteLine($"Erro ao carregar o feed: {ex.Message}");
-                ViewBag.FavoritosIds = new List<int>();
                 return View("Index", new List<Ocorrencia>());
             }
         }
 
+        // Rota para carregar a página informativa de contatos de emergência
         public IActionResult Emergencia()
         {
             return View();

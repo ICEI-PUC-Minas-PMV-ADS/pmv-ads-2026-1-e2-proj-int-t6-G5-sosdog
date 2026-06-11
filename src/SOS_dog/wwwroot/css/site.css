@@ -614,8 +614,6 @@ main[role="main"] {
     animation: bounce 0.55s infinite;
     will-change: transform;
 }
-
-
 /* ==================== SIDEBAR DIREITA — PERFIL DO ANIMAL ==================== */
 .right-sidebar,
 .dog-profile-sidebar {
@@ -1762,8 +1760,6 @@ footer.footer {
         background-color: var(--primary-orange) !important;
         transform: scale(1.08);
     }
-
-
 
 /* ==========================================================================
    1. DESKTOP GRANDE (≥ 1400px) — apenas ajustes finos
