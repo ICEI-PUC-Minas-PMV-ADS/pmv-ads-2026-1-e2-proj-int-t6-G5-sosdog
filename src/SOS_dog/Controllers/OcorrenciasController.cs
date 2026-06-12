@@ -29,10 +29,29 @@ namespace SosDog.Controllers
         }
 
         // GET: Ocorrencias
+        // GET: Ocorrencias
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.Ocorrencias.Include(o => o.Usuario);
-            return View(await appDbContext.ToListAsync());
+            var listaOcorrencias = await appDbContext.ToListAsync();
+
+            // DICA DE OURO: Captura os favoritos do usuário logado
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+            {
+                var favoritosDoUsuario = await _context.Favoritos
+                    .Where(f => f.IdUsuario == userId)
+                    .Select(f => f.IdOcorrencia)
+                    .ToListAsync();
+
+                ViewBag.FavoritosUsuario = favoritosDoUsuario;
+            }
+            else
+            {
+                ViewBag.FavoritosUsuario = new List<int>();
+            }
+
+            return View(listaOcorrencias);
         }
 
         // GET: Ocorrencias/Details/5

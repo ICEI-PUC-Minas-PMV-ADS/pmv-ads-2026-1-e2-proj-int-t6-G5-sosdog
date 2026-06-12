@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; // Necessário para o ToListAsync se for usar
 using SosDog.Models; // Usando o namespace que vimos no seu Ocorrencia.cs
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace SOS_dog.Controllers
 {
@@ -17,8 +18,26 @@ namespace SOS_dog.Controllers
         public IActionResult Index()
         {
             var listaOcorrencias = _context.Ocorrencias
-                 .Include(o => o.Usuario) 
+                 .Include(o => o.Usuario)
                  .ToList();
+
+            // DICA DE OURO: Captura os favoritos do usuário logado
+            var userIdString = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+            {
+                // Busca os IDs das ocorrências favoritadas por este usuário
+                var favoritosDoUsuario = _context.Favoritos
+                    .Where(f => f.IdUsuario == userId)
+                    .Select(f => f.IdOcorrencia)
+                    .ToList();
+
+                ViewBag.FavoritosUsuario = favoritosDoUsuario;
+            }
+            else
+            {
+                ViewBag.FavoritosUsuario = new List<int>();
+            }
+
             return View(listaOcorrencias);
         }
 
@@ -27,8 +46,25 @@ namespace SOS_dog.Controllers
             try
             {
                 var listaOcorrencias = _context.Ocorrencias
-                     .Include(o => o.Usuario) // <--- Garante o carregamento no Feed também
+                     .Include(o => o.Usuario)
                      .ToList();
+
+                // DICA DE OURO: Captura os favoritos no Feed também
+                var userIdString = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+                {
+                    var favoritosDoUsuario = _context.Favoritos
+                        .Where(f => f.IdUsuario == userId)
+                        .Select(f => f.IdOcorrencia)
+                        .ToList();
+
+                    ViewBag.FavoritosUsuario = favoritosDoUsuario;
+                }
+                else
+                {
+                    ViewBag.FavoritosUsuario = new List<int>();
+                }
+
                 return View("Index", listaOcorrencias);
             }
             catch (Exception)

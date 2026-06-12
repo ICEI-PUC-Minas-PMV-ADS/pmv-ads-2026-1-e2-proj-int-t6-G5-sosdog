@@ -22,6 +22,7 @@ namespace SosDog.Controllers
         // 1. MÉTODO NOVO PARA O MAPA (AJAX)
         // ========================================================
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Alternar(int idOcorrencia)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
