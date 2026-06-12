@@ -28,20 +28,26 @@
     <aside class="left-sidebar">
 
         <div class="sidebar-top-bar" id="sidebar-top-bar">
+
             <span class="cases-count" id="filtro-contador-sidebar"></span>
 
             <button id="btn-filtrar-favoritos"
                     class="btn-favoritos-toggle"
                     title="Ver apenas favoritos"
                     onclick="toggleFiltroFavoritos()">
+
                 <i class="fa-solid fa-heart"></i>
+
                 <span>Favoritos</span>
+
             </button>
+
         </div>
 
         <div class="cases-list">
             @if (Model != null && Model.Any())
             {
+                // 2. LÓGICA DO CORAÇÃO VERMELHO RESTAURADA
                 var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
 
                 foreach (var item in Model)
@@ -132,6 +138,7 @@
     </aside>
 
     <section class="main-map-area">
+        @* FILTRO FLUTUANTE NO MAPA (FEITO PELA EQUIPE) *@
         <div class="filtro-mapa-wrapper">
             <button class="btn-filtro-toggle" id="btn-filtro-toggle" onclick="toggleFiltroDropdown()">
                 <i class="fa-solid fa-filter"></i>
@@ -230,9 +237,207 @@
     </section>
 
     <section id="section-feed" class="container-fluid py-4 d-none">
+        <div class="feed-wrapper row g-4">
+            <div class="col-12 col-md-8 carousel-section">
+                <div id="dogCarousel" class="carousel slide shadow-lg rounded-4 bg-white p-4" data-bs-ride="carousel">
+                    <div class="carousel-inner pb-4">
+                        @{
+                            var isFirst = true;
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <div class="carousel-item @(isFirst ? "active" : "")">
+                                <div class="mx-auto shadow-lg animal-card"
+                                     style="max-width: 400px; cursor: pointer;"
+                                     data-id="@item.IdOcorrencia"
+                                     data-tipo="@item.TipoOcorrencia"
+                                     data-foto="@item.FotoAnimal"
+                                     data-lat="@item.Latitude"
+                                     data-lng="@item.Longitude"
+                                     data-codigo="@item.CodigoCachorro"
+                                     data-sexo="@item.Sexo"
+                                     data-cor="@item.CorPelagem"
+                                     data-porte="@item.Porte"
+                                     data-estadoSaude="@item.EstadoSaude"
+                                     data-idade="@item.FaixaEtaria"
+                                     data-usuario="@item.IdUsuario"
+                                     data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
+                                     data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
+                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
+
+                                    <div class="animal-card-img-wrapper">
+                                        <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                                             class="animal-card-img" alt="Foto do animal" />
+                                        <div class="distance-badge shadow-sm">
+                                            <i class="fa-solid fa-location-dot"></i> 15 Km
+                                        </div>
+                                        <div class="animal-card-overlay text-start">
+                                            <h3 class="mb-1 fw-bold text-white">@item.Sexo - @item.Porte</h3>
+                                            <p class="mb-0 text-light" style="font-size: 0.9rem;">
+                                                <i class="fa-solid fa-map-pin text-danger"></i> @item.Endereco
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 text-start bg-white">
+                                        <h6 class="fw-bold text-secondary mb-2" style="font-size: 0.85rem; letter-spacing: 1px;">SOBRE</h6>
+                                        <p class="text-muted small mb-4" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                            @(string.IsNullOrEmpty(item.Descricao) ? "Nenhuma observação informada." : item.Descricao)
+                                        </p>
+                                        <div class="d-flex flex-wrap gap-2 mb-4">
+                                            <span class="animal-tag">@item.CorPelagem</span>
+                                            <span class="animal-tag">@item.FaixaEtaria</span>
+                                            <span class="animal-tag">@item.EstadoSaude</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            isFirst = false;
+                        }
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#dogCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#dogCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </section>
 
+    <section id="section-tutores" class="container-fluid py-4 d-none">
+
+        <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
+            <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
+                <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
+            </h2>
+        </div>
+
+        <div class="tutores-grid px-md-4 px-2 pb-5">
+            @* Filtramos na própria View os pets marcados como 'Perdido' (ou o status que você definir no BD) *@
+            @foreach (var item in Model.Where(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="animal-card mx-auto shadow-lg" data-id="@item.IdOcorrencia">
+                    <div class="animal-card-img-wrapper">
+                        <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
+                             class="animal-card-img" alt="Foto do pet perdido" />
+
+                        <div class="badge-desaparecido shadow-sm">
+                            <i class="fa-solid fa-circle-exclamation fa-fade"></i> PROCURA-SE
+                        </div>
+
+                        <div class="animal-card-overlay text-start">
+                            <h3 class="mb-1 fw-bold text-white">@(string.IsNullOrEmpty(item.CodigoCachorro) ? "Sem Nome" : item.CodigoCachorro)</h3>
+
+                            <p class="mb-2 text-light" style="font-size: 0.9rem;">
+                                <i class="fa-solid fa-phone text-warning"></i> Contato: @(item.Usuario?.Telefone ?? "Não informado")
+                            </p>
+
+                            <button class="btn-gerar-cartaz w-100" onclick="gerarCartazPdf(@item.IdOcorrencia)">
+                                <i class="fa-solid fa-print"></i> Gerar Cartaz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Fallback caso não tenha nenhum cachorro perdido no momento *@
+            @if (!Model.Any(m => m.TipoOcorrencia == "Perdido"))
+            {
+                <div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">
+                    <i class="fa-solid fa-check-circle fa-3x mb-3" style="color: var(--light-green);"></i>
+                    <h5>Nenhum pet perdido registrado no momento.</h5>
+                </div>
+            }
+        </div>
+    </section>
+
+
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
+        <div class="profile-img-wrap" id="container-foto-sidebar">
+            <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="aviso-sem-foto" style="display:none; flex-direction:column; align-items:center; justify-content:center; background:#eee; height:200px;">
+                <i class="fa-solid fa-dog fa-3x text-secondary"></i>
+                <p class="text-secondary mt-2">Imagem não encontrada</p>
+            </div>
+        </div>
+
+        <div class="profile-header d-flex align-items-center justify-content-between">
+            <h2 id="sidebar-titulo-id">ID do Cachorro</h2>
+            <div class="header-actions d-flex align-items-center" id="header-acoes-ocorrencia" data-usuario-logado="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+                <i class="fa-regular fa-pen-to-square edit-icon @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")" id="btn-editar-ocorrencia" style="cursor: pointer;" title="Editar Ocorrência"></i>
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <i class="fa-regular fa-trash-can delete-icon ms-3" id="btn-deletar-ocorrencia" style="cursor: pointer; color: var(--primary-orange); display: none;" title="Excluir Ocorrência"></i>
+                }
+            </div>
+        </div>
+
+        <form id="form-deletar-ocorrencia" asp-controller="Ocorrencias" asp-action="Delete" method="post" style="display:none;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="deletar-ocorrencia-id" value="" />
+        </form>
+
+        <hr class="profile-divider">
+
+        <div class="profile-section">
+            <h3 class="section-title">Status do Animal</h3>
+            <div class="status-box">
+                <div class="status-item"><span class="status-label">Sexo:</span><span class="status-data" id="sidebar-sexo">---</span></div>
+                <div class="status-item"><span class="status-label">Cor:</span><span class="status-data" id="sidebar-cor">---</span></div>
+                <div class="status-item"><span class="status-label">Porte:</span><span class="status-data" id="sidebar-porte">---</span></div>
+                <div class="status-item"><span class="status-label">Estado de Saúde:</span><span class="status-data" id="sidebar-estadosaude">---</span></div>
+                <div class="status-item"><span class="status-label">Faixa Etária:</span><span class="status-data" id="sidebar-idade">---</span></div>
+            </div>
+        </div>
+
+        <div class="profile-section action-card-container">
+            <h3 class="section-title">Registro de Ações</h3>
+            <div class="action-layout">
+                <div class="action-buttons-modern">
+                    <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
+                    <button class="btn-modern btn-comida-modern" onclick="executarAcao('comida', this)"><i class="fa-solid fa-bowl-food"></i><span>Comida</span></button>
+                </div>
+                <div class="user-status-card">
+                    <div class="user-card-header">
+                        <div class="user-card-info">
+                            <span class="user-label">Último cuidador:<strong id="sidebar-user-id" class="text-primary">Nenhum</strong></span>
+                        </div>
+                    </div>
+                    <div class="user-card-body">
+                        <div class="status-row">
+                            <i class="fa-solid fa-droplet icon-agua"></i>
+                            <span class="status-label-text">Última Água:</span>
+                            <strong id="sidebar-last-agua" class="status-value">--:--</strong>
+                        </div>
+                        <div class="status-row">
+                            <i class="fa-solid fa-bowl-food icon-comida"></i>
+                            <span class="status-label-text">Última Comida:</span>
+                            <strong id="sidebar-last-comida" class="status-value">--:--</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="profile-divider">
+
+        <div class="profile-section comments-section">
+            <h3 class="section-title">Comentários:</h3>
+            <form id="form-comentario-sidebar" asp-controller="Comentarios" asp-action="Create" method="post" class="comment-input-row">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="idOcorrencia" id="comentario-id-ocorrencia" />
+                <input type="text" name="texto" class="comment-input" placeholder="Adicionar comentário..." required>
+                <button type="submit" class="btn-send-comment" title="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+            <div class="comments-list" id="comentarios-container">
+                <p class="text-muted">Ainda não há nenhum comentário.</p>
+            </div>
+        </div>
     </aside>
 
     <div id="editModalContainer"></div>
