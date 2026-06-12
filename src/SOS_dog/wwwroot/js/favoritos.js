@@ -1,6 +1,9 @@
 ﻿// =========================================================================
-// 1. CENÁRIO A: Para a Sidebar / Lista de Cards (Múltiplos Corações)
+// VARIÁVEIS E FUNÇÕES GLOBAIS (Devem ficar fora de escopos fechados)
 // =========================================================================
+let filtrandoApenasFavoritos = false;
+
+// 1. CENÁRIO A: Para a Sidebar / Lista de Cards (Múltiplos Corações)
 async function alternarFavorito(event, idOcorrencia) {
     if (event) event.stopPropagation(); // Impede que o clique no coração abra o card/detalhes indesejadamente
 
@@ -32,10 +35,12 @@ async function alternarFavorito(event, idOcorrencia) {
             } else {
                 icone.classList.remove('favoritado');
                 if (card) card.setAttribute('data-favoritado', 'false');
-            }
 
-            // Opcional: Se seu script de filtros do mapa tiver uma função global para re-avaliar o estado visual, chame-a aqui:
-            // Exemplo: if(typeof atualizarFiltrosVisuais === "function") atualizarFiltrosVisuais();
+                // Se o filtro de favoritos estiver ligado, some com o card na hora!
+                if (filtrandoApenasFavoritos && card) {
+                    card.style.display = 'none';
+                }
+            }
 
         } else {
             console.error("Erro ao processar resposta do servidor no Controller de Favoritos.");
@@ -46,8 +51,48 @@ async function alternarFavorito(event, idOcorrencia) {
     }
 }
 
+// Alterna o estado de exibição do Feed (Apenas favoritos / Todos)
+function toggleFiltroFavoritos() {
+    const botao = document.getElementById('btn-filtrar-favoritos');
+    const cards = document.querySelectorAll('.case-card');
+
+    if (!botao) return;
+
+    // Inverte o estado do filtro
+    filtrandoApenasFavoritos = !filtrandoApenasFavoritos;
+
+    if (filtrandoApenasFavoritos) {
+        // Altera o estilo do botão para destacar que o filtro está ativado
+        botao.classList.add('active');
+        botao.style.backgroundColor = '#e63946';
+        botao.style.color = '#ffffff';
+
+        // Esconde os cards que não estão favoritados
+        cards.forEach(card => {
+            const ehFavorito = card.getAttribute('data-favoritado') === 'true';
+            if (ehFavorito) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    } else {
+        // Restaura o botão ao padrão
+        botao.classList.remove('active');
+        botao.style.backgroundColor = '';
+        botao.style.color = '';
+
+        // Mostra todos os cards novamente (ou roda a busca global caso haja algo digitado)
+        if (typeof realizarBuscaGlobal === "function") {
+            realizarBuscaGlobal();
+        } else {
+            cards.forEach(card => card.style.display = 'flex');
+        }
+    }
+}
+
 // =========================================================================
-// 2. CENÁRIO B: Para a página de Detalhes (Botão único de Favoritar)
+// 2. CENÁRIO B: Para a página de Detalhes (Executado após carregar o DOM)
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const btnFavoritoDetalhe = document.getElementById('btn-favorito');
@@ -102,6 +147,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         } else {
                             iconeSidebar.classList.remove('favoritado');
                             if (cardSidebar) cardSidebar.setAttribute('data-favoritado', 'false');
+
+                            // Se desfavoritou pelos detalhes enquanto o filtro estava ativo, esconde da barra lateral
+                            if (filtrandoApenasFavoritos && cardSidebar) {
+                                cardSidebar.style.display = 'none';
+                            }
                         }
                     }
                 }
