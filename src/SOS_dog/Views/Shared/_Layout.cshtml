@@ -51,9 +51,12 @@
             </a>
         </nav>
         <div class="header-right">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Busca...">
+            <div class="search-bar d-flex align-items-center">
+                <i class="fas fa-search search-icon-left"></i>
+                <input type="text" id="input-busca-global" placeholder="Busca...">
+                <button type="button" id="btn-busca-global" class="btn-busca-seta" title="Buscar">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
 
             @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -157,6 +160,7 @@
 
     <script src="~/js/usuario.js" asp-append-version="true"></script>
     <script src="~/js/feedCasos.js" asp-append-version="true"></script>
+    <script src="~/js/busca.js" asp-append-version="true"></script>
     <script src="~/js/alertsScript.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

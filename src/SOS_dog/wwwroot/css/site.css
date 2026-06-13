@@ -145,41 +145,42 @@ main[role="main"] {
 
 /* Barra de pesquisa */
 .search-bar {
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 25px;
-    padding: 6px 18px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 5px 10px;
     display: flex;
     align-items: center;
-    width: 260px;
-    height: 38px;
-    backdrop-filter: blur(6px);
-    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
-    .search-bar:focus-within {
-        background: rgba(255, 255, 255, 0.22);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .search-bar i {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 15px;
-    }
-
     .search-bar input {
-        border: none;
-        outline: none;
-        margin-left: 10px;
         background: transparent;
-        width: 100%;
-        font-size: 14px;
-        color: var(--white);
+        border: none;
+        color: #fff;
+        padding: 2px 8px;
+        outline: none;
+        width: 150px;
+        transition: width 0.3s ease;
     }
 
         .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.7);
         }
+
+.btn-busca-seta {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .btn-busca-seta:hover {
+        transform: translateX(2px);
+        color: #ffca28; /* Cor de destaque ao passar o mouse, mude se preferir */
+    }
+
 
 /* Botão de login */
 .btnLogin {

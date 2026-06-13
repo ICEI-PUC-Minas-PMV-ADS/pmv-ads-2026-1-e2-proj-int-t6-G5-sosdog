@@ -67,6 +67,7 @@
                          data-cor="@item.CorPelagem"
                          data-porte="@item.Porte"
                          data-estadoSaude="@item.EstadoSaude"
+                         data-endereco="@item.Endereco"
                          data-idade="@item.FaixaEtaria"
                          data-usuario="@item.IdUsuario"
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
@@ -232,6 +233,12 @@
             <button onclick="window.sosDogMap.ativarModoCriacao()"
                     class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
                 <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
+            </button>
+
+            <button onclick="window.sosDogMap.recentrarNoUsuario()"
+                    class="btn-recentrar-flutuante shadow-lg"
+                    title="Minha Localização">
+                <i class="fa-solid fa-crosshairs"></i>
             </button>
         </div>
     </section>
@@ -452,33 +459,5 @@
     <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
     <script src="~/js/favoritos.js" asp-append-version="true"></script>
 
-    <script>
-        // APENAS A BUSCA GLOBAL FICOU AQUI.
-        // A FUNÇÃO alternarFavorito FOI REMOVIDA DAQUI POIS AGORA ELA VEM DO favoritos.js
-        let inputBuscaGlobal;
 
-        document.addEventListener("DOMContentLoaded", function() {
-        inputBuscaGlobal = document.querySelector('input[placeholder="Busca..."]');
-        if (inputBuscaGlobal) {
-        inputBuscaGlobal.addEventListener('keyup', realizarBuscaGlobal);
-        }
-        });
-
-        function realizarBuscaGlobal() {
-        if (!inputBuscaGlobal) return;
-        const termoBusca = inputBuscaGlobal.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.case-card');
-
-        cards.forEach(card => {
-        const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
-        const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
-
-        if (!termoBusca || codigoCard.includes(termoBusca) || corCard.includes(termoBusca)) {
-        card.style.display = 'flex';
-        } else {
-        card.style.display = 'none';
-        }
-        });
-        }
-    </script>
 }
