@@ -313,6 +313,26 @@ main[role="main"] {
             color: #e74c3c;
         }
 
+/* ==========================================================================
+   BOTÃO DE FAVORITAR (CORAÇÃO)
+   ========================================================================== */
+.favoritar-btn {
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 1.2rem;
+    position: relative;
+    left: -1.5px; /* Ajuste fino de 2px para a esquerda */
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .favoritar-btn:hover {
+        transform: scale(1.2);
+    }
+
+    .favoritar-btn.favoritado {
+        color: #e63946 !important;
+    }
+
 .left-sidebar {
     display: flex;
     flex-direction: column;

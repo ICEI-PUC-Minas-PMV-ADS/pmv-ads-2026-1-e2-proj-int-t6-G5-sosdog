@@ -43,6 +43,21 @@
         setTimeout(() => this.map.invalidateSize(), 300);
     }
 
+    // ==========================================
+    // NOVA FUNÇÃO: RECENTRALIZAR NO USUÁRIO
+    // ==========================================
+    recentrarNoUsuario() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                this.userLocation = [pos.coords.latitude, pos.coords.longitude];
+                // Move o mapa suavemente (animate: true) para a posição do GPS
+                this.map.setView(this.userLocation, 16, { animate: true, duration: 1 });
+            }, () => {
+                alert("Não foi possível acessar sua localização atual. Verifique as permissões do navegador.");
+            });
+        }
+    }
+
     loadMarkersFromList() {
         // Pega todos os cards da lista lateral que possuem coordenadas
         const cards = document.querySelectorAll('.case-card');
@@ -131,12 +146,20 @@
         this.aplicarFiltros();
     }
 
+    // ==========================================
+    // MODO CRIAÇÃO PRESERVANDO SUA LÓGICA
+    // ==========================================
     ativarModoCriacao() {
-        const center = this.map.getCenter();
+        // Pega a localização do usuário (armazenada via GPS) ao invés do centro perdido do mapa
+        const latLngInicial = L.latLng(this.userLocation[0], this.userLocation[1]);
 
-        // Se já existir um marcador, apenas move-o para o centro atual do ecrã
+        // Centraliza a câmera no usuário com animação antes de dropar o pino vermelho
+        this.map.setView(latLngInicial, 16, { animate: true });
+
+        // Se já existir um marcador, apenas move-o para a localização do usuário
         if (this.creationMarker) {
-            this.creationMarker.setLatLng(center);
+            this.creationMarker.setLatLng(latLngInicial);
+            this.atualizarCamposCoordenadas(latLngInicial.lat, latLngInicial.lng);
             this.creationMarker.openPopup();
             return;
         }
@@ -151,14 +174,14 @@
             shadowSize: [41, 41]
         });
 
-        // Adiciona o marcador com a propriedade "draggable: true"
-        this.creationMarker = L.marker(center, {
+        // Adiciona o marcador com a propriedade "draggable: true" na localização do usuário
+        this.creationMarker = L.marker(latLngInicial, {
             draggable: true,
             icon: createIcon
         }).addTo(this.map);
 
         // Define as coordenadas iniciais nos campos ocultos
-        this.atualizarCamposCoordenadas(center.lat, center.lng);
+        this.atualizarCamposCoordenadas(latLngInicial.lat, latLngInicial.lng);
 
         // Evento: Dispara SEMPRE que o utilizador acaba de arrastar o pin
         this.creationMarker.on('dragend', (e) => {
@@ -167,10 +190,10 @@
             this.creationMarker.openPopup(); // Reabre o balão
         });
 
-        // Adiciona um balão com o botão que vai abrir a tua Modal
+        // Adiciona um balão com o botão que vai abrir a sua Modal
         this.creationMarker.bindPopup(`
             <div class="text-center p-1">
-                <b style="color: var(--primary-orange);">Localização Escolhida!</b><br>
+                <b style="color: var(--primary-orange);">Sua Localização!</b><br>
                 <small class="text-muted">Arraste o pin para ajustar.</small><br>
                 <button class="btn mt-2 w-100 text-white fw-bold" style="background-color: var(--primary-green); border-radius: 20px;" onclick="abrirModalCriacao()">
                     Preencher Ficha <i class="fa-solid fa-paw"></i>
