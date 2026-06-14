@@ -14,28 +14,40 @@
         color: #6c757d;
         font-size: 1.2rem;
     }
-    .favoritar-btn:hover {
-        transform: scale(1.2);
-    }
-    .favoritar-btn.favoritado {
-        color: #e63946 !important;
-    }
-    #btn-filtro-favoritos {
-        margin-left: 10px;
-        transition: all 0.3s ease;
-    }
-    #btn-filtro-favoritos.ativo {
-        background-color: #e63946 !important;
-        color: #ffffff !important;
-        border-color: #e63946 !important;
-    }
+
+        .favoritar-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .favoritar-btn.favoritado {
+            color: #e63946 !important;
+        }
 </style>
 
 <main class="dashboard-container">
     <aside class="left-sidebar">
-        <div class="cases-list mt-3">
+
+        <div class="sidebar-top-bar" id="sidebar-top-bar">
+
+            <span class="cases-count" id="filtro-contador-sidebar"></span>
+
+            <button id="btn-filtrar-favoritos"
+                    class="btn-favoritos-toggle"
+                    title="Ver apenas favoritos"
+                    onclick="toggleFiltroFavoritos()">
+
+                <i class="fa-solid fa-heart"></i>
+
+                <span>Favoritos</span>
+
+            </button>
+
+        </div>
+
+        <div class="cases-list">
             @if (Model != null && Model.Any())
             {
+                // 2. LÓGICA DO CORAÇÃO VERMELHO RESTAURADA
                 var listafavoritosIds = ViewBag.FavoritosIds as List<int> ?? new List<int>();
 
                 foreach (var item in Model)
@@ -43,6 +55,8 @@
                     bool estaFavoritado = listafavoritosIds.Contains(item.IdOcorrencia);
 
                     <div class="case-card"
+                         id="card-ocorrencia-@item.IdOcorrencia"
+                         data-favoritado="@(estaFavoritado ? "true" : "false")"
                          data-tipo="@item.TipoOcorrencia"
                          data-id="@item.IdOcorrencia"
                          data-foto="@item.FotoAnimal"
@@ -53,12 +67,12 @@
                          data-cor="@item.CorPelagem"
                          data-porte="@item.Porte"
                          data-estadoSaude="@item.EstadoSaude"
+                         data-endereco="@item.Endereco"
                          data-idade="@item.FaixaEtaria"
                          data-usuario="@item.IdUsuario"
-                         data-endereco="@item.Endereco" 
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                          data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registo" : item.NomeUsuarioUltimaAcao)">
+                         data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
 
                         @if (!string.IsNullOrEmpty(item.FotoAnimal))
                         {
@@ -75,7 +89,7 @@
                                     <span>Id: @item.CodigoCachorro</span>
                                     <span class="badge badge-green">@item.EstadoSaude</span>
                                 </div>
-                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")"
+                                <i class="fa-solid fa-heart favoritar-btn  @(estaFavoritado ? "favoritado" : "")"
                                    id="coracao-@item.IdOcorrencia"
                                    onclick="alternarFavorito(event, @item.IdOcorrencia)"
                                    title="Favoritar"></i>
@@ -132,10 +146,6 @@
                 Filtrar
                 <span class="filtro-badge" id="filtro-badge" style="display:none;">0</span>
                 <i class="fa-solid fa-chevron-down filtro-chevron" id="filtro-chevron"></i>
-            </button>
-            
-            <button class="btn-filtro-toggle ms-2" id="btn-filtro-favoritos" onclick="toggleFiltroFavoritos()" title="Ver apenas os meus favoritos">
-                <i class="fa-solid fa-heart"></i> Favoritos
             </button>
 
             <div class="filtro-mapa-painel" id="filtro-mapa-painel">
@@ -224,6 +234,12 @@
                     class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
                 <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
             </button>
+
+            <button onclick="window.sosDogMap.recentrarNoUsuario()"
+                    class="btn-recentrar-flutuante shadow-lg"
+                    title="Minha Localização">
+                <i class="fa-solid fa-crosshairs"></i>
+            </button>
         </div>
     </section>
 
@@ -252,10 +268,9 @@
                                      data-estadoSaude="@item.EstadoSaude"
                                      data-idade="@item.FaixaEtaria"
                                      data-usuario="@item.IdUsuario"
-                                     data-endereco="@item.Endereco"
                                      data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
                                      data-comida="@(item.DataUltimaComida.HasValue ? item.DataUltimaComida.Value.ToString("dd/MM HH:mm") : "--:--")"
-                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registo" : item.NomeUsuarioUltimaAcao)">
+                                     data-ultimo-user="@(string.IsNullOrEmpty(item.NomeUsuarioUltimaAcao) ? "Nenhum registro" : item.NomeUsuarioUltimaAcao)">
 
                                     <div class="animal-card-img-wrapper">
                                         <img src="@(string.IsNullOrEmpty(item.FotoAnimal) ? "/images/placeholder-dog.png" : item.FotoAnimal)"
@@ -302,6 +317,7 @@
     </section>
 
     <section id="section-tutores" class="container-fluid py-4 d-none">
+
         <div class="d-flex justify-content-between align-items-center mb-4 px-md-4 px-2">
             <h2 class="fw-bold mb-0" style="color: var(--primary-green-dark);">
                 <i class="fa-solid fa-bullhorn text-danger me-2"></i> Pets Perdidos
@@ -309,6 +325,7 @@
         </div>
 
         <div class="tutores-grid px-md-4 px-2 pb-5">
+            @* Filtramos na própria View os pets marcados como 'Perdido' (ou o status que você definir no BD) *@
             @foreach (var item in Model.Where(m => m.TipoOcorrencia == "Perdido"))
             {
                 <div class="animal-card mx-auto shadow-lg" data-id="@item.IdOcorrencia">
@@ -335,6 +352,7 @@
                 </div>
             }
 
+            @* Fallback caso não tenha nenhum cachorro perdido no momento *@
             @if (!Model.Any(m => m.TipoOcorrencia == "Perdido"))
             {
                 <div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">
@@ -344,6 +362,7 @@
             }
         </div>
     </section>
+
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
         <div class="profile-img-wrap" id="container-foto-sidebar">
@@ -384,7 +403,7 @@
         </div>
 
         <div class="profile-section action-card-container">
-            <h3 class="section-title">Registo de Ações</h3>
+            <h3 class="section-title">Registro de Ações</h3>
             <div class="action-layout">
                 <div class="action-buttons-modern">
                     <button class="btn-modern btn-agua-modern" onclick="executarAcao('agua', this)"><i class="fa-solid fa-droplet"></i><span>Água</span></button>
@@ -438,84 +457,7 @@
     <script src="~/js/ocorrencias.js" asp-append-version="true"></script>
     <script src="~/js/filtro-mapa.js" asp-append-version="true"></script>
     <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
+    <script src="~/js/favoritos.js" asp-append-version="true"></script>
 
-    <script>
-        window.filtroFavoritosAtivo = false;
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const inputBuscaGlobal = document.getElementById('input-busca-global');
-            if (inputBuscaGlobal) {
-                inputBuscaGlobal.addEventListener('input', function() {
-                    if(window.sosDogMap) window.sosDogMap.aplicarFiltros();
-                });
-            }
-        });
-
-        function toggleFiltroDropdown() {
-            const dropdown = document.getElementById('filtro-dropdown');
-            const chevron  = document.getElementById('filtro-chevron');
-            const btn      = document.getElementById('btn-filtro-toggle');
-            const aberto   = dropdown.classList.toggle('filtro-dropdown--aberto');
-            if(chevron) chevron.style.transform = aberto ? 'rotate(180deg)' : 'rotate(0deg)';
-            if(btn) btn.classList.toggle('btn-filtro-toggle--ativo', aberto);
-        }
-
-        function atualizarBadge() {
-            const ids = ['filtro-tipo','filtro-estadosaude','filtro-porte','filtro-sexo','filtro-faixaetaria'];
-            const ativos = ids.filter(id => document.getElementById(id)?.value !== '').length;
-            const badge = document.getElementById('filtro-badge');
-            if (badge) {
-                badge.textContent = ativos;
-                badge.style.display = ativos > 0 ? 'inline-flex' : 'none';
-            }
-        }
-
-        function toggleFiltroFavoritos() {
-            window.filtroFavoritosAtivo = !window.filtroFavoritosAtivo;
-            const btn = document.getElementById('btn-filtro-favoritos');
-            
-            if (window.filtroFavoritosAtivo) {
-                btn.classList.add('ativo');
-            } else {
-                btn.classList.remove('ativo');
-            }
-            if(window.sosDogMap) window.sosDogMap.aplicarFiltros(); 
-        }
-
-        function realizarBuscaGlobal(termoExterno) {
-            if(window.sosDogMap) window.sosDogMap.aplicarFiltros(); 
-        }
-
-        async function alternarFavorito(event, idOcorrencia) {
-            event.stopPropagation(); 
-            const icone = document.getElementById(`coracao-${idOcorrencia}`);
-            
-            try {
-                const response = await fetch('/Favoritos/Alternar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `idOcorrencia=${idOcorrencia}`
-                });
-
-                if (response.status === 401) {
-                    alert("Você precisa estar logado para favoritar um animal.");
-                    return;
-                }
-
-                if (response.ok) {
-                    const resultado = await response.json();
-                    if (resultado.favoritado) {
-                        icone.classList.add('favoritado');
-                    } else {
-                        icone.classList.remove('favoritado');
-                        if(window.filtroFavoritosAtivo && window.sosDogMap) window.sosDogMap.aplicarFiltros();
-                    }
-                } else {
-                    console.error("Erro no Controller de Favoritos.");
-                }
-            } catch (error) {
-                console.error("Erro ao favoritar:", error);
-            }
-        }
-    </script>
 }

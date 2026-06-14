@@ -145,41 +145,42 @@ main[role="main"] {
 
 /* Barra de pesquisa */
 .search-bar {
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 25px;
-    padding: 6px 18px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 5px 10px;
     display: flex;
     align-items: center;
-    width: 260px;
-    height: 38px;
-    backdrop-filter: blur(6px);
-    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
-    .search-bar:focus-within {
-        background: rgba(255, 255, 255, 0.22);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .search-bar i {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 15px;
-    }
-
     .search-bar input {
-        border: none;
-        outline: none;
-        margin-left: 10px;
         background: transparent;
-        width: 100%;
-        font-size: 14px;
-        color: var(--white);
+        border: none;
+        color: #fff;
+        padding: 2px 8px;
+        outline: none;
+        width: 150px;
+        transition: width 0.3s ease;
     }
 
         .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.7);
         }
+
+.btn-busca-seta {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .btn-busca-seta:hover {
+        transform: translateX(2px);
+        color: #ffca28; /* Cor de destaque ao passar o mouse, mude se preferir */
+    }
+
 
 /* Botão de login */
 .btnLogin {
@@ -253,7 +254,85 @@ main[role="main"] {
     background-color: var(--bg-main);
 }
 
+
 /* ==================== SIDEBAR ESQUERDA ==================== */
+/* ── Sidebar Top Bar ── */
+.sidebar-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.cases-count {
+    font-size: 0.78rem;
+    color: #888;
+}
+
+/* Botão favoritos */
+.btn-favoritos-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border: 1.5px solid #ccc;
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #555;
+    transition: all 0.2s ease;
+}
+
+    .btn-favoritos-toggle .fa-heart {
+        color: #ccc;
+        transition: color 0.2s ease;
+    }
+
+    .btn-favoritos-toggle:hover {
+        border-color: #e74c3c;
+        color: #e74c3c;
+    }
+
+        .btn-favoritos-toggle:hover .fa-heart {
+            color: #e74c3c;
+        }
+
+    /* Estado ativo — filtro de favoritos ligado */
+    .btn-favoritos-toggle.ativo {
+        background: #fdecea;
+        border-color: #e74c3c;
+        color: #e74c3c;
+        font-weight: 600;
+    }
+
+        .btn-favoritos-toggle.ativo .fa-heart {
+            color: #e74c3c;
+        }
+
+/* ==========================================================================
+   BOTÃO DE FAVORITAR (CORAÇÃO)
+   ========================================================================== */
+.favoritar-btn {
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 1.2rem;
+    position: relative;
+    left: -1.5px; 
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .favoritar-btn:hover {
+        transform: scale(1.2);
+    }
+
+    .favoritar-btn.favoritado {
+        color: #e63946 !important;
+    }
+
 .left-sidebar {
     display: flex;
     flex-direction: column;
@@ -506,6 +585,40 @@ main[role="main"] {
         box-shadow: var(--shadow-orange);
     }
 
+/* Botão flutuante "Recentralizar" (Minha Localização) */
+.btn-recentrar-flutuante {
+    position: absolute;
+    bottom: 28px; /* Alinhado horizontalmente com o botão de reportar */
+    right: 28px; /* Posicionado no canto inferior direito */
+    z-index: 1000;
+    background-color: var(--white);
+    color: var(--primary-green); /* Usando o verde padrão como cor inativa */
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm); /* Sombra suave do seu sistema */
+    transition: background-color var(--transition-base), transform var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+    .btn-recentrar-flutuante:hover {
+        color: var(--primary-orange); /* Destaque na cor laranja do seu sistema */
+        transform: translateY(-3px); /* Puxa a mesma animação de flutuação do botão reportar */
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-recentrar-flutuante:active {
+        transform: translateY(0px) scale(0.95);
+        box-shadow: var(--shadow-sm);
+    }
+
 /* ==========================================
    SEÇÃO TUTORES (PETS PERDIDOS)
    ========================================== */
@@ -614,8 +727,6 @@ main[role="main"] {
     animation: bounce 0.55s infinite;
     will-change: transform;
 }
-
-
 /* ==================== SIDEBAR DIREITA — PERFIL DO ANIMAL ==================== */
 .right-sidebar,
 .dog-profile-sidebar {
@@ -1762,8 +1873,6 @@ footer.footer {
         background-color: var(--primary-orange) !important;
         transform: scale(1.08);
     }
-
-
 
 /* ==========================================================================
    1. DESKTOP GRANDE (≥ 1400px) — apenas ajustes finos

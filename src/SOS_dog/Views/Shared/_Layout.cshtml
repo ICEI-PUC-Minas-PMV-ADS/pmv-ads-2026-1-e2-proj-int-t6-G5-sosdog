@@ -23,6 +23,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    @* ALTERAÇÃO: Leaflet pode ficar só na página que usa o mapa, para evitar carregar em todas as telas *@
+    @* <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /> *@
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
@@ -48,17 +51,14 @@
             </a>
         </nav>
         <div class="header-right">
-            
-            <div class="search-bar" style="background: transparent; padding: 0;">
-                <div class="input-group" style="max-width: 300px; background-color: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #ccc;">
-                    <input type="text" class="form-control border-0 text-dark" placeholder="Busca..." id="input-busca-global"
-                           onkeyup="if(event.key === 'Enter') acionarBusca()">
-                    
-                    <button class="btn border-0 text-secondary" type="button" onclick="acionarBusca()">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </div>
+            <div class="search-bar d-flex align-items-center">
+                <i class="fas fa-search search-icon-left"></i>
+                <input type="text" id="input-busca-global" placeholder="Busca...">
+                <button type="button" id="btn-busca-global" class="btn-busca-seta" title="Buscar">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
+
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <div class="user-menu-logged">
@@ -103,14 +103,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
+
         @if (TempData["ErroLogin"] != null)
         {
-            <div class="alert alert-danger text-center m-3">@TempData["ErroLogin"]</div>
+            <div class="alert alert-danger text-center m-3">
+                @TempData["ErroLogin"]
+            </div>
         }
+
         @if (TempData["ErroCadastro"] != null)
         {
-            <div class="alert alert-danger text-center m-3">@TempData["ErroCadastro"]</div>
+            <div class="alert alert-danger text-center m-3">
+                @TempData["ErroCadastro"]
+            </div>
         }
+
         @if (TempData["ErroReset"] != null)
         {
             <div class="alert alert-danger alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
@@ -118,6 +125,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
+
         @if (TempData["SucessoReset"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show text-center m-3 auto-close-alert" role="alert">
@@ -125,6 +133,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         }
+
 
         @RenderBody()
     </main>
@@ -151,23 +160,8 @@
 
     <script src="~/js/usuario.js" asp-append-version="true"></script>
     <script src="~/js/feedCasos.js" asp-append-version="true"></script>
+    <script src="~/js/busca.js" asp-append-version="true"></script>
     <script src="~/js/alertsScript.js"></script>
-
-    <script>
-        function acionarBusca() {
-            const input = document.getElementById('input-busca-global');
-            if (!input) return;
-            
-            const termo = input.value.trim();
-            
-            if (typeof realizarBuscaGlobal === 'function') {
-                realizarBuscaGlobal(termo); 
-            } 
-            else if (termo !== "") {
-                window.location.href = `/?busca=${encodeURIComponent(termo)}`;
-            }
-        }
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
