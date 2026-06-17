@@ -423,6 +423,7 @@ main[role="main"] {
     font-variant-numeric: tabular-nums;
     gap: 8px;
 }
+
     .case-header > div {
         display: flex;
         align-items: center;
@@ -431,6 +432,7 @@ main[role="main"] {
         overflow: hidden;
         flex: 1 1 auto;
     }
+
         .case-header > div > span:first-child {
             white-space: nowrap;
             flex-shrink: 0; /* o "Id: DOG-120739" nunca trunca, conforme decidido */
