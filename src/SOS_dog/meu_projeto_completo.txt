@@ -2497,7 +2497,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7e48ec0538cef383ea1a3bf7398fd802b3e27aec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+747f16282cd6006bc4e1a45cd6e23e836f389d8a")]
 [assembly: System.Reflection.AssemblyProductAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SOS_dog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
@@ -2958,6 +2958,7 @@ using System.Reflection;
                          data-cor="@item.CorPelagem"
                          data-porte="@item.Porte"
                          data-estadoSaude="@item.EstadoSaude"
+                         data-endereco="@item.Endereco"
                          data-idade="@item.FaixaEtaria"
                          data-usuario="@item.IdUsuario"
                          data-agua="@(item.DataUltimaAgua.HasValue ? item.DataUltimaAgua.Value.ToString("dd/MM HH:mm") : "--:--")"
@@ -2979,7 +2980,7 @@ using System.Reflection;
                                     <span>Id: @item.CodigoCachorro</span>
                                     <span class="badge badge-green">@item.EstadoSaude</span>
                                 </div>
-                                <i class="fa-solid fa-heart favoritar-btn @(estaFavoritado ? "favoritado" : "")"
+                                <i class="fa-solid fa-heart favoritar-btn  @(estaFavoritado ? "favoritado" : "")"
                                    id="coracao-@item.IdOcorrencia"
                                    onclick="alternarFavorito(event, @item.IdOcorrencia)"
                                    title="Favoritar"></i>
@@ -3123,6 +3124,12 @@ using System.Reflection;
             <button onclick="window.sosDogMap.ativarModoCriacao()"
                     class="btn-reportar-flutuante shadow-lg @(User.Identity != null && User.Identity.IsAuthenticated ? "" : "auth-required")">
                 <i class="fa-solid fa-location-dot fa-bounce"></i> Reportar Animal
+            </button>
+
+            <button onclick="window.sosDogMap.recentrarNoUsuario()"
+                    class="btn-recentrar-flutuante shadow-lg"
+                    title="Minha Localização">
+                <i class="fa-solid fa-crosshairs"></i>
             </button>
         </div>
     </section>
@@ -3343,35 +3350,7 @@ using System.Reflection;
     <script src="~/js/geradorCartaz.js" asp-append-version="true"></script>
     <script src="~/js/favoritos.js" asp-append-version="true"></script>
 
-    <script>
-        // APENAS A BUSCA GLOBAL FICOU AQUI.
-        // A FUNÇÃO alternarFavorito FOI REMOVIDA DAQUI POIS AGORA ELA VEM DO favoritos.js
-        let inputBuscaGlobal;
 
-        document.addEventListener("DOMContentLoaded", function() {
-        inputBuscaGlobal = document.querySelector('input[placeholder="Busca..."]');
-        if (inputBuscaGlobal) {
-        inputBuscaGlobal.addEventListener('keyup', realizarBuscaGlobal);
-        }
-        });
-
-        function realizarBuscaGlobal() {
-        if (!inputBuscaGlobal) return;
-        const termoBusca = inputBuscaGlobal.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.case-card');
-
-        cards.forEach(card => {
-        const codigoCard = (card.getAttribute('data-codigo') || '').toLowerCase();
-        const corCard = (card.getAttribute('data-cor') || '').toLowerCase();
-
-        if (!termoBusca || codigoCard.includes(termoBusca) || corCard.includes(termoBusca)) {
-        card.style.display = 'flex';
-        } else {
-        card.style.display = 'none';
-        }
-        });
-        }
-    </script>
 }
 
 
@@ -3838,9 +3817,12 @@ using System.Reflection;
             </a>
         </nav>
         <div class="header-right">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Busca...">
+            <div class="search-bar d-flex align-items-center">
+                <i class="fas fa-search search-icon-left"></i>
+                <input type="text" id="input-busca-global" placeholder="Busca...">
+                <button type="button" id="btn-busca-global" class="btn-busca-seta" title="Buscar">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
 
             @if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -3944,6 +3926,7 @@ using System.Reflection;
 
     <script src="~/js/usuario.js" asp-append-version="true"></script>
     <script src="~/js/feedCasos.js" asp-append-version="true"></script>
+    <script src="~/js/busca.js" asp-append-version="true"></script>
     <script src="~/js/alertsScript.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
@@ -5099,41 +5082,42 @@ main[role="main"] {
 
 /* Barra de pesquisa */
 .search-bar {
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 25px;
-    padding: 6px 18px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 5px 10px;
     display: flex;
     align-items: center;
-    width: 260px;
-    height: 38px;
-    backdrop-filter: blur(6px);
-    transition: background var(--transition-base), border-color var(--transition-base);
 }
 
-    .search-bar:focus-within {
-        background: rgba(255, 255, 255, 0.22);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .search-bar i {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 15px;
-    }
-
     .search-bar input {
-        border: none;
-        outline: none;
-        margin-left: 10px;
         background: transparent;
-        width: 100%;
-        font-size: 14px;
-        color: var(--white);
+        border: none;
+        color: #fff;
+        padding: 2px 8px;
+        outline: none;
+        width: 150px;
+        transition: width 0.3s ease;
     }
 
         .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255, 255, 255, 0.7);
         }
+
+.btn-busca-seta {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0 5px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .btn-busca-seta:hover {
+        transform: translateX(2px);
+        color: #ffca28; /* Cor de destaque ao passar o mouse, mude se preferir */
+    }
+
 
 /* BotÃ£o de login */
 .btnLogin {
@@ -5265,6 +5249,26 @@ main[role="main"] {
         .btn-favoritos-toggle.ativo .fa-heart {
             color: #e74c3c;
         }
+
+/* ==========================================================================
+   BOTÃƒO DE FAVORITAR (CORAÃ‡ÃƒO)
+   ========================================================================== */
+.favoritar-btn {
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 1.2rem;
+    position: relative;
+    left: -1.5px; 
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .favoritar-btn:hover {
+        transform: scale(1.2);
+    }
+
+    .favoritar-btn.favoritado {
+        color: #e63946 !important;
+    }
 
 .left-sidebar {
     display: flex;
@@ -5516,6 +5520,40 @@ main[role="main"] {
         background-color: var(--primary-orange-dark);
         transform: translateX(-50%) translateY(0px) scale(0.98);
         box-shadow: var(--shadow-orange);
+    }
+
+/* BotÃ£o flutuante "Recentralizar" (Minha LocalizaÃ§Ã£o) */
+.btn-recentrar-flutuante {
+    position: absolute;
+    bottom: 28px; /* Alinhado horizontalmente com o botÃ£o de reportar */
+    right: 28px; /* Posicionado no canto inferior direito */
+    z-index: 1000;
+    background-color: var(--white);
+    color: var(--primary-green); /* Usando o verde padrÃ£o como cor inativa */
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm); /* Sombra suave do seu sistema */
+    transition: background-color var(--transition-base), transform var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+    .btn-recentrar-flutuante:hover {
+        color: var(--primary-orange); /* Destaque na cor laranja do seu sistema */
+        transform: translateY(-3px); /* Puxa a mesma animaÃ§Ã£o de flutuaÃ§Ã£o do botÃ£o reportar */
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-recentrar-flutuante:active {
+        transform: translateY(0px) scale(0.95);
+        box-shadow: var(--shadow-sm);
     }
 
 /* ==========================================
@@ -7272,6 +7310,95 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+--- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\busca.js ---
+
+
+/**
+ * SOS Dog - Módulo de Busca Global Dinâmica
+ * Responsável por filtrar os cards da sidebar e atualizar os contadores em tempo real.
+ */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const inputBusca = document.getElementById("input-busca-global");
+    const btnBusca = document.getElementById("btn-busca-global");
+    const cards = document.querySelectorAll(".case-card");
+    const contadorSidebar = document.getElementById("filtro-contador-sidebar");
+
+    // Inicializa o contador logo que a página carrega
+    atualizarContadorSidebar();
+
+    // Evento 1: Ao digitar no campo (Busca em Tempo Real)
+    if (inputBusca) {
+        inputBusca.addEventListener("keyup", () => {
+            executarFiltragem();
+        });
+    }
+
+    // Evento 2: Ao clicar no botão de seta
+    if (btnBusca) {
+        btnBusca.addEventListener("click", () => {
+            executarFiltragem();
+        });
+    }
+
+    /**
+     * Realiza a filtragem dos cards com base no termo digitado
+     */
+    function executarFiltragem() { 
+        if (!inputBusca || cards.length === 0) return;
+
+        const termoBusca = inputBusca.value.toLowerCase().trim();
+
+        cards.forEach(card => {
+            // Buscando múltiplos critérios para deixar a busca do usuário mais inteligente
+            const codigo = (card.getAttribute("data-codigo") || "").toLowerCase();
+            const cor = (card.getAttribute("data-cor") || "").toLowerCase();
+            const tipo = (card.getAttribute("data-tipo") || "").toLowerCase();
+            const porte = (card.getAttribute("data-porte") || "").toLowerCase();
+            const estadoSaude = (card.getAttribute("data-estadoSaude") || "").toLowerCase(); // ADICIONADO
+            const endereco = (card.getAttribute("data-endereco") || "").toLowerCase(); // ADICIONADO
+
+            // Se o termo estiver vazio ou bater com alguma propriedade do card, exibe.
+            const atendeFiltro = !termoBusca ||
+                codigo.includes(termoBusca) ||
+                cor.includes(termoBusca) ||
+                tipo.includes(termoBusca) ||
+                porte.includes(termoBusca) ||
+                estadoSaude.includes(termoBusca) || // ADICIONADO
+                endereco.includes(termoBusca);      // ADICIONADO
+
+            if (atendeFiltro) {
+                card.style.setProperty("display", "flex", "important");
+            } else {
+                card.style.setProperty("display", "none", "important");
+            }
+        });
+
+        // Atualiza a contagem dos cards visíveis após o filtro
+        atualizarContadorSidebar();
+    }
+
+    /**
+     * Atualiza dinamicamente o elemento de contagem da Sidebar
+     */
+    function atualizarContadorSidebar() {
+        if (!contadorSidebar) return;
+
+        // Conta quantos cards não estão com display: none
+        const cardsVisiveis = Array.from(cards).filter(card => card.style.display !== "none").length;
+
+        // Formatação textual amigável
+        if (cardsVisiveis === 0) {
+            contadorSidebar.textContent = "Nenhum caso";
+        } else if (cardsVisiveis === 1) {
+            contadorSidebar.textContent = "1 caso encontrado";
+        } else {
+            contadorSidebar.textContent = `${cardsVisiveis} casos encontrados`;
+        }
+    }
+});
+
+
 --- ARQUIVO: C:\Users\vitor\OneDrive\Área de Trabalho\dog-sos\src\SOS_dog\wwwroot\js\carrusel.js ---
 
 
@@ -7765,6 +7892,21 @@ class SosDogMap {
         setTimeout(() => this.map.invalidateSize(), 300);
     }
 
+    // ==========================================
+    // NOVA FUNÇÃO: RECENTRALIZAR NO USUÁRIO
+    // ==========================================
+    recentrarNoUsuario() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                this.userLocation = [pos.coords.latitude, pos.coords.longitude];
+                // Move o mapa suavemente (animate: true) para a posição do GPS
+                this.map.setView(this.userLocation, 16, { animate: true, duration: 1 });
+            }, () => {
+                alert("Não foi possível acessar sua localização atual. Verifique as permissões do navegador.");
+            });
+        }
+    }
+
     loadMarkersFromList() {
         // Pega todos os cards da lista lateral que possuem coordenadas
         const cards = document.querySelectorAll('.case-card');
@@ -7853,12 +7995,20 @@ class SosDogMap {
         this.aplicarFiltros();
     }
 
+    // ==========================================
+    // MODO CRIAÇÃO PRESERVANDO SUA LÓGICA
+    // ==========================================
     ativarModoCriacao() {
-        const center = this.map.getCenter();
+        // Pega a localização do usuário (armazenada via GPS) ao invés do centro perdido do mapa
+        const latLngInicial = L.latLng(this.userLocation[0], this.userLocation[1]);
 
-        // Se já existir um marcador, apenas move-o para o centro atual do ecrã
+        // Centraliza a câmera no usuário com animação antes de dropar o pino vermelho
+        this.map.setView(latLngInicial, 16, { animate: true });
+
+        // Se já existir um marcador, apenas move-o para a localização do usuário
         if (this.creationMarker) {
-            this.creationMarker.setLatLng(center);
+            this.creationMarker.setLatLng(latLngInicial);
+            this.atualizarCamposCoordenadas(latLngInicial.lat, latLngInicial.lng);
             this.creationMarker.openPopup();
             return;
         }
@@ -7873,14 +8023,14 @@ class SosDogMap {
             shadowSize: [41, 41]
         });
 
-        // Adiciona o marcador com a propriedade "draggable: true"
-        this.creationMarker = L.marker(center, {
+        // Adiciona o marcador com a propriedade "draggable: true" na localização do usuário
+        this.creationMarker = L.marker(latLngInicial, {
             draggable: true,
             icon: createIcon
         }).addTo(this.map);
 
         // Define as coordenadas iniciais nos campos ocultos
-        this.atualizarCamposCoordenadas(center.lat, center.lng);
+        this.atualizarCamposCoordenadas(latLngInicial.lat, latLngInicial.lng);
 
         // Evento: Dispara SEMPRE que o utilizador acaba de arrastar o pin
         this.creationMarker.on('dragend', (e) => {
@@ -7889,10 +8039,10 @@ class SosDogMap {
             this.creationMarker.openPopup(); // Reabre o balão
         });
 
-        // Adiciona um balão com o botão que vai abrir a tua Modal
+        // Adiciona um balão com o botão que vai abrir a sua Modal
         this.creationMarker.bindPopup(`
             <div class="text-center p-1">
-                <b style="color: var(--primary-orange);">Localização Escolhida!</b><br>
+                <b style="color: var(--primary-orange);">Sua Localização!</b><br>
                 <small class="text-muted">Arraste o pin para ajustar.</small><br>
                 <button class="btn mt-2 w-100 text-white fw-bold" style="background-color: var(--primary-green); border-radius: 20px;" onclick="abrirModalCriacao()">
                     Preencher Ficha <i class="fa-solid fa-paw"></i>

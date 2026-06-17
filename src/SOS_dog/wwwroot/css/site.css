@@ -321,7 +321,7 @@ main[role="main"] {
     color: #6c757d;
     font-size: 1.2rem;
     position: relative;
-    left: -1.5px; 
+    left: -1.5px;
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
@@ -421,7 +421,20 @@ main[role="main"] {
     margin-bottom: 3px;
     letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums;
+    gap: 8px;
 }
+    .case-header > div {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        overflow: hidden;
+        flex: 1 1 auto;
+    }
+        .case-header > div > span:first-child {
+            white-space: nowrap;
+            flex-shrink: 0; /* o "Id: DOG-120739" nunca trunca, conforme decidido */
+        }
 
 .case-details p {
     font-size: 11.5px;
@@ -452,7 +465,10 @@ main[role="main"] {
     font-weight: 700;
     letter-spacing: 0.4px;
     white-space: nowrap;
-    flex-shrink: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0; /* permite que ela encolha e corte */
+    flex-shrink: 1; /* é a primeira a cair quando falta espaço */
 }
 
 /* Botões inferiores da sidebar esquerda */
@@ -1889,6 +1905,51 @@ footer.footer {
     .search-bar {
         width: 300px;
     }
+
+    /* ---- Ajustes para salvar o layout do Card ---- */
+    .case-card {
+        padding: 10px 12px; /* Reduzimos o padding interno para sobrar espaço */
+        gap: 10px; /* Reduz a distância entre a foto e os textos */
+        font-size: 12.5px;
+    }
+
+    .case-details {
+        /* CRÍTICO: min-width: 0 permite que elementos filhos cortem o texto (ellipsis) */
+        min-width: 0;
+    }
+
+    .case-header {
+        font-size: 12.5px; /* Diminuímos a fonte do título */
+        flex-wrap: nowrap; /* Trava tudo na mesma linha */
+        gap: 8px; /* Espaço mais contido entre o nome/badge e o coração */
+    }
+
+        /* Força textos longos (como nomes ou raças grandes) a ganharem '...' */
+        .case-header > span,
+        .case-header > div,
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+        }
+
+
+    .badge-green {
+        font-size: 10px; /* Reduz a fonte da tag verde */
+        padding: 2px 7px; /* Tag mais enxuta */
+    }
+
+    /* Garante a estabilidade e o lugar do coração */
+    .favoritar-btn {
+        cursor: pointer;
+        color: #6c757d;
+        font-size: 1.1rem;
+        position: relative;
+        transition: transform 0.2s ease, color 0.2s ease;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
 }
 
 /* ==========================================================================
@@ -2343,4 +2404,3 @@ footer.footer {
         height: 120px;
     }
 }
-
