@@ -361,37 +361,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.sosDogMap = new SosDogMap();
 });
 
-// ==========================================
-// FUNÇÕES DO DRAWER / BOTTOM SHEET (MOBILE)
-// ==========================================
-
-window.abrirPerfilAnimal = function () {
-    const sidebar = document.getElementById('painel-detalhes');
-    const overlay = document.getElementById('drawerOverlay');
-
-    if (sidebar) {
-        sidebar.style.display = ''; // Remove o display: none inline se existir
-        sidebar.classList.add('drawer-open');
-    }
-    if (overlay) {
-        overlay.classList.add('active');
-    }
-
-    // Trava o scroll da página de fundo para melhorar a usabilidade no mobile
-    document.body.style.overflow = 'hidden';
-};
-
-window.fecharPerfilAnimal = function () {
-    const sidebar = document.getElementById('painel-detalhes');
-    const overlay = document.getElementById('drawerOverlay');
-
-    if (sidebar) {
-        sidebar.classList.remove('drawer-open');
-    }
-    if (overlay) {
-        overlay.classList.remove('active');
-    }
-
-    // Libera o scroll da página de fundo
-    document.body.style.overflow = '';
-};
