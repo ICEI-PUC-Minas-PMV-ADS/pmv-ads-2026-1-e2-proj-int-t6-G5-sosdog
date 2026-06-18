@@ -201,6 +201,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (typeof focusCard === 'function') {
                 focusCard(idOcorrencia);
             }
+
+            if (window.innerWidth <= 991) {
+                abrirPerfilAnimal();
+            }
         });
     });
 

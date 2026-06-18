@@ -363,9 +363,14 @@
             }
         </div>
     </section>
-
+    <div class="drawer-overlay" id="drawerOverlay" onclick="fecharPerfilAnimal()"></div>
 
     <aside class="right-sidebar dog-profile-sidebar" id="painel-detalhes" style="display: none;">
+
+        <button class="btn-close-drawer" onclick="fecharPerfilAnimal()" title="Fechar perfil">
+            <i class="fa-solid fa-times"></i>
+        </button>
+
         <div class="profile-img-wrap" id="container-foto-sidebar">
             <img id="sidebar-foto" src="" alt="Cachorro" style="display:block; width:100%;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
             <div class="aviso-sem-foto" style="display:none; flex-direction:column; align-items:center; justify-content:center; background:#eee; height:200px;">

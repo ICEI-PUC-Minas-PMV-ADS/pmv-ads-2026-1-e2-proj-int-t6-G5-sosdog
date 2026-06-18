@@ -1974,15 +1974,15 @@ footer.footer {
     }
 }
 
+
 /* ==========================================================================
    3. TABLET LANDSCAPE / LAPTOP MÍNIMO (768px – 991px)
-      Colapsa o grid para 2 colunas; sidebar direita vira drawer
+      Grid vai para 2 colunas; sidebar direita vira drawer lateral
    ========================================================================== */
 @media (max-width: 991px) {
 
-    /* ---- Body / Layout geral ---- */
     body {
-        overflow: auto; /* Permite scroll da página inteira no tablet */
+        overflow: auto;
         height: auto;
         min-height: 100vh;
     }
@@ -1991,7 +1991,6 @@ footer.footer {
         overflow-y: visible;
     }
 
-    /* ---- Header ---- */
     .top-header {
         padding: 10px 16px;
         flex-wrap: wrap;
@@ -2015,7 +2014,6 @@ footer.footer {
         width: 180px;
     }
 
-    /* ---- Dashboard: 2 colunas (lista | mapa), sidebar direita some do grid ---- */
     .dashboard-container {
         grid-template-columns: 240px 1fr;
         grid-template-rows: auto;
@@ -2026,28 +2024,64 @@ footer.footer {
         position: relative;
     }
 
-    /* Sidebar direita sai do fluxo do grid e vira drawer flutuante */
+    /* ── Drawer lateral direito ── */
     .right-sidebar,
     .dog-profile-sidebar {
+        /* Sai do grid e vira painel fixo deslizando da direita */
         position: fixed;
         top: 0;
         right: -100%;
+        bottom: 0; /* FIX: altura real da viewport */
         width: min(340px, 90vw);
-        height: 100dvh;
+        height: 100dvh; /* fallback para dvh */
         z-index: 1100;
         border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
         box-shadow: -6px 0 28px rgba(30, 50, 45, 0.22);
-        transition: right 0.3s cubic-bezier(.4,0,.2,1);
-        overflow-y: auto;
+        transition: right 0.3s cubic-bezier(.4, 0, .2, 1);
+        /* FIX crítico: remove contain que bloqueia scroll interno */
+        contain: none;
+        overflow-y: scroll; /* scroll (não auto) garante scrollbar sempre presente */
+        -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
     }
 
-        /* Classe adicionada via JS para abrir o drawer */
         .right-sidebar.drawer-open,
         .dog-profile-sidebar.drawer-open {
             right: 0;
         }
 
-    /* Overlay escuro por baixo do drawer */
+    /* Botão fechar drawer (HTML necessário — ver nota no final) */
+    .btn-close-drawer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky; /* sticky dentro do flex column para ficar no topo ao scrollar */
+        top: 0;
+        align-self: flex-start;
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        background: rgba(58, 94, 86, 0.1);
+        border: none;
+        border-radius: 50%;
+        color: var(--primary-green);
+        font-size: 14px;
+        cursor: pointer;
+        z-index: 10;
+        transition: background var(--transition-fast), color var(--transition-fast);
+        margin-bottom: 4px;
+    }
+
+        .btn-close-drawer:hover {
+            background: rgba(223, 120, 96, 0.15);
+            color: var(--primary-orange);
+        }
+
+    /* Overlay escuro */
     .drawer-overlay {
         display: none;
         position: fixed;
@@ -2055,56 +2089,53 @@ footer.footer {
         background: rgba(0, 0, 0, 0.4);
         z-index: 1099;
         backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
     }
 
         .drawer-overlay.active {
             display: block;
         }
 
-    /* Mapa ocupa as 2 colunas quando o carrossel está ativo */
+    /* Feed/Carrossel ocupa as 2 colunas */
     #section-feed:not(.d-none) {
         grid-column: span 2;
         height: 70vh;
         padding: 0 !important;
     }
 
-    /* Filtro do mapa */
     .filtro-mapa-wrapper {
         max-width: 220px;
     }
 
-    /* Botão flutuante do mapa */
     .btn-reportar-flutuante {
         font-size: 13px;
         padding: 9px 18px;
         gap: 8px;
     }
 
-    /* Carrossel Swiper */
     .dogSwiper {
         padding: 20px 0 !important;
     }
 
     .swiper-btn {
-        opacity: 1 !important; /* Sempre visível no touch */
+        opacity: 1 !important;
     }
 }
 
 /* ==========================================================================
    4. TABLET PORTRAIT (576px – 767px)
-      Lista colapsa; layout vira stack vertical
+      Layout vira stack vertical; sidebar direita vira bottom sheet
    ========================================================================== */
 @media (max-width: 767px) {
 
-    /* ---- Header ---- */
     .top-header {
         padding: 10px 12px;
         margin-bottom: 8px;
     }
 
     .search-bar {
-        width: 150px;
-        padding: 5px 12px;
+        width: 140px;
+        padding: 4px 10px;
     }
 
     .main-nav {
@@ -2120,55 +2151,81 @@ footer.footer {
             font-size: 18px;
         }
 
-    /* ---- Dashboard: stack vertical ---- */
     .dashboard-container {
         display: flex;
         flex-direction: column;
         height: auto;
-        padding: 0 8px 8px;
+        padding: 0 8px 80px;
         gap: 8px;
     }
 
-    /* Lista de casos: altura fixa com scroll */
     .left-sidebar {
         height: auto;
-        max-height: 40vh;
+        max-height: 38vh;
+        min-height: 160px;
     }
 
     .cases-list {
-        max-height: 30vh;
+        max-height: 26vh;
+        min-height: 100px;
     }
 
-    /* Mapa: altura fixa */
     .main-map-area {
         height: 50vw;
-        min-height: 280px;
-        max-height: 380px;
+        min-height: 260px;
+        max-height: 360px;
     }
 
     #map {
         height: 100%;
     }
 
-    /* Sidebar direita: drawer full-width */
+    /* ── Bottom sheet ── */
     .right-sidebar,
     .dog-profile-sidebar {
-        width: 100vw;
-        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-        top: auto;
-        bottom: -100%;
+        position: fixed;
+        left: 0;
         right: 0;
-        height: 80dvh;
-        transition: bottom 0.3s cubic-bezier(.4,0,.2,1);
+        bottom: -100%;
+        top: auto;
+        width: 100%;
+        height: 88dvh;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        box-shadow: 0 -6px 28px rgba(30, 50, 45, 0.22);
+        transition: bottom 0.32s cubic-bezier(.4, 0, .2, 1);
+        /* FIX crítico: scroll funcional */
+        contain: none;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        padding: 48px 16px 24px; /* topo generoso para o handle */
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        z-index: 1100;
     }
 
         .right-sidebar.drawer-open,
         .dog-profile-sidebar.drawer-open {
             bottom: 0;
-            right: 0;
         }
 
-    /* Botões da sidebar esquerda */
+    /* Handle visual do bottom sheet (pill cinza) */
+    .btn-close-drawer {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 5px;
+        border-radius: 3px;
+        background: rgba(58, 94, 86, 0.3);
+        border: none;
+        cursor: pointer;
+        /* esconde o ícone — funciona como "pull handle" */
+        color: transparent;
+        font-size: 0;
+    }
+
     .sidebar-buttons {
         flex-direction: row;
         gap: 8px;
@@ -2179,7 +2236,6 @@ footer.footer {
         padding: 9px 8px;
     }
 
-    /* Botão flutuante menor */
     .btn-reportar-flutuante {
         font-size: 12px;
         padding: 8px 14px;
@@ -2187,13 +2243,11 @@ footer.footer {
         bottom: 16px;
     }
 
-    /* Seção tutores */
     .tutores-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 18px;
     }
 
-    /* Feed/Carrossel */
     #section-feed:not(.d-none) {
         height: 60vh;
     }
@@ -2205,27 +2259,21 @@ footer.footer {
 
 /* ==========================================================================
    5. MOBILE (< 576px)
-      Interface simplificada, foco em usabilidade touch
    ========================================================================== */
 @media (max-width: 575px) {
 
-    /* ---- Header ---- */
     .top-header {
         padding: 8px 10px;
-        gap: 8px;
+        gap: 6px;
     }
 
-    /* Oculta a busca no mobile — pode abrir com ícone se desejar */
     .search-bar {
         display: none;
     }
 
     .main-nav {
-        gap: 16px;
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        border-top: 1px solid rgba(255,255,255,0.12);
+        gap: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
         padding-top: 8px;
         margin-top: 4px;
     }
@@ -2236,76 +2284,118 @@ footer.footer {
 
     .user-info span {
         font-size: 11px;
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    /* ---- Dashboard ---- */
+    .user-menu-logged .btn-outline-light {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
     .dashboard-container {
-        padding: 0 6px 6px;
+        padding: 0 6px 72px;
         gap: 6px;
     }
 
-    /* Cards da lista: compactos */
+    .left-sidebar {
+        max-height: 42vh;
+    }
+
+    .cases-list {
+        max-height: 30vh;
+    }
+
     .case-card {
-        padding: 9px 10px;
-        gap: 10px;
+        padding: 8px 10px;
+        gap: 9px;
+        border-radius: var(--border-radius-md);
     }
 
         .case-card img {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
         }
 
     .case-header {
-        font-size: 12.5px;
+        font-size: 12px;
     }
 
     .case-details p {
         font-size: 10.5px;
     }
 
-    /* Mapa menor em mobile */
-    .main-map-area {
-        height: 44vw;
-        min-height: 220px;
-        max-height: 300px;
+    .badge-green {
+        font-size: 9.5px;
+        padding: 2px 6px;
     }
 
-    /* Botão flutuante do mapa: compacto */
+    .main-map-area {
+        height: 46vw;
+        min-height: 200px;
+        max-height: 280px;
+    }
+
     .btn-reportar-flutuante {
         font-size: 11.5px;
         padding: 7px 12px;
         gap: 5px;
-        bottom: 12px;
+        bottom: 10px;
         border-radius: 24px;
+        max-width: calc(100% - 80px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    /* Filtro: painel mais estreito */
+    .btn-recentrar-flutuante {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        bottom: 10px;
+        right: 14px;
+    }
+
     .filtro-mapa-wrapper {
-        max-width: 190px;
+        max-width: 186px;
     }
 
     .filtro-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        padding: 6px 8px 8px;
     }
 
-    /* Sidebar direita no mobile: folha deslizando de baixo */
+    .filtro-mapa-painel--aberto {
+        max-height: 360px;
+    }
+
+    /* ── Bottom sheet mobile ── */
     .right-sidebar,
     .dog-profile-sidebar {
-        height: 88dvh;
-        padding: 14px;
+        height: 92dvh; /* FIX: mais altura para caber todo o conteúdo */
+        padding: 48px 14px 32px; /* FIX: padding-bottom generoso para comentários */
     }
 
+    /* FIX: imagem menor — libera espaço para o resto */
     .profile-img-wrap img {
-        height: 140px;
+        height: 120px;
+        margin-bottom: 8px;
     }
 
     .profile-header h2 {
-        font-size: 16px;
+        font-size: 15px;
+    }
+
+    .profile-header {
+        gap: 4px;
     }
 
     .btn-modern {
-        width: 64px;
-        height: 64px;
+        width: 62px;
+        height: 62px;
     }
 
         .btn-modern i {
@@ -2316,93 +2406,151 @@ footer.footer {
             font-size: 10px;
         }
 
-    /* Botões da sidebar esquerda */
+    .status-label {
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .status-data {
+        font-size: 11.5px;
+    }
+
+    /* FIX: água/comida em coluna única — mais espaço para os dados */
+    .user-card-body {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    /* FIX: lista de comentários com altura menor para não travar o scroll */
+    .comments-list {
+        max-height: 180px;
+    }
+
     .btn-orange {
         font-size: 11px;
         padding: 8px 6px;
     }
 
-    /* Carrossel */
     #section-feed:not(.d-none) {
-        height: 55vh;
+        height: 52vh;
     }
 
     .animal-card {
-        width: 220px;
+        width: 210px;
     }
 
     .animal-card-img-wrapper {
-        height: 240px;
+        height: 230px;
     }
 
     .animal-card-overlay h3 {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
     }
 
-    /* Tutores grid: 1 coluna no mobile */
     .tutores-grid {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 12px;
         padding: 0 4px;
     }
 
-    /* Modal */
+    .animal-card.mx-auto {
+        width: 100%;
+        max-width: 320px;
+    }
+
     .modal-reportar .btn-chip-custom {
         padding: 6px 12px;
         font-size: 0.85rem;
+    }
+
+    .modal-reportar .upload-box-custom {
+        padding: 16px 10px;
     }
 }
 
 /* ==========================================================================
    6. MOBILE PEQUENO (< 400px)
-      Ajustes mínimos para telas muito estreitas (iPhone SE, Galaxy A)
    ========================================================================== */
 @media (max-width: 399px) {
 
     .top-header {
-        padding: 7px 8px;
+        padding: 6px 8px;
     }
 
     .main-nav {
-        gap: 10px;
-    }
-
-        .main-nav a {
-            font-size: 10px;
-        }
-
-        .main-nav i {
-            font-size: 16px;
-        }
-
-    .case-card {
-        padding: 8px 9px;
         gap: 8px;
     }
 
+        .main-nav a {
+            font-size: 9.5px;
+        }
+
+        .main-nav i {
+            font-size: 15px;
+        }
+
+    .logo i {
+        font-size: 1.8rem !important;
+    }
+
+    .case-card {
+        padding: 7px 8px;
+        gap: 7px;
+    }
+
         .case-card img {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
         }
 
     .dashboard-container {
-        padding: 0 4px 4px;
+        padding: 0 4px 64px;
+    }
+
+    .main-map-area {
+        min-height: 180px;
+    }
+
+    /* Botão flutuante vira só ícone */
+    .btn-reportar-flutuante .btn-text {
+        display: none;
+    }
+
+    .btn-reportar-flutuante {
+        padding: 10px 14px;
+        gap: 0;
     }
 
     .animal-card {
-        width: 190px;
+        width: 185px;
     }
 
     .animal-card-img-wrapper {
-        height: 210px;
+        height: 205px;
     }
 
     .btn-modern {
-        width: 56px;
-        height: 56px;
+        width: 54px;
+        height: 54px;
     }
 
     .profile-img-wrap img {
-        height: 120px;
+        height: 100px;
+    }
+
+    .filtro-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filtro-mapa-wrapper {
+        max-width: 160px;
+    }
+
+    .left-sidebar {
+        max-height: 36vh;
+    }
+
+    .cases-list {
+        max-height: 24vh;
     }
 }
