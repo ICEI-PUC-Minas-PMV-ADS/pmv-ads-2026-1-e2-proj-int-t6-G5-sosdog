@@ -31,7 +31,8 @@ Além do mapeamento dinâmico, o sistema atua como uma rede de apoio logístico 
 
 * KAMBAM: https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/2603/views/1?system_template=kanban
 * URL da aplicação: https://seu-dominio.com/caminho
-* Status: Offline 
+* Status: Online
+* Link: https://icei-puc-minas-pmv-ads.github.io/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/
 * Ambiente: homologação
 
 **Usuário(s) de teste (se houver):**
