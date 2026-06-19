@@ -4,7 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<NoWarn>8618</NoWarn>
+	<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	<NoWarn>8618;8600;8602;8604</NoWarn>
     <UserSecretsId>c35b9da3-341f-459a-9b31-2a659dfeb48c</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
