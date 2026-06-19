@@ -9,7 +9,7 @@ Para cada caso de teste definido no Plano de Testes de Software, realize o regis
 | Requisito Associado | RF-014 - Cadastrar nova conta de usuário. |
 | Registro de evidência |
 
-https://github.com/user-attachments/assets/0da83974-c2ed-4223-9395-94277bede979
+https://github.com/user-attachments/assets/de307a2a-8340-40f8-a342-f98185c55bd9
 
  |
 
@@ -18,7 +18,9 @@ https://github.com/user-attachments/assets/0da83974-c2ed-4223-9395-94277bede979
 | Requisito Associado | RF-016 - Encerrar a sessão ativa do usuário de forma segura. |
 | Registro de evidência | 
 
-https://github.com/user-attachments/assets/b9b427bc-18f5-41c4-8843-c095e02f33fe
+
+https://github.com/user-attachments/assets/3f0f19ca-5ebb-4f09-b0cd-9b68363db674
+
 
 |
 
@@ -27,7 +29,7 @@ https://github.com/user-attachments/assets/b9b427bc-18f5-41c4-8843-c095e02f33fe
 | Requisito Associado | RF-001 - Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento; RF-005 - Exigir a seleção do estado atual do animal durante o registro de uma marcação; RF-007 - Anexar fotos para facilitar a identificação visual do animal. |
 | Registro de evidência |
 
-https://github.com/user-attachments/assets/5b5a62e7-893e-4efa-bd15-0b39e1548380
+https://github.com/user-attachments/assets/bf1074ed-1229-4663-b3ed-fbfd611403a1
 
 |
 
@@ -36,7 +38,7 @@ https://github.com/user-attachments/assets/5b5a62e7-893e-4efa-bd15-0b39e1548380
 | Requisito Associado | RF-003 - Filtrar os animais no mapa por estado de saúde, tipo de ocorrência, idade, sexo e porte do animal. |
 | Registro de evidência |
 
-https://github.com/user-attachments/assets/e32b684f-1056-49ad-9e50-4aec953ddf45
+https://github.com/user-attachments/assets/cfcf4f15-f129-40aa-8cde-9535c2768144
 
  |
 
@@ -45,7 +47,9 @@ https://github.com/user-attachments/assets/e32b684f-1056-49ad-9e50-4aec953ddf45
 | Requisito Associado | RF-006 - Registrar o fornecimento recente de cuidados básicos aos animais marcados. |
 | Registro de evidência |
 
-https://github.com/user-attachments/assets/37aa22fb-35d3-4f69-8abd-39f4fb56c3d6
+
+https://github.com/user-attachments/assets/b3c50aec-caf5-43d7-875e-f7c33680484c
+
 
  |
 
@@ -54,7 +58,9 @@ https://github.com/user-attachments/assets/37aa22fb-35d3-4f69-8abd-39f4fb56c3d6
 | Requisito Associado | RF-009 - Adicionar comentários nas marcações para atualizar o status do animal. |
 | Registro de evidência |
 
-https://github.com/user-attachments/assets/271a5997-a065-4348-95d6-c4fd88d6af1f
+
+https://github.com/user-attachments/assets/bac6db50-208a-44df-856f-12248c9555fb
+
 
 |
 
