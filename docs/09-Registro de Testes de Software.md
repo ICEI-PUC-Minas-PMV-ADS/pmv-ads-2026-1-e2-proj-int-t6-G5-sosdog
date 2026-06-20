@@ -83,7 +83,8 @@ https://github.com/user-attachments/assets/81448431-b3b4-4b02-bab0-240b80043c50
 | Requisito Associado | RF-002 - Alternar a visualização do mapa por camadas baseadas no status do animal. |
 | Registro de evidência | 
 
-https://github.com/user-attachments/assets/b2cb707c-f0f9-4597-b46e-a6990dd073f6
+https://github.com/user-attachments/assets/4fdaa1b3-168a-49b1-9221-88c0d2211058
+
 
  |
 
