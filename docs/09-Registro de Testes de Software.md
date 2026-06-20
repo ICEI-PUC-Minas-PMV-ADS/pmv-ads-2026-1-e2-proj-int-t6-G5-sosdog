@@ -93,7 +93,9 @@ https://github.com/user-attachments/assets/4fdaa1b3-168a-49b1-9221-88c0d2211058
 | Requisito Associado | RF-010 - Gerar cartaz digital de busca para animais perdidos (PDF). |
 | Registro de evidência | 
 
-https://github.com/user-attachments/assets/740a138c-eeec-45e4-91c0-323f9ba528ad
+https://github.com/user-attachments/assets/e68a6005-fd3d-4586-bec9-3a499f4f4b30
+
+
 
  |
 
@@ -102,7 +104,9 @@ https://github.com/user-attachments/assets/740a138c-eeec-45e4-91c0-323f9ba528ad
 | Requisito Associado | RF-015 - Redefinir a senha de acesso da conta. |
 | Registro de evidência | 
 
-https://github.com/user-attachments/assets/7bc3d7fc-0285-43d1-9c78-137b52bd5231
+
+https://github.com/user-attachments/assets/6b48408a-21bf-4cfa-b9fc-6f2792b322ef
+
 
  |
 
@@ -111,7 +115,7 @@ https://github.com/user-attachments/assets/7bc3d7fc-0285-43d1-9c78-137b52bd5231
 | Requisito Associado | RF-012 - Editar os dados de perfil do usuário. RF-013 - Excluir permanentemente a conta e os dados pessoais do usuário. |
 | Registro de evidência | 
 
-https://github.com/user-attachments/assets/e5b8c177-687a-43d0-91e2-f08d9a7c3319
+https://github.com/user-attachments/assets/f1e2bdba-0cca-4d7f-9d18-e1d60f0c0a8a
 
  |
 
