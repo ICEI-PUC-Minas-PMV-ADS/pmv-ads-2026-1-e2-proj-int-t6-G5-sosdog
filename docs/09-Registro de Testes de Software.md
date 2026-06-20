@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/cb8dd609-42a8-4f95-be8c-f20f357e9be7
 # Registro de Testes de Software
 
 <span style="color:red">Pré-requisitos: <a href="3-Projeto de Interface.md"> Projeto de Interface</a></span>, <a href="8-Plano de Testes de Software.md"> Plano de Testes de Software</a>
@@ -69,7 +71,10 @@ https://github.com/user-attachments/assets/bac6db50-208a-44df-856f-12248c9555fb
 | Requisito Associado | RF-017 - Permitir que usuários autenticados favoritam ou desfavoritam uma ocorrência. |
 | Registro de evidência | 
 
-https://github.com/user-attachments/assets/08427165-1db9-4c08-88bf-0b6d8090ecce
+https://github.com/user-attachments/assets/81448431-b3b4-4b02-bab0-240b80043c50
+
+
+
 
  |
 
