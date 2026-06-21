@@ -69,28 +69,41 @@ O usuário deve localizar o link de cadastro no modal de login, preencher todos 
 | Usuário 4 | 71 | 10 | Sim | Nenhum | "Simples e direto. Gostei de poder colocar foto de perfil já no cadastro." |
 | Usuário 5 | 52 | 8 | Sim | Nenhum | "Cadastro rápido. A mensagem de confirmação por e-mail foi clara." |
 
-## Relatório dos testes de usabilidade
+### Relatório dos testes de usabilidade
 
-O relatório de testes de usabilidade deve ser um documento claro e estruturado, contendo análises dos testes realizados, identificação de problemas, propostas de correção, melhorias e sugestões para a evolução do sistema.
-Ele servirá como base para refinamentos no sistema e futuras iterações de testes.
-Deve incluir:
-- Taxa de sucesso por cenário
-- Tempo médio para completar cada cenário
-- Número médio de erros cometidos por tarefa
-- Taxa de abandono (usuários que não conseguiram concluir a tarefa do cenário)
-- Feedback qualitativo
+**Métricas avaliadas durante os testes:**
 
-A partir disso, organize os resultados e identifique padrões:
-- Principais dificuldades enfrentadas pelos usuários.
-- Quais tarefas foram concluídas sem problemas e quais apresentaram falhas.
-- Sugestões de melhorias para interface, navegação e acessibilidade.
+* **Taxa de sucesso por cenário:** 100% de sucesso. O usuário conseguiu iniciar e finalizar todas as tarefas propostas (Cadastro, Login, Reportar Animal, Edição, Exclusão de Conta e Recuperação de Senha).
 
-Dica: Agrupe problemas em níveis de prioridade:
-- Crítico: Impede o uso do sistema.
-- Moderado: Dificulta a experiência, mas não impede o uso.
-- Leve: Pode ser melhorado, mas não compromete a usabilidade.
+* **Tempo médio para completar cada cenário:** Aproximadamente 26 segundos em média por tarefa. (Exemplos: Cadastro levou ~38s; Reportar Animal com foto ~44s; Recuperação de senha ~24s).
 
-Apresente propostas de ações para corrigir os problemas críticos e recorrentes identificados e proponha melhorias incrementais para otimizar a experiência do usuário.
+* **Número médio de erros cometidos por tarefa:** 0 erros. O fluxo foi percorrido sem que o usuário inserisse dados inválidos que acionassem mensagens de erro nos formulários.
+
+* **Taxa de abandono (usuários que não conseguem concluir a tarefa do cenário):** 0%. Nenhuma tarefa foi interrompida ou abandonada pelo usuário antes da conclusão.
+
+* **Feedback qualitativo:** O sistema apresenta um fluxo rápido e sem interrupções abruptas. A utilização de modais sobrepostos ao mapa ajuda a manter o contexto da navegação. Os alertas visuais verdes (toasts) a cada ação bem-sucedida oferecem um excelente feedback de que o sistema registrou o comando.
+
+**Resultados e padrões identificados:**
+
+* **Principais dificuldades enfrentadas pelos usuários:** A maior dificuldade não esteve na interface, mas na recepção do e-mail de confirmação de conta, que foi direcionado automaticamente para a caixa de SPAM do provedor. Além disso, houve um leve atrito pela falta de clareza visual de que o sistema estava "pensando" ao enviar um formulário com foto.
+
+* **Quais tarefas foram concluídas sem problemas e quais falhas:** O preenchimento de formulários, o login, a navegação pelo mapa, a edição de perfil e a recuperação de senha via token foram tarefas concluídas com extrema facilidade e sem falhas. A interação rápida com ações (dar água/comida) também ocorreu de forma fluida.
+
+* **Sugestões de melhorias para interface, navegação e acessibilidade:** Implementar um "preview" (pré-visualização) das fotos carregadas pelo usuário antes do envio, e pré-preencher automaticamente o campo de e-mail no modal de login logo após o usuário realizar a troca de senha com sucesso.
+
+**Problemas agrupados em níveis de prioridade:**
+
+* **Crítico (Impede o uso do sistema):** Os e-mails do sistema (ativação de conta) estão caindo na caixa de SPAM. Isso pode impedir o uso do sistema por usuários com menos experiência tecnológica, que não checarão essa pasta e abandonarão o cadastro.
+
+* **Moderado (Dificulta a experiência, mas não impede o uso):** Ausência de indicador de "carregamento" (loading/spinner) ao clicar em botões de salvar/cadastrar. O sistema leva alguns segundos processando a foto no banco de dados, o que pode causar ansiedade e fazer o usuário clicar múltiplas vezes.
+
+* **Leve (Pode ser melhorado, mas não compromete a usabilidade):** O nome do arquivo da foto aparece ao ser anexado, mas não a miniatura da imagem. Além disso, a necessidade de redigitar o e-mail para fazer login logo após já tê-lo digitado na recuperação de senha gera um pequeno trabalho extra.
+
+**Propostas de ações para corrigir os problemas e melhorias incrementais:**
+
+Para corrigir o problema **crítico**, é fundamental configurar as chaves de autenticação de domínio (SPF, DKIM e DMARC) no servidor de e-mail utilizado, garantindo a entrega na caixa de entrada principal dos usuários. 
+
+Para melhorias incrementais na experiência, recomenda-se desabilitar os botões de envio e alterar o texto para "Processando..." no momento do clique, resolvendo o problema **moderado**. Para os problemas **leves**, a adição de um script simples no front-end para renderizar a miniatura da imagem escolhida trará muito mais segurança visual ao usuário antes de ele registrar uma ocorrência.
 
 > **Links Úteis**:
 > - [Ferramentas de Testes de Usabilidade](https://www.usability.gov/how-to-and-tools/resources/templates.html)
