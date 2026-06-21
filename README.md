@@ -54,8 +54,8 @@ Além do mapeamento dinâmico, o sistema atua como uma rede de apoio logístico 
 
 # Código
 
-<li><a href="src/README.md"> Código Fonte</a></li>
+<li><a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/tree/main/src/SOS_dog"> Código Fonte</a>a</li>
 
 # Apresentação
 
-<li><a href="docs/12-Apresentação do Projeto.md"> Apresentação do Projeto</a></li>
+<li><a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2026-1-e2-proj-int-t6-G5-sosdog/blob/main/docs/12-Apresenta%C3%A7%C3%A3o%20do%20Projeto.md"> Apresentação do Projeto</a></li>
