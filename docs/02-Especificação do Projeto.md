@@ -42,6 +42,7 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 | **RF-001** | Marcar a localização de um animal via GPS, diferenciando o seu status de avistamento. | ALTA |
 | **RF-002** | Alternar a visualização do mapa por camadas baseadas no status do animal.| MÉDIA |
 | **RF-003** | Filtrar os animais no mapa por estado de saúde, tipo de ocorrencia, idade, sexo e porte do animal. | MÉDIA |
+| **RF-004** | Permitir que o criador da ocorrência edite ou exclua seu próprio registro. | ALTA |
 | **RF-005** | Exigir a seleção do estado atual do animal durante o registro de uma marcação. | ALTA |
 | **RF-006** | Registrar o fornecimento recente de cuidados básicos aos animais marcados. | MÉDIA |
 | **RF-007** | Anexar fotos para facilitar a identificação visual do animal. | ALTA |
