@@ -61,7 +61,7 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 
 | ID | Descrição do Requisito | Prioridade |
 | :--- | :--- | :--- |
-| **RNF-001** | Garantir responsividade e otimização com foco primordial em dispositivos móveis (*Mobile First*). | ALTA |
+| **RNF-001** | Garantir responsividade e otimização seguindo a estratégia Desktop-First, com adaptações progressivas para dispositivos móveis. | ALTA |
 | **RNF-002** | Processar buscas e atualizar o mapa (raio de 5 km) em no máximo 3 segundos. | ALTA |
 | **RNF-003** | Manter alta disponibilidade (24/7) para suportar a imprevisibilidade dos resgates. | ALTA |
 | **RNF-004** | Proteger dados sensíveis em conformidade com a LGPD, exigindo autorização explícita para exibição de contatos. | ALTA |
