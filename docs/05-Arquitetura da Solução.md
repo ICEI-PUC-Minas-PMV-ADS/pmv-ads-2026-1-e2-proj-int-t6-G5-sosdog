@@ -322,11 +322,16 @@ Usuário (Browser) ◄── Response HTML / JSON
 
 ## Hospedagem
 
-Explique como a hospedagem e o lançamento da plataforma foi feita.
+A aplicação SosDog está hospedada na plataforma **Microsoft Azure**, utilizando os recursos disponibilizados pelo programa **Azure Dev Tools for Teaching** vinculado à instituição de ensino.
 
-> **Links Úteis**:
->
-> - [Website com GitHub Pages](https://pages.github.com/)
-> - [Programação colaborativa com Repl.it](https://repl.it/)
-> - [Getting Started with Heroku](https://devcenter.heroku.com/start)
-> - [Publicando Seu Site No Heroku](http://pythonclub.com.br/publicando-seu-hello-world-no-heroku.html)
+A publicação foi realizada diretamente pelo **Microsoft Visual Studio**, por meio do assistente de publicação integrado (*Publish*), que gerou o perfil de implantação e realizou o deploy via **Web Deploy** para o serviço de destino.
+
+**Recursos provisionados no Azure:**
+
+- **Azure App Service (Windows)** — hospeda a aplicação ASP.NET Core MVC. Região: West Central US. Plano: Free (F1).
+- **Azure SQL Server + Azure SQL Database** — banco de dados relacional em nuvem. Região: West US. A connection string foi configurada diretamente nas **Variáveis de Ambiente** do App Service, sobrescrevendo o valor local do `appsettings.json`.
+
+**Acesso à aplicação:**
+
+A aplicação está disponível no endereço:
+`https://sosdog2026-fzd9hjazdcetgjbd.westcentralus-01.azurewebsites.net/`
