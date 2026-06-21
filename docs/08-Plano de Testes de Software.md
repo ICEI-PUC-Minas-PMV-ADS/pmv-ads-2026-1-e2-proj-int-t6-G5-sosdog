@@ -57,7 +57,7 @@ Não deixe de enumerar os casos de teste de forma sequencial e de garantir que o
 | | |
 | **Caso de Teste** | **CT08 – Editar ocorrência própria** |
 |:---:|:---|
-| Requisito Associado | RF-002 - Alternar a visualização do mapa por camadas baseadas no status do animal. |
+| Requisito Associado | RF-004 - Permitir que o criador da ocorrência edite ou exclua seu próprio registro. |
 | Objetivo do Teste | Verificar se o criador da ocorrência consegue editar seus dados e se usuários não autorizados não têm acesso à edição. |
 | Passos | - Realizar login com o usuário criador da ocorrência <br> - Clicar na ocorrência no mapa ou na lista lateral <br> - No painel de detalhes, clicar no ícone de edição <br> - Alterar um ou mais campos no modal de edição <br> - Clicar em "Salvar" |
 | Critério de Êxito | - Os dados são atualizados com sucesso e o sistema exibe mensagem de confirmação. O ícone de edição não deve ser exibido para usuários que não são o criador da ocorrência. |
