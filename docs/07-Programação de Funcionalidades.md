@@ -27,24 +27,42 @@ A aplicação está funcional no ambiente de hospedagem a partir da Etapa 03.
 ---
 
 ## Estrutura de Artefatos
-
-### Frontend — Pasta `/js`
-
+ 
+### Frontend — Pasta `/wwwroot/js`
+ 
 | Arquivo | Descrição |
 |---|---|
 | `alertsScript.js` | Scripts de alertas e notificações ao usuário |
+| `busca.js` | Lógica de busca de ocorrências na lista lateral |
 | `carrusel.js` | Lógica do carrossel de imagens |
 | `emergencia.js` | Funcionalidades da seção de emergência |
+| `favoritos.js` | Lógica de favoritar e desfavoritar ocorrências |
 | `feedCasos.js` | Exibição do feed de ocorrências/casos |
-| `filtro-mapa.js` | Filtros aplicados ao mapa |
+| `filtro-mapa.js` | Lógica do filtro flutuante no mapa |
 | `geradorCartaz.js` | Geração de cartaz digital de busca (PDF) |
-| `map-handler.js` | Manipulação e controle do mapa |
+| `map-handler.js` | Manipulação e controle do mapa Leaflet |
 | `ocorrencias.js` | Registro e consulta de ocorrências |
 | `usuario.js` | Gerenciamento de conta e sessão do usuário |
+ 
+### Frontend — Pasta `/wwwroot/css`
+ 
+| Arquivo | Descrição |
+|---|---|
 | `site.css` | Estilos globais da aplicação |
-
+| `filtro-mapa.css` | Estilos do filtro flutuante no mapa |
+ 
+### Backend — Pasta `Controllers`
+ 
+| Arquivo | Descrição |
+|---|---|
+| `HomeController.cs` | Controla a tela principal, feed e emergência |
+| `OcorrenciasController.cs` | CRUD de ocorrências e registro de ações de cuidado |
+| `UsuariosController.cs` | Cadastro, login, logout, perfil e recuperação de senha |
+| `ComentariosController.cs` | Criação e listagem de comentários |
+| `FavoritosController.cs` | Favoritar e desfavoritar ocorrências |
+ 
 ### Backend — Pasta `Models`
-
+ 
 | Arquivo | Descrição |
 |---|---|
 | `AppDbContext.cs` | Contexto do banco de dados (Entity Framework) |
@@ -79,13 +97,16 @@ A aplicação está funcional no ambiente de hospedagem a partir da Etapa 03.
 
 ---
 
-# Instruções de acesso
-
-Não deixe de informar o link onde a aplicação estiver disponível para acesso (por exemplo: https://adota-pet.herokuapp.com/src/index.html).
-
-Se houver usuário de teste, o login e a senha também deverão ser informados aqui (por exemplo: usuário - admin / senha - admin).
-
-O link e o usuário/senha descritos acima são apenas exemplos de como tais informações deverão ser apresentadas.
+## Instruções de Acesso
+ 
+A aplicação está disponível no endereço: https://sosdog2026-fzd9hjazdcetgjbd.westcentralus-01.azurewebsites.net/
+ 
+Para testar funcionalidades que requerem autenticação, utilize as credenciais abaixo:
+- **Usuário:** hb.bretashelena@gmail.com
+- **Senha:** 12345678
+**Sem autenticação:** visualização do mapa, filtro de ocorrências, feed de casos, página de emergência.
+ 
+**Com autenticação:** registrar ocorrência, registrar ação de cuidado (água/comida), comentar, favoritar, editar e excluir ocorrência própria, editar e excluir conta.
 
 > **Links Úteis**:
 >
