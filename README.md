@@ -1,4 +1,4 @@
-# Plataforma de Monitoramento Georreferenciado Colaborativo
+# Plataforma de Monitoramento Georreferenciado Colaborativo Para Cachorros de Rua
 
 `CURSO`
 Analise e Desenvolvimento de Sistemas
