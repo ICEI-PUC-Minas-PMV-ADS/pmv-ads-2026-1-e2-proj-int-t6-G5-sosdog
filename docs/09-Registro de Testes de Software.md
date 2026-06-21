@@ -1,5 +1,4 @@
 
-https://github.com/user-attachments/assets/cb8dd609-42a8-4f95-be8c-f20f357e9be7
 # Registro de Testes de Software
 
 <span style="color:red">Pré-requisitos: <a href="3-Projeto de Interface.md"> Projeto de Interface</a></span>, <a href="8-Plano de Testes de Software.md"> Plano de Testes de Software</a>
