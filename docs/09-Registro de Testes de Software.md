@@ -122,13 +122,53 @@ https://github.com/user-attachments/assets/f1e2bdba-0cca-4d7f-9d18-e1d60f0c0a8a
 
 ## Relatório de Testes de Software
 
-Apresente e discuta detalhadamente os resultados obtidos nos testes realizados, destacando tanto os pontos fortes quanto as fragilidades identificadas na solução. Explique como os aspectos positivos contribuem para o desempenho e a usabilidade do sistema, e como os pontos fracos impactam sua eficácia.
+1. Apresentação e Discussão dos Resultados Obtidos
 
-Descreva as principais falhas detectadas durante os testes, fornecendo exemplos concretos e evidências que sustentem essas observações. Explicite os impactos dessas falhas na experiência do usuário, na funcionalidade do sistema e nos objetivos do projeto.
+Os testes de software e usabilidade realizados no sistema SOS Dog abrangeram os fluxos principais da aplicação hospedada em ambiente de produção (Azure). Foram validados os cenários de: Cadastro, Confirmação de E-mail, Login, Reporte de Animal, Edição de Ocorrências, Geração de Cartaz, Favoritar Casos, Exclusão de Perfil e Redefinição de Senha.
 
-Com base nessas análises, detalhe as estratégias que o grupo pretende adotar para corrigir as deficiências e aprimorar a solução nas próximas iterações. Inclua ações específicas, como ajustes no código, modificações na interface, otimizações de desempenho ou melhorias na acessibilidade e usabilidade.
+Pontos Fortes (Aspectos Positivos): O sistema apresentou um excelente desempenho na navegação e retenção de contexto. A taxa de sucesso na conclusão das tarefas foi de 100%, com um tempo médio de execução ágil (aprox. 26 segundos por tarefa). A arquitetura de interface baseada em modais sobrepostos ao mapa principal (Leaflet) provou-se altamente eficaz, pois evita que o usuário perca sua localização geográfica ao realizar ações paralelas. Além disso, o sistema de feedback visual verde (toasts de sucesso) para cada ação confirmada no banco de dados contribui significativamente para a segurança e usabilidade da ferramenta.
 
-Por fim, apresente e/ou proponha as melhorias a partir dos testes realizados, destacando os ganhos obtidos e como essas alterações contribuem para a evolução do projeto.
+Fragilidades Identificadas: As principais fragilidades residem na infraestrutura de comunicação externa (e-mails) e no tratamento de exceções assíncronas (requisições AJAX/Fetch) no front-end quando a sessão do usuário expira no servidor, impactando a clareza da resposta ao usuário.
+
+2. Principais Falhas Detectadas e Seus Impactos
+
+Durante os testes, foram mapeadas falhas técnicas e de experiência do usuário (UX), com as seguintes evidências:
+
+Falha 1: Entregabilidade de E-mails (Caixa de SPAM)
+
+Evidência: Ao criar uma nova conta e ao solicitar a recuperação de senha, os vídeos de teste comprovaram que o e-mail transacional (remetente: sosdog.suporte) foi direcionado imediatamente para a pasta de SPAM do Gmail.
+
+Impacto: Como o sistema exige a confirmação do e-mail para o primeiro acesso, o usuário que não possui familiaridade técnica para checar o SPAM presumirá que o sistema está quebrado, gerando uma taxa de abandono (churn) altíssima logo no cadastro, inviabilizando o objetivo do projeto.
+
+Falha 2: Tratamento Genérico de Sessão Expirada no JavaScript
+
+Evidência: Ao tentar clicar no botão "Editar" (ícone de lápis) de uma ocorrência, o sistema exibiu um alert genérico: "Não foi possível carregar a edição". A análise do DevTools (Console/Network) revelou que o erro real foi um bloqueio de autorização do Azure (Sessão Expirada ou Falta de Permissão), que retornou a página inteira de Login em HTML em vez do Modal esperado, quebrando o JavaScript (Cannot read properties of undefined).
+
+Impacto: O usuário fica confuso, pois o sistema não explica que ele precisa fazer login novamente ou que não tem permissão para editar aquele animal, prejudicando severamente a usabilidade.
+
+Falha 3: Ausência de Estado de Carregamento (Loading) e Preview de Mídia
+
+Evidência: Ao registrar um animal ou atualizar a foto de perfil, o usuário seleciona a imagem, clica em "Salvar" e a tela permanece estática por alguns segundos até a conclusão do processamento no banco de dados. Além disso, apenas o nome do arquivo texto é exibido (ex: Teste 222), sem pré-visualização visual da foto.
+
+Impacto: Gera ansiedade operacional. Sem feedback visual de "Carregando...", o usuário pode clicar múltiplas vezes no botão de salvar, sobrecarregando o servidor e potencialmente duplicando registros.
+
+3. Estratégias de Correção e Próximas Iterações
+
+Para sanar as deficiências apontadas e aprimorar a solução de forma robusta, o grupo adotará as seguintes estratégias técnicas:
+
+Ajustes de Infraestrutura (E-mails): Para resolver a falha crítica do SPAM, a equipe configurará as chaves de autenticação de domínio (SPF, DKIM e DMARC) no provedor de e-mail atual, ou avaliará a migração para um serviço de disparo transacional profissional, garantindo a chegada na Caixa de Entrada.
+
+Ajustes no Código JavaScript (Tratamento de Erros): Modificação nas funções fetch do arquivo ocorrencias.js. Será adicionada uma validação para verificar se a response.url redireciona para a página de Login. Caso afirmativo, o sistema interceptará o erro de forma elegante e exibirá um modal amigável: "Sua sessão expirou. Por favor, faça login novamente", redirecionando o usuário de volta ao início.
+
+Otimizações de Interface (UX/UI): Implementação da API nativa FileReader do JavaScript nos formulários de cadastro de imagem. Isso permitirá renderizar uma miniatura em tempo real da foto do cãozinho antes mesmo do envio ao servidor.
+
+Prevenção de Múltiplos Cliques (Desempenho): Adição de uma rotina no front-end que, ao clicar em botões de submissão (submit), desabilita o botão (disabled="true") e altera o texto para "Processando..." ou insere um ícone de spinner, destravando a tela apenas após o retorno de sucesso do servidor.
+
+4. Propostas de Melhorias e Ganhos Obtidos
+
+As intervenções propostas a partir desta rodada de testes gerarão ganhos imediatos na estabilidade e na percepção de valor do sistema pelo usuário.
+
+A correção da entregabilidade de e-mails garantirá o cumprimento do fluxo primário (onboarding contínuo de usuários). A introdução de tratamentos de erros mais descritivos e bloqueios de carregamento (loading states) reduzirá a carga do servidor no Azure e mitigará frustrações do usuário final. Por fim, as melhorias incrementais, como o preview de imagens, polirão a interface, elevando o SOS Dog de um protótipo acadêmico funcional para um produto com padrões de mercado, pronto para adoção e uso real pela comunidade.
 
 > **Links Úteis**:
 > - [Ferramentas de Test para Java Script](https://geekflare.com/javascript-unit-testing/)
