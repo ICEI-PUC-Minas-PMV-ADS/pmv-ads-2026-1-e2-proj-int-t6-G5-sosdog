@@ -80,7 +80,7 @@ https://github.com/user-attachments/assets/81448431-b3b4-4b02-bab0-240b80043c50
 
 | **Caso de Teste** | **CT08 – Editar ocorrência própria** |
 |:---:|:---|
-| Requisito Associado | RF-002 - Alternar a visualização do mapa por camadas baseadas no status do animal. |
+| Requisito Associado | RF-004 - Permitir que o criador da ocorrência edite ou exclua seu próprio registro. |
 | Registro de evidência | 
 
 https://github.com/user-attachments/assets/4fdaa1b3-168a-49b1-9221-88c0d2211058
