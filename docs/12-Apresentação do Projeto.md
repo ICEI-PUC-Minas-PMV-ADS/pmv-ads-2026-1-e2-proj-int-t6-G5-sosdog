@@ -14,4 +14,5 @@ https://github.com/user-attachments/assets/d48aee93-b273-4020-af4e-ef68cd81ee62
 
 
 ## Conjunto de Slides (Estrutura)
-[Texto%20do%20seu%20para%CC%81grafo.pdf](https://github.com/user-attachments/files/29185024/Texto.20do.20seu.20para.CC.81grafo.pdf)
+[SOSdog_Apresentacao (1) (1).pptx](https://github.com/user-attachments/files/29185869/SOSdog_Apresentacao.1.1.pptx)
+
